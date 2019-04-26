@@ -1,53 +1,55 @@
 package com.azure.identity.credential;
 
-import com.azure.common.http.policy.HttpPipelinePolicy;
-import com.azure.identity.exception.CredentialNotFoundException;
-import com.azure.identity.policy.AzureCredentialPipelinePolicy;
-import com.azure.identity.provider.EnvironmentCredentialProvider;
-import reactor.core.publisher.Mono;
-
-import java.net.Proxy;
-import java.util.Arrays;
-import java.util.List;
-
+/**
+ * The base class for credentials that acquires a token from AAD.
+ */
 public abstract class AadCredential extends AzureCredential {
 
-    private String clientId;
+    private final String clientId;
 
-    private String tenant;
+    private final String tenantId;
 
-    private String aadEndpoint;
+    private final String aadEndpoint;
 
-    private Proxy proxy;
-
-    protected AadCredential(String clientId, String tenant) {
-        this(clientId, tenant, "https://login.microsoftonline.com/");
+    /**
+     * Creates an AadCredential with default AAD endpoint https://login.microsoftonline.com.
+     * @param clientId the client ID for authenticating to AAD.
+     * @param tenantId the tenant for authenticating to AAD.
+     */
+    protected AadCredential(String clientId, String tenantId) {
+        this(clientId, tenantId, "https://login.microsoftonline.com/");
     }
 
-    protected AadCredential(String clientId, String tenant, String aadEndpoint) {
+    /**
+     * Creates an AadCredential.
+     * @param clientId the client ID for authenticating to AAD.
+     * @param tenantId the tenant for authenticating to AAD.
+     * @param aadEndpoint the endpoint of the Azure Active Directory
+     */
+    protected AadCredential(String clientId, String tenantId, String aadEndpoint) {
         this.clientId = clientId;
-        this.tenant = tenant;
+        this.tenantId = tenantId;
         this.aadEndpoint = aadEndpoint.endsWith("/") ? aadEndpoint : aadEndpoint + "/";
     }
 
+    /**
+     * @return the client ID for authenticating to AAD.
+     */
     public String clientId() {
         return clientId;
     }
 
-    public String tenant() {
-        return tenant;
+    /**
+     * @return the tenant ID for authenticating to AAD.
+     */
+    public String tenantId() {
+        return tenantId;
     }
 
+    /**
+     * @return the endpoint for the Azure Active Directory.
+     */
     public String aadEndpoint() {
         return aadEndpoint;
-    }
-
-    public Proxy proxy() {
-        return proxy;
-    }
-
-    public AadCredential proxy(Proxy proxy) {
-        this.proxy = proxy;
-        return this;
     }
 }

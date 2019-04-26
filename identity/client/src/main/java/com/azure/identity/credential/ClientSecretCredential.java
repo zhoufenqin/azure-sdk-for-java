@@ -16,18 +16,34 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
+/**
+ * An AAD credential that acquires a token with a client secret for an AAD application.
+ */
 public class ClientSecretCredential extends AadCredential {
     /** A mapping from resource endpoint to its cached access token. */
     private final Map<String, AuthenticationResult> tokens = new HashMap<>();
 
     private String clientSecret;
 
-    public ClientSecretCredential(String clientId, String clientSecret, String tenant) {
-        this(clientId, clientSecret, tenant, "https://login.microsoftonline.com/");
+    /**
+     * Creates a ClientSecretCredential with default AAD endpoint https://login.microsoftonline.com.
+     * @param clientId the client ID for authenticating to AAD.
+     * @param clientSecret the client secret for authenticating to AAD.
+     * @param tenantId the tenant ID for authenticating to AAD.
+     */
+    public ClientSecretCredential(String clientId, String clientSecret, String tenantId) {
+        this(clientId, clientSecret, tenantId, "https://login.microsoftonline.com/");
     }
 
-    public ClientSecretCredential(String clientId, String clientSecret, String tenant, String aadEndpoint) {
-        super(clientId, tenant, aadEndpoint);
+    /**
+     * Creates an AadCredential.
+     * @param clientId the client ID for authenticating to AAD.
+     * @param clientSecret the client secret for authenticating to AAD.
+     * @param tenantId the tenant ID for authenticating to AAD.
+     * @param aadEndpoint the endpoint of the Azure Active Directory
+     */
+    public ClientSecretCredential(String clientId, String clientSecret, String tenantId, String aadEndpoint) {
+        super(clientId, tenantId, aadEndpoint);
         this.clientSecret = clientSecret;
     }
 
@@ -46,7 +62,7 @@ public class ClientSecretCredential extends AadCredential {
     }
 
     private Mono<AuthenticationResult> acquireAccessToken(String resource) {
-        String authorityUrl = this.aadEndpoint() + this.tenant();
+        String authorityUrl = this.aadEndpoint() + this.tenantId();
         ExecutorService executor = Executors.newSingleThreadExecutor();
         AuthenticationContext context;
         try {
@@ -54,9 +70,6 @@ public class ClientSecretCredential extends AadCredential {
         } catch (MalformedURLException mue) {
             executor.shutdown();
             throw Exceptions.propagate(mue);
-        }
-        if (proxy() != null) {
-            context.setProxy(proxy());
         }
         return Mono.create((Consumer<MonoSink<AuthenticationResult>>) callback -> {
             context.acquireToken(

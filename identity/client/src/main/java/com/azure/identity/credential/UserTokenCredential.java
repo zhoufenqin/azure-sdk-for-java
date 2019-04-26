@@ -17,7 +17,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Token based credentials for use with a REST Service Client.
+ * User account based credential.
  */
 public class UserTokenCredential extends AadCredential {
     /** A mapping from resource endpoint to its cached access token. */
@@ -31,12 +31,12 @@ public class UserTokenCredential extends AadCredential {
      * Initializes a new instance of the UserTokenCredentials.
      *
      * @param clientId the active directory application client id.
-     * @param tenant the tenant id containing this application.
+     * @param tenantId the tenant id containing this application.
      * @param username the user name for the Organization Id account.
      * @param password the password for the Organization Id account.
      */
-    public UserTokenCredential(String clientId, String tenant, String username, String password) {
-        super(clientId, tenant);
+    public UserTokenCredential(String clientId, String tenantId, String username, String password) {
+        super(clientId, tenantId);
         this.username = username;
         this.password = password;
         this.tokens = new ConcurrentHashMap<>();
@@ -46,13 +46,13 @@ public class UserTokenCredential extends AadCredential {
      * Initializes a new instance of the UserTokenCredentials.
      *
      * @param clientId the active directory application client id.
-     * @param tenant the tenant id containing this application.
+     * @param tenantId the tenant id containing this application.
      * @param username the user name for the Organization Id account.
      * @param password the password for the Organization Id account.
      * @param activeDirectoryEndpoint the AAD endpoint.
      */
-    public UserTokenCredential(String clientId, String tenant, String username, String password, String activeDirectoryEndpoint) {
-        super(clientId, tenant, activeDirectoryEndpoint);
+    public UserTokenCredential(String clientId, String tenantId, String username, String password, String activeDirectoryEndpoint) {
+        super(clientId, tenantId, activeDirectoryEndpoint);
         this.username = username;
         this.password = password;
         this.tokens = new ConcurrentHashMap<>();
@@ -95,7 +95,7 @@ public class UserTokenCredential extends AadCredential {
     }
 
     Mono<AuthenticationResult> acquireNewAccessToken(String resource) {
-        String authorityUrl = aadEndpoint() + tenant();
+        String authorityUrl = aadEndpoint() + tenantId();
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Mono<AuthenticationResult> authMono = Mono.defer(() -> {
             AuthenticationContext context;
@@ -103,9 +103,6 @@ public class UserTokenCredential extends AadCredential {
                 context = new AuthenticationContext(authorityUrl, false, executor);
             } catch (MalformedURLException mue) {
                 return Mono.error(mue);
-            }
-            if (proxy() != null) {
-                context.setProxy(proxy());
             }
             return Mono.create(callback -> {
                 context.acquireToken(
@@ -130,8 +127,8 @@ public class UserTokenCredential extends AadCredential {
     }
 
     // Refresh tokens are currently not used since we don't know if the refresh token has expired
-    public Mono<AuthenticationResult> acquireAccessTokenFromRefreshToken(String resource, String refreshToken, boolean isMultipleResourceRefreshToken) {
-        String authorityUrl = this.aadEndpoint() + this.tenant();
+    private Mono<AuthenticationResult> acquireAccessTokenFromRefreshToken(String resource, String refreshToken, boolean isMultipleResourceRefreshToken) {
+        String authorityUrl = this.aadEndpoint() + this.tenantId();
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Mono<AuthenticationResult> authMono = Mono.defer(() -> {
             AuthenticationContext context;
@@ -139,9 +136,6 @@ public class UserTokenCredential extends AadCredential {
                 context = new AuthenticationContext(authorityUrl, false, executor);
             } catch (MalformedURLException mue) {
                 return Mono.error(mue);
-            }
-            if (proxy() != null) {
-                context.setProxy(proxy());
             }
             return Mono.create(callback -> {
                 context.acquireTokenByRefreshToken(

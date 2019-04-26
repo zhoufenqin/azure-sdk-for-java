@@ -10,7 +10,7 @@ public class SecretClientTests {
     public void canGetSecret() throws Exception {
         SecretClient client = new SecretClientBuilder()
             .vaultEndpoint("https://todo20181105025332.vault.azure.net")
-            .credentials(AzureCredential.DEFAULT)
+            .credentials(AzureCredential.DEFAULT) // what if this is not called? A: it has to be explicitly provided
             .build();
 
         Secret secret = client.getSecret("kvtest").value();

@@ -115,6 +115,7 @@
     <slf4j-api.version>1.7.5</slf4j-api.version>
 
     <azure-common.version>1.0.0-SNAPSHOT</azure-common.version>
+    <azure-identity.version>1.0.0-SNAPSHOT</azure-identity.version>
     <azure-common-auth.version>1.0.0-SNAPSHOT</azure-common-auth.version>
     <azure-common-mgmt.version>1.0.0-SNAPSHOT</azure-common-mgmt.version>
     <reactor-netty.version>0.8.3.RELEASE</reactor-netty.version>
@@ -184,6 +185,12 @@
         <groupId>com.azure</groupId>
         <artifactId>azure-common-auth</artifactId>
         <version>${azure-common-auth.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.azure</groupId>
+        <artifactId>azure-identity</artifactId>
+        <version>${azure-identity.version}</version>
       </dependency>
 
       <!-- Other Microsoft Dependencies -->

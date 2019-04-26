@@ -4,42 +4,24 @@ import com.azure.identity.credential.TokenCredential;
 import com.azure.identity.exception.CredentialNotFoundException;
 import reactor.core.publisher.Mono;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+/**
+ * The base class defining a credential provider that provides token credentials.
+ */
+public abstract class TokenCredentialProvider {
+    /**
+     * Provide a token credential instance asynchronously.
+     * @return a Publisher that emits a token credential instance.
+     * @throws CredentialNotFoundException if no valid credential can be created or found
+     */
+    protected abstract Mono<TokenCredential> getCredentialAsync();
 
-public class TokenCredentialProvider {
-    private final List<TokenCredentialProvider> providers;
-
-    protected TokenCredentialProvider() {
-        this.providers = new ArrayList<>();
-    }
-
-    public TokenCredentialProvider(List<TokenCredentialProvider> providers) {
-        this.providers = providers;
-    }
-
-    public TokenCredentialProvider(TokenCredentialProvider... providers) {
-        this.providers = Arrays.asList(providers);
-    }
-
-    public TokenCredential getCredential() throws CredentialNotFoundException {
-        TokenCredential credential = null;
-        for (TokenCredentialProvider provider : providers) {
-            try {
-                credential = provider.getCredential();
-                if (credential != null) {
-                    break;
-                }
-            } catch (CredentialNotFoundException e) { }
-        }
-        if (credential == null) {
-            throw new CredentialNotFoundException("No credential found in the chain");
-        }
-        return credential;
-    }
-
-    public Mono<String> getTokenAsync(String resource) throws CredentialNotFoundException {
-        return getCredential().getTokenAsync(resource);
+    /**
+     * Acquires a token from the token credential this provide provides.
+     * @param resource the resource or audience this token is for
+     * @return a Publisher that emits a single token string
+     */
+    public Mono<String> getTokenAsync(String resource) {
+        return getCredentialAsync()
+            .flatMap(c -> c.getTokenAsync(resource));
     }
 }
