@@ -1022,5 +1022,6 @@
     <module>./eventhubs/data-plane</module>
     <module>./keyvault/data-plane</module>
     <module>./keyvault/client</module>
+    <module>./identity/client</module>
   </modules>
 </project>
