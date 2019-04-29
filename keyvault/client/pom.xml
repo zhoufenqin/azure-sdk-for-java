@@ -44,7 +44,7 @@
     </dependency>
 
     <dependency>
-      <groupId>com.azure.identity</groupId>
+      <groupId>com.azure</groupId>
       <artifactId>azure-identity</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>

@@ -5,11 +5,21 @@ import com.azure.common.http.HttpPipelineNextPolicy;
 import com.azure.common.http.HttpResponse;
 import com.azure.common.http.policy.HttpPipelinePolicy;
 import com.azure.identity.credential.TokenCredential;
+import com.azure.keyvault.SecretClient;
+import com.azure.keyvault.SecretClientBuilder;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A policy that authenticates requests with Azure Key Vault service. The content added by this policy
+ * is leveraged in {@link TokenCredential} to get and set the correct "Authorization" header value.
+ *
+ * @see TokenCredential
+ * @see SecretClient
+ * @see SecretClientBuilder
+ */
 public class KeyVaultCredentialPolicy implements HttpPipelinePolicy {
     private static final String WWW_AUTHENTICATE = "WWW-Authenticate";
     private static final String BEARER_TOKEP_REFIX = "Bearer ";
@@ -21,6 +31,13 @@ public class KeyVaultCredentialPolicy implements HttpPipelinePolicy {
         this.credential = credential;
     }
 
+    /**
+     * Adds the required header to authenticate a request to Azure Key Vault service.
+     *
+     * @param context The request context
+     * @param next The next HTTP pipeline policy to process the {@code context's} request after this policy completes.
+     * @return A {@link Mono} representing the HTTP response that will arrive asynchronously.
+     */
     @Override
     public Mono<HttpResponse> process(HttpPipelineCallContext context, HttpPipelineNextPolicy next) {
         return next.clone().process()

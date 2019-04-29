@@ -4,19 +4,17 @@
 package com.azure.keyvault;
 
 import com.azure.common.credentials.ServiceClientCredentials;
-import com.azure.common.credentials.TokenCredentials;
 import com.azure.common.http.HttpClient;
 import com.azure.common.http.HttpPipeline;
 import com.azure.common.http.policy.HttpLogDetailLevel;
 import com.azure.common.http.policy.HttpPipelinePolicy;
 import com.azure.common.http.policy.RetryPolicy;
 import com.azure.common.http.policy.UserAgentPolicy;
-import com.azure.common.http.policy.CredentialsPolicy;
 import com.azure.common.http.policy.HttpLoggingPolicy;
 import com.azure.identity.credential.TokenCredential;
+import com.azure.identity.provider.EnvironmentCredentialProvider;
 import com.azure.keyvault.authentication.KeyVaultCredentialPolicy;
-
-import java.io.IOException;
+import com.azure.identity.credential.AzureCredential;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -28,11 +26,14 @@ import java.util.Objects;
  * calling {@link SecretClientBuilder#build() build} constructs an instance of the client.
  *
  * <p> The minimal configuration options required by {@link SecretClientBuilder secretClientBuilder} to build {@link SecretClient}
- * are {@link String vaultEndpoint} and {@link ServiceClientCredentials credentials}. </p>
+ * are {@link String vaultEndpoint} and {@link ServiceClientCredentials credentials}. The {@link AzureCredential#DEFAULT}
+ * key vault credentials can be passed as default credentials. They require service principal credentials to be set as environment variables
+ * {@link EnvironmentCredentialProvider.Variable#CLIENT_ID} AZURE_CLIENT_ID, {@link EnvironmentCredentialProvider.Variable#CLIENT_SECRET} AZURE_CLIENT_SECRET
+ * and {@link EnvironmentCredentialProvider.Variable#TENANT_ID} AZURE_TENANT_ID.</p>
  * <pre>
  * SecretClient.builder()
  *   .vaultEndpoint("https://myvault.vault.azure.net/")
- *   .credentials(keyVaultCredentials)
+ *   .credentials(AzureCredential.DEFAULT)
  *   .build();
  * </pre>
  *
@@ -41,7 +42,7 @@ import java.util.Objects;
  * <pre>
  * SecretClient.builder()
  *   .vaultEndpoint("https://myvault.vault.azure.net/")
- *   .credentials(keyVaultCredentials)
+ *   .credentials(AzureCredential.DEFAULT)
  *   .httpLogDetailLevel(HttpLogDetailLevel.BODY_AND_HEADERS)
  *   .addPolicy(customPolicyOne)
  *   .addPolicy(customPolicyTwo)
