@@ -3,7 +3,6 @@
 
 package com.azure.keyvault;
 
-import com.azure.common.credentials.ServiceClientCredentials;
 import com.azure.common.http.HttpClient;
 import com.azure.common.http.HttpPipeline;
 import com.azure.common.http.policy.HttpLogDetailLevel;
@@ -26,7 +25,7 @@ import java.util.Objects;
  * calling {@link SecretClientBuilder#build() build} constructs an instance of the client.
  *
  * <p> The minimal configuration options required by {@link SecretClientBuilder secretClientBuilder} to build {@link SecretClient}
- * are {@link String vaultEndpoint} and {@link ServiceClientCredentials credentials}. The {@link AzureCredential#DEFAULT}
+ * are {@link String vaultEndpoint} and {@link TokenCredential credentials}. The {@link AzureCredential#DEFAULT}
  * key vault credentials can be passed as default credentials. They require service principal credentials to be set as environment variables
  * {@link EnvironmentCredentialProvider.Variable#CLIENT_ID} AZURE_CLIENT_ID, {@link EnvironmentCredentialProvider.Variable#CLIENT_SECRET} AZURE_CLIENT_SECRET
  * and {@link EnvironmentCredentialProvider.Variable#TENANT_ID} AZURE_TENANT_ID.</p>
