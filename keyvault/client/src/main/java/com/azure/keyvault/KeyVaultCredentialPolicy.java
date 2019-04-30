@@ -1,12 +1,10 @@
-package com.azure.keyvault.authentication;
+package com.azure.keyvault;
 
 import com.azure.common.http.HttpPipelineCallContext;
 import com.azure.common.http.HttpPipelineNextPolicy;
 import com.azure.common.http.HttpResponse;
 import com.azure.common.http.policy.HttpPipelinePolicy;
 import com.azure.identity.credential.TokenCredential;
-import com.azure.keyvault.SecretClient;
-import com.azure.keyvault.SecretClientBuilder;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
@@ -18,7 +16,9 @@ import java.util.Map;
  *
  * @see TokenCredential
  * @see SecretClient
+ * @see SecretAsyncClient
  * @see SecretClientBuilder
+ * @see SecretAsyncClientBuilder
  */
 public class KeyVaultCredentialPolicy implements HttpPipelinePolicy {
     private static final String WWW_AUTHENTICATE = "WWW-Authenticate";

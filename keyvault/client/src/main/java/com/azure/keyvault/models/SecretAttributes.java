@@ -57,7 +57,7 @@ public class SecretAttributes {
     /**
      * The secret name.
      */
-    protected String name;
+    String name;
 
     /**
      * Reflects the deletion recovery level currently in effect for secrets in

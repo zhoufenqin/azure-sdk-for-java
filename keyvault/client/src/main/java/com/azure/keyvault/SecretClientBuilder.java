@@ -11,8 +11,6 @@ import com.azure.common.http.policy.RetryPolicy;
 import com.azure.common.http.policy.UserAgentPolicy;
 import com.azure.common.http.policy.HttpLoggingPolicy;
 import com.azure.identity.credential.TokenCredential;
-import com.azure.identity.provider.EnvironmentCredentialProvider;
-import com.azure.keyvault.authentication.KeyVaultCredentialPolicy;
 import com.azure.identity.credential.AzureCredential;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -24,11 +22,9 @@ import java.util.Objects;
  * This class provides a fluent builder API to help aid the configuration and instantiation of the {@link SecretClient secret client},
  * calling {@link SecretClientBuilder#build() build} constructs an instance of the client.
  *
- * <p> The minimal configuration options required by {@link SecretClientBuilder secretClientBuilder} to build {@link SecretClient}
- * are {@link String vaultEndpoint} and {@link TokenCredential credentials}. The {@link AzureCredential#DEFAULT}
- * key vault credentials can be passed as default credentials. They require service principal credentials to be set as environment variables
- * {@link EnvironmentCredentialProvider.Variable#CLIENT_ID} AZURE_CLIENT_ID, {@link EnvironmentCredentialProvider.Variable#CLIENT_SECRET} AZURE_CLIENT_SECRET
- * and {@link EnvironmentCredentialProvider.Variable#TENANT_ID} AZURE_TENANT_ID.</p>
+ * <p> The configuration options {@link String vaultEndpoint} and {@link TokenCredential credentials} are required by
+ * {@link SecretClientBuilder secretClientBuilder} to build the {@link SecretClient}. For credentials, if the {@link AzureCredential#DEFAULT} key vault
+ * credentials are used then ensure the environment variables AZURE_CLIENT_ID, AZURE_CLIENT_SECRET and AZURE_TENANT_ID are configured.</p>
  * <pre>
  * SecretClient.builder()
  *   .vaultEndpoint("https://myvault.vault.azure.net/")
