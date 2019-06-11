@@ -3,6 +3,7 @@
 
 package com.azure.keyvault;
 
+import com.azure.core.configuration.Configuration;
 import com.azure.core.credentials.TokenCredential;
 import com.azure.core.http.HttpClient;
 import com.azure.core.http.HttpPipeline;
@@ -63,10 +64,8 @@ public final class SecretClientBuilder {
     private HttpClient httpClient;
     private HttpLogDetailLevel httpLogDetailLevel;
     private RetryPolicy retryPolicy;
-    private String userAgent;
 
     SecretClientBuilder() {
-        userAgent = String.format("Azure-SDK-For-Java/%s (%s)", AzureKeyVaultConfiguration.SDK_NAME, AzureKeyVaultConfiguration.SDK_VERSION);
         retryPolicy = new RetryPolicy();
         httpLogDetailLevel = HttpLogDetailLevel.NONE;
         policies = new ArrayList<>();
@@ -102,7 +101,7 @@ public final class SecretClientBuilder {
 
         // Closest to API goes first, closest to wire goes last.
         final List<HttpPipelinePolicy> policies = new ArrayList<>();
-        policies.add(new UserAgentPolicy(userAgent));
+        policies.add(new UserAgentPolicy(AzureKeyVaultConfiguration.SDK_NAME, AzureKeyVaultConfiguration.SDK_VERSION, Configuration.NONE));
         policies.add(retryPolicy);
         policies.add(new TokenCredentialPolicy(credential));
         policies.addAll(this.policies);
@@ -121,7 +120,7 @@ public final class SecretClientBuilder {
      *
      * @param endpoint The vault endpoint url is used as destination on Azure to send requests to.
      * @return the updated Builder object.
-     * @throws IllegalStateException if {@code endpoint} is null or it cannot be parsed into a valid URL.
+     * @throws IllegalArgumentException if {@code endpoint} is null or it cannot be parsed into a valid URL.
      */
     public SecretClientBuilder endpoint(String endpoint) {
         try {

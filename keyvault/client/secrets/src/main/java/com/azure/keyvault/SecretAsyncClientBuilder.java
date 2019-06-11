@@ -3,6 +3,7 @@
 
 package com.azure.keyvault;
 
+import com.azure.core.configuration.Configuration;
 import com.azure.core.credentials.TokenCredential;
 import com.azure.core.http.HttpClient;
 import com.azure.core.http.HttpPipeline;
@@ -101,7 +102,7 @@ public final class SecretAsyncClientBuilder {
 
         // Closest to API goes first, closest to wire goes last.
         final List<HttpPipelinePolicy> policies = new ArrayList<>();
-        policies.add(new UserAgentPolicy(AzureKeyVaultConfiguration.SDK_NAME, AzureKeyVaultConfiguration.SDK_VERSION));
+        policies.add(new UserAgentPolicy(AzureKeyVaultConfiguration.SDK_NAME, AzureKeyVaultConfiguration.SDK_VERSION, Configuration.NONE));
         policies.add(retryPolicy);
         policies.add(new TokenCredentialPolicy(credential));
         policies.addAll(this.policies);
@@ -120,7 +121,7 @@ public final class SecretAsyncClientBuilder {
      *
      * @param endPoint The vault endpoint url is used as destination on Azure to send requests to.
      * @return the updated Builder object.
-     * @throws IllegalStateException if {@code endpoint} is null or it cannot be parsed into a valid URL.
+     * @throws IllegalArgumentException if {@code endpoint} is null or it cannot be parsed into a valid URL.
      */
     public SecretAsyncClientBuilder endpoint(String endPoint) {
         try {
