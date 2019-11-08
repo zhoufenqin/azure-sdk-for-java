@@ -399,11 +399,8 @@ public class DeploymentsInner {
             throw new IllegalArgumentException("Parameter deploymentName is required and cannot be null.");
         }
         Validator.validate(properties);
-        DeploymentResourceInner deploymentResource = null;
-        if (properties != null) {
-            deploymentResource = new DeploymentResourceInner();
-            deploymentResource.withProperties(properties);
-        }
+        DeploymentResourceInner deploymentResource = new DeploymentResourceInner();
+        deploymentResource.withProperties(properties);
         Observable<Response<ResponseBody>> observable = service.createOrUpdate(this.client.subscriptionId(), resourceGroupName, serviceName, appName, deploymentName, this.client.apiVersion(), this.client.acceptLanguage(), deploymentResource, this.client.userAgent());
         return client.getAzureClient().getPutOrPatchResultAsync(observable, new TypeToken<DeploymentResourceInner>() { }.getType());
     }
@@ -582,11 +579,8 @@ public class DeploymentsInner {
             throw new IllegalArgumentException("Parameter deploymentName is required and cannot be null.");
         }
         Validator.validate(properties);
-        DeploymentResourceInner deploymentResource = null;
-        if (properties != null) {
-            deploymentResource = new DeploymentResourceInner();
-            deploymentResource.withProperties(properties);
-        }
+        DeploymentResourceInner deploymentResource = new DeploymentResourceInner();
+        deploymentResource.withProperties(properties);
         return service.beginCreateOrUpdate(this.client.subscriptionId(), resourceGroupName, serviceName, appName, deploymentName, this.client.apiVersion(), this.client.acceptLanguage(), deploymentResource, this.client.userAgent())
             .flatMap(new Func1<Response<ResponseBody>, Observable<ServiceResponse<DeploymentResourceInner>>>() {
                 @Override
@@ -869,11 +863,8 @@ public class DeploymentsInner {
             throw new IllegalArgumentException("Parameter deploymentName is required and cannot be null.");
         }
         Validator.validate(properties);
-        DeploymentResourceInner deploymentResource = null;
-        if (properties != null) {
-            deploymentResource = new DeploymentResourceInner();
-            deploymentResource.withProperties(properties);
-        }
+        DeploymentResourceInner deploymentResource = new DeploymentResourceInner();
+        deploymentResource.withProperties(properties);
         Observable<Response<ResponseBody>> observable = service.update(this.client.subscriptionId(), resourceGroupName, serviceName, appName, deploymentName, this.client.apiVersion(), this.client.acceptLanguage(), deploymentResource, this.client.userAgent());
         return client.getAzureClient().getPutOrPatchResultAsync(observable, new TypeToken<DeploymentResourceInner>() { }.getType());
     }
@@ -1052,11 +1043,8 @@ public class DeploymentsInner {
             throw new IllegalArgumentException("Parameter deploymentName is required and cannot be null.");
         }
         Validator.validate(properties);
-        DeploymentResourceInner deploymentResource = null;
-        if (properties != null) {
-            deploymentResource = new DeploymentResourceInner();
-            deploymentResource.withProperties(properties);
-        }
+        DeploymentResourceInner deploymentResource = new DeploymentResourceInner();
+        deploymentResource.withProperties(properties);
         return service.beginUpdate(this.client.subscriptionId(), resourceGroupName, serviceName, appName, deploymentName, this.client.apiVersion(), this.client.acceptLanguage(), deploymentResource, this.client.userAgent())
             .flatMap(new Func1<Response<ResponseBody>, Observable<ServiceResponse<DeploymentResourceInner>>>() {
                 @Override
