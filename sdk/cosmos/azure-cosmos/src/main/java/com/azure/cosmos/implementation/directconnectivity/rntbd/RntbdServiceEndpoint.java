@@ -16,6 +16,7 @@ import io.micrometer.core.instrument.Tag;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.AdaptiveRecvByteBufAllocator;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -172,7 +173,7 @@ public final class RntbdServiceEndpoint implements RntbdEndpoint {
         this.throwIfClosed();
 
         this.concurrentRequests.incrementAndGet();
-        this.lastRequestTime.set(args.nanoTimeCreated());
+        this.lastRequestTime.set(args.creationTime());
 
         if (logger.isDebugEnabled()) {
             args.traceOperation(logger, null, "request");
@@ -238,7 +239,11 @@ public final class RntbdServiceEndpoint implements RntbdEndpoint {
                 requestArgs.traceOperation(logger, null, "write");
                 final Channel channel = (Channel)connected.get();
                 this.releaseToPool(channel);
-                channel.write(requestRecord.stage(RntbdRequestRecord.Stage.PIPELINED));
+
+                channel.write(requestRecord).addListener((ChannelFuture future) -> {
+                    requestArgs.traceOperation(logger, null, "writeComplete", channel);
+                });
+
                 return;
             }
 
@@ -312,7 +317,7 @@ public final class RntbdServiceEndpoint implements RntbdEndpoint {
             checkNotNull(sslContext, "expected non-null sslContext");
 
             final DefaultThreadFactory threadFactory = new DefaultThreadFactory("cosmos-rntbd-nio", true);
-            final int threadCount = 2 * Runtime.getRuntime().availableProcessors();
+            final int threadCount = Runtime.getRuntime().availableProcessors();
             final LogLevel wireLogLevel;
 
             if (logger.isTraceEnabled()) {
@@ -325,9 +330,12 @@ public final class RntbdServiceEndpoint implements RntbdEndpoint {
 
             this.transportClient = transportClient;
             this.config = new Config(options, sslContext, wireLogLevel);
-            this.eventLoopGroup = new NioEventLoopGroup(threadCount, threadFactory);
-            this.requestTimer = new RntbdRequestTimer(config.requestTimeoutInNanos());
 
+            this.requestTimer = new RntbdRequestTimer(
+                config.requestTimeoutInNanos(),
+                config.requestTimerResolutionInNanos());
+
+            this.eventLoopGroup = new NioEventLoopGroup(threadCount, threadFactory);
             this.endpoints = new ConcurrentHashMap<>();
             this.evictions = new AtomicInteger();
             this.closed = new AtomicBoolean();
@@ -337,6 +345,8 @@ public final class RntbdServiceEndpoint implements RntbdEndpoint {
         public void close() {
 
             if (this.closed.compareAndSet(false, true)) {
+
+                this.requestTimer.close();
 
                 for (final RntbdEndpoint endpoint : this.endpoints.values()) {
                     endpoint.close();
@@ -351,7 +361,6 @@ public final class RntbdServiceEndpoint implements RntbdEndpoint {
                         logger.error("\n  [{}]\n  failed to close endpoints due to ", this, future.cause());
                     });
 
-                this.requestTimer.close();
                 return;
             }
 

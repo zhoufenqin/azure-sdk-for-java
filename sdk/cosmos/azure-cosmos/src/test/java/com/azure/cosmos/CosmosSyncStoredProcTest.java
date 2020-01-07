@@ -138,23 +138,21 @@ public class CosmosSyncStoredProcTest extends TestSuiteBase {
             .delete();
 
     }
-
-    // TODO: Fix underlying async execute response issue before enabling this test
-/*
     @Test(groups = {"simple"}, timeOut = TIMEOUT)
     public void executeStoredProcedure() throws Exception {
         CosmosStoredProcedureProperties sproc = new CosmosStoredProcedureProperties()
-                                                        .id(UUID.randomUUID().toString());
-        sproc.body("function() {var x = 10;}");
+                                                        .setId(UUID.randomUUID().toString());
+        sproc.setBody("function() {var x = 10;}");
 
         CosmosStoredProcedureResponse response = container.getScripts().createStoredProcedure(sproc);
         CosmosStoredProcedureRequestOptions options = new CosmosStoredProcedureRequestOptions();
-        options.partitionKey(PartitionKey.None);
-        container.getScripts()
-                .getStoredProcedure(sproc.id())
-                .execute(null, options);
+        options.setPartitionKey(PartitionKey.NONE);
+        CosmosStoredProcedureResponse executeResponse = container.getScripts()
+                                                         .getStoredProcedure(sproc.getId())
+                                                         .execute(null, options);
+
+        assertThat(executeResponse.getActivityId()).isNotEmpty();
     }
-*/
 
     @Test(groups = {"simple"}, timeOut = TIMEOUT)
     private void readAllSprocs() throws Exception {
@@ -162,7 +160,7 @@ public class CosmosSyncStoredProcTest extends TestSuiteBase {
         container.getScripts().createStoredProcedure(storedProcedureDef);
 
         FeedOptions feedOptions = new FeedOptions();
-        feedOptions.setEnableCrossPartitionQuery(true);
+        
         Iterator<FeedResponse<CosmosStoredProcedureProperties>> feedResponseIterator3 =
                 container.getScripts().readAllStoredProcedures(feedOptions);
         assertThat(feedResponseIterator3.hasNext()).isTrue();
@@ -175,7 +173,7 @@ public class CosmosSyncStoredProcTest extends TestSuiteBase {
         container.getScripts().createStoredProcedure(properties);
 
         String query = String.format("SELECT * from c where c.id = '%s'", properties.getId());
-        FeedOptions feedOptions = new FeedOptions().setEnableCrossPartitionQuery(true);
+        FeedOptions feedOptions = new FeedOptions();
 
         Iterator<FeedResponse<CosmosStoredProcedureProperties>> feedResponseIterator1 =
                 container.getScripts().queryStoredProcedures(query, feedOptions);
