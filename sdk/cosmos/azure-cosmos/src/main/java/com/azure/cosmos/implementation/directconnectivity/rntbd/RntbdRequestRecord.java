@@ -43,6 +43,7 @@ public final class RntbdRequestRecord extends CompletableFuture<StoreResponse> {
     private volatile OffsetDateTime timePipelined;
     private volatile OffsetDateTime timeQueued;
     private volatile OffsetDateTime timeSent;
+    private volatile OffsetDateTime timeReceived;
 
     public RntbdRequestRecord(final RntbdRequestArgs args, final RntbdRequestTimer timer) {
 
@@ -92,6 +93,12 @@ public final class RntbdRequestRecord extends CompletableFuture<StoreResponse> {
                         current);
                     this.timeSent = time;
                     break;
+                case RECEIVED:
+                    checkState(current == Stage.SENT,
+                        "expected transition from SENT to RECEIVED, not %s",
+                        current);
+                    this.timeReceived = time;
+                    break;
                 case COMPLETED:
                     this.timeCompleted = time;
                     break;
@@ -123,6 +130,10 @@ public final class RntbdRequestRecord extends CompletableFuture<StoreResponse> {
         return this.timeQueued;
     }
 
+    public OffsetDateTime timeReceived() {
+        return this.timeReceived;
+    }
+
     public OffsetDateTime timeSent() {
         return this.timeSent;
     }
@@ -146,7 +157,30 @@ public final class RntbdRequestRecord extends CompletableFuture<StoreResponse> {
     }
 
     public RequestTimeline takeTimelineSnapshot() {
-        return RequestTimeline.from(this);
+
+        OffsetDateTime now = OffsetDateTime.now();
+
+        OffsetDateTime timeCreated = this.timeCreated();
+        OffsetDateTime timeQueued = this.timeQueued();
+        OffsetDateTime timePipelined = this.timePipelined();
+        OffsetDateTime timeSent = this.timeSent();
+        OffsetDateTime timeReceived = this.timeReceived();
+        OffsetDateTime timeCompleted = this.timeCompleted();
+        OffsetDateTime timeCompletedOrNow = timeCompleted == null ? now : timeCompleted;
+
+        return RequestTimeline.of(
+            new RequestTimeline.Event("created",
+                timeCreated, timeQueued == null ? timeCompletedOrNow : timeQueued),
+            new RequestTimeline.Event("queued",
+                timeQueued, timePipelined == null ? timeCompletedOrNow : timePipelined),
+            new RequestTimeline.Event("pipelined",
+                timePipelined, timeSent == null ? timeCompletedOrNow : timeSent),
+            new RequestTimeline.Event("sent",
+                timeSent, timeReceived == null ? timeCompletedOrNow : timeReceived),
+            new RequestTimeline.Event("received",
+                timeReceived, timeCompletedOrNow),
+            new RequestTimeline.Event("completed",
+                timeCompleted, now));
     }
 
     public long stop(Timer requests, Timer responses) {
@@ -163,7 +197,7 @@ public final class RntbdRequestRecord extends CompletableFuture<StoreResponse> {
     // region Types
 
     public enum Stage {
-        QUEUED, PIPELINED, SENT, COMPLETED
+        QUEUED, PIPELINED, SENT, RECEIVED, COMPLETED
     }
 
     static final class JsonSerializer extends StdSerializer<RntbdRequestRecord> {
