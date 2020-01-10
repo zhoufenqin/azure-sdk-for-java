@@ -15,15 +15,14 @@ import java.util.Iterator;
 import static org.testng.Assert.assertEquals;
 
 /**
- * Tests the DateTimeCodec using data generated from C# code
+ * Tests the DateTimeCodec using data generated from C# code.
  * <p>
- * Test data was generated from code that looks like this:
- * {@code
+ * Test data was generated from code that looks like this:<pre>{@code
  * var buffer = new byte[8];
  * var value = DateTime.Now;
  * MemoryMarshal.Write(buffer, ref value);
  * Console.WriteLine($"new DateTimeItem(new byte[] {{ (byte) {string.Join(", (byte) ", buffer )} }}, OffsetDateTime.parse(\"{value.ToString("o")}\"))");
- * }
+ * }</pre>
  */
 @Test(groups = "unit")
 public class DateTimeCodecTest {
