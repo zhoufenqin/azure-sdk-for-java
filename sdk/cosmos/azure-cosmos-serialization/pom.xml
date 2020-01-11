@@ -143,6 +143,10 @@ Licensed under the MIT License.
                 <value>2</value>
               </property>
             </properties>
+            <systemPropertyVariables>
+              <propertName>azure.cosmos.basedir</propertName>
+              <azure.cosmos.basedir>${project.basedir}</azure.cosmos.basedir>
+            </systemPropertyVariables>
           </configuration>
         </plugin>
         <plugin>
