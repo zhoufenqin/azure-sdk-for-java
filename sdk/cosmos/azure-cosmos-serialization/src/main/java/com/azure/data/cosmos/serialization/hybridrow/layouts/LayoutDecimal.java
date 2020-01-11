@@ -31,7 +31,8 @@ public final class LayoutDecimal extends LayoutTypePrimitive<BigDecimal> {
 
     @Override
     @Nonnull
-    public Result readFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column, @Nonnull Out<BigDecimal> value) {
+    public Result readFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column,
+                            @Nonnull Out<BigDecimal> value) {
 
         checkArgument(scope.scopeType() instanceof LayoutUDT);
 
@@ -74,7 +75,8 @@ public final class LayoutDecimal extends LayoutTypePrimitive<BigDecimal> {
 
     @Override
     @Nonnull
-    public Result writeSparse(@Nonnull RowBuffer buffer, @Nonnull RowCursor edit, @Nonnull BigDecimal value, @Nonnull UpdateOptions options) {
+    public Result writeSparse(@Nonnull RowBuffer buffer, @Nonnull RowCursor edit, @Nonnull BigDecimal value,
+                              @Nonnull UpdateOptions options) {
         Result result = LayoutType.prepareSparseWrite(buffer, edit, this.typeArg(), options);
         if (result != Result.SUCCESS) {
             return result;

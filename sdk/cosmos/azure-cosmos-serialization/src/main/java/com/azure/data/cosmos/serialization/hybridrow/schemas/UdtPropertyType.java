@@ -15,10 +15,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class UdtPropertyType extends ScopePropertyType {
 
     @JsonProperty(required = true)
-    private String name;
-
-    @JsonProperty(required = true)
     private SchemaId id;
+    @JsonProperty(required = true)
+    private String name;
 
     /**
      * The name of the UDT schema defining the structure of a nested row.

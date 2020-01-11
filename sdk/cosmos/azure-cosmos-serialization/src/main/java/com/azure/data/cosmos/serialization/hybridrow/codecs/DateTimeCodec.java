@@ -17,7 +17,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Provides static methods for encoding and decoding {@link OffsetDateTime}s serialized as {@code System.DateTime}s
- *
+ * <p>
  * {@link OffsetDateTime} values are serialized as unsigned 64-bit integers:
  *
  * <table summary="Layout of field value">
@@ -74,7 +74,7 @@ public final class DateTimeCodec {
      * @see <a href="https://referencesource.microsoft.com/mscorlib/a.html#df6b1eba7461813b">struct DateTime source</a>
      */
     public static OffsetDateTime decode(@Nonnull final byte[] bytes) {
-        checkNotNull(bytes);
+        checkNotNull(bytes, "expected non-null bytes");
         return decode(Unpooled.wrappedBuffer(bytes));
     }
 
@@ -114,13 +114,14 @@ public final class DateTimeCodec {
     /**
      * Encode an {@link OffsetDateTime} like a {@code System.DateTime} serialized by {@code MemoryMarshal.Write}.
      *
-     * @param offsetDateTime an {@link OffsetDateTime} to be encoded.
+     * @param dateTime an {@link OffsetDateTime} to be encoded.
      * @return a new byte array containing the encoded {@code offsetDateTime}.
      * @see <a href="https://referencesource.microsoft.com/mscorlib/a.html#df6b1eba7461813b">struct DateTime source</a>
      */
-    public static byte[] encode(final OffsetDateTime offsetDateTime) {
+    public static byte[] encode(@Nonnull final OffsetDateTime dateTime) {
+        checkNotNull(dateTime, "expected non-null dateTime");
         final byte[] bytes = new byte[BYTES];
-        encode(offsetDateTime, Unpooled.wrappedBuffer(bytes).clear());
+        encode(dateTime, Unpooled.wrappedBuffer(bytes).clear());
         return bytes;
     }
 
@@ -128,10 +129,10 @@ public final class DateTimeCodec {
      * Encode an {@link OffsetDateTime} like a {@code System.DateTime} produced by {@code MemoryMarshal.Write}.
      *
      * @param dateTime an {@link OffsetDateTime} to be encoded.
-     * @param out            an output {@link ByteBuf}.
+     * @param out      an output {@link ByteBuf}.
      * @see <a href="https://referencesource.microsoft.com/mscorlib/a.html#df6b1eba7461813b">struct DateTime source</a>
      */
-    public static void encode(final OffsetDateTime dateTime, final ByteBuf out) {
+    public static void encode(@Nonnull final OffsetDateTime dateTime, @Nonnull final ByteBuf out) {
 
         checkNotNull(dateTime, "expected non-null dateTime");
         checkNotNull(out, "expected non-null out");

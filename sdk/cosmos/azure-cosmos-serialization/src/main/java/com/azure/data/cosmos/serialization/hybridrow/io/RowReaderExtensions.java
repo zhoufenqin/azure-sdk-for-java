@@ -14,15 +14,16 @@ public final class RowReaderExtensions {
     /**
      * Read the current field as a nested, structured, sparse scope containing a linear collection of zero or more
      * items.
-     * @param <TItem> The type of the items within the collection.
      *
+     * @param <TItem>      The type of the items within the collection.
      * @param reader       A forward-only cursor for reading the collection.
      * @param deserializer A function that reads one item from the collection.
      * @param list         On success, the collection of materialized items.
      * @return The result.
      */
     @Nonnull
-    public static <TItem> Result readList(RowReader reader, DeserializerFunc<TItem> deserializer, Out<List<TItem>> list) {
+    public static <TItem> Result readList(RowReader reader, DeserializerFunc<TItem> deserializer,
+                                          Out<List<TItem>> list) {
 
         // Pass the context as a struct by value to avoid allocations
 
@@ -59,7 +60,6 @@ public final class RowReaderExtensions {
      * A functional interface to read content from a {@link RowReader}
      *
      * @param <TItem> The type of item to read
-     *
      */
     @FunctionalInterface
     public interface DeserializerFunc<TItem> {

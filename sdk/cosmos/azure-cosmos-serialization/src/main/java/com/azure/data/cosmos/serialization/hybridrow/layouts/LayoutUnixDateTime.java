@@ -30,7 +30,8 @@ public final class LayoutUnixDateTime extends LayoutTypePrimitive<UnixDateTime> 
 
     @Override
     @Nonnull
-    public Result readFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column, @Nonnull Out<UnixDateTime> value) {
+    public Result readFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column,
+                            @Nonnull Out<UnixDateTime> value) {
 
         checkArgument(scope.scopeType() instanceof LayoutUDT);
 
@@ -58,7 +59,8 @@ public final class LayoutUnixDateTime extends LayoutTypePrimitive<UnixDateTime> 
 
     @Override
     @Nonnull
-    public Result writeFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column, @Nonnull UnixDateTime value) {
+    public Result writeFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column,
+                             @Nonnull UnixDateTime value) {
 
         checkArgument(scope.scopeType() instanceof LayoutUDT);
 
@@ -74,7 +76,8 @@ public final class LayoutUnixDateTime extends LayoutTypePrimitive<UnixDateTime> 
 
     @Override
     @Nonnull
-    public Result writeSparse(@Nonnull RowBuffer buffer, @Nonnull RowCursor edit, @Nonnull UnixDateTime value, @Nonnull UpdateOptions options) {
+    public Result writeSparse(@Nonnull RowBuffer buffer, @Nonnull RowCursor edit, @Nonnull UnixDateTime value,
+                              @Nonnull UpdateOptions options) {
 
         Result result = prepareSparseWrite(buffer, edit, this.typeArg(), options);
 

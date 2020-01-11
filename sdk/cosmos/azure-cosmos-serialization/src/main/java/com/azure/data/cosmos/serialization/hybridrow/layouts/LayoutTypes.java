@@ -23,7 +23,6 @@ public abstract class LayoutTypes {
     public static final LayoutObject IMMUTABLE_OBJECT = new LayoutObject(true);
     public static final LayoutTagged IMMUTABLE_TAGGED = new LayoutTagged(true);
     public static final LayoutTagged2 IMMUTABLE_TAGGED_2 = new LayoutTagged2(true);
-    public static final LayoutTuple ImmutableTuple = new LayoutTuple(true);
     public static final LayoutTypedArray IMMUTABLE_TYPED_ARRAY = new LayoutTypedArray(true);
     public static final LayoutTypedMap IMMUTABLE_TYPED_MAP = new LayoutTypedMap(true);
     public static final LayoutTypedSet IMMUTABLE_TYPED_SET = new LayoutTypedSet(true);
@@ -33,6 +32,7 @@ public abstract class LayoutTypes {
     public static final LayoutInt32 INT_32 = new LayoutInt32();
     public static final LayoutInt64 INT_64 = new LayoutInt64();
     public static final LayoutInt8 INT_8 = new LayoutInt8();
+    public static final LayoutTuple ImmutableTuple = new LayoutTuple(true);
     public static final LayoutMongoDbObjectId MONGODB_OBJECT_ID = new LayoutMongoDbObjectId();
     public static final LayoutNull NULL = new LayoutNull();
     public static final LayoutNullable NULLABLE = new LayoutNullable(false);

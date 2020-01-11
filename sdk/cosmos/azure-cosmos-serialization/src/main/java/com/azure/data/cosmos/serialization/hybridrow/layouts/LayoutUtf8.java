@@ -185,7 +185,8 @@ public final class LayoutUtf8 extends LayoutTypePrimitive<String>
 
     @Override
     @Nonnull
-    public Result writeSparse(@Nonnull RowBuffer buffer, @Nonnull RowCursor edit, @Nonnull String value, @Nonnull UpdateOptions options) {
+    public Result writeSparse(@Nonnull RowBuffer buffer, @Nonnull RowCursor edit, @Nonnull String value,
+                              @Nonnull UpdateOptions options) {
         checkArgument(value != null);
         return this.writeSparse(buffer, edit, Utf8String.transcodeUtf16(value), options);
     }
@@ -212,7 +213,8 @@ public final class LayoutUtf8 extends LayoutTypePrimitive<String>
 
     @Override
     @Nonnull
-    public Result writeVariable(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column, @Nonnull String value) {
+    public Result writeVariable(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column,
+                                @Nonnull String value) {
         checkArgument(value != null);
         return this.writeVariable(buffer, scope, column, Utf8String.transcodeUtf16(value));
     }

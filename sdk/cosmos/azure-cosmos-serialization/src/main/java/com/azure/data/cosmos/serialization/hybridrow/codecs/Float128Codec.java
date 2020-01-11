@@ -63,7 +63,7 @@ public final class Float128Codec {
      * Encodes a {@link Float128} as a sequence of two {@code long}s in little endian format.
      *
      * @param value a {@link Float128} to be encoded.
-     * @param out  an output {@link ByteBuf}.
+     * @param out   an output {@link ByteBuf}.
      */
     public static void encode(final Float128 value, final ByteBuf out) {
         out.writeLongLE(value.high());

@@ -30,7 +30,8 @@ public final class LayoutUInt32 extends LayoutTypePrimitive<Long> {
 
     @Override
     @Nonnull
-    public Result readFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column, @Nonnull Out<Long> value) {
+    public Result readFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column,
+                            @Nonnull Out<Long> value) {
 
         checkNotNull(buffer, "expected non-null buffer");
         checkNotNull(scope, "expected non-null scope");
@@ -65,7 +66,8 @@ public final class LayoutUInt32 extends LayoutTypePrimitive<Long> {
 
     @Override
     @Nonnull
-    public Result writeFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column, @Nonnull Long value) {
+    public Result writeFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column,
+                             @Nonnull Long value) {
 
         checkArgument(scope.scopeType() instanceof LayoutUDT);
 
@@ -80,7 +82,8 @@ public final class LayoutUInt32 extends LayoutTypePrimitive<Long> {
 
     @Override
     @Nonnull
-    public Result writeSparse(@Nonnull RowBuffer buffer, @Nonnull RowCursor edit, @Nonnull Long value, @Nonnull UpdateOptions options) {
+    public Result writeSparse(@Nonnull RowBuffer buffer, @Nonnull RowCursor edit, @Nonnull Long value,
+                              @Nonnull UpdateOptions options) {
         Result result = prepareSparseWrite(buffer, edit, this.typeArg(), options);
         if (result != Result.SUCCESS) {
             return result;

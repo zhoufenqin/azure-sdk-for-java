@@ -19,7 +19,6 @@ import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
 import javax.annotation.Nonnull;
 import java.io.IOException;
 
-import static com.google.common.base.Strings.lenientFormat;
 import static it.unimi.dsi.fastutil.HashCommon.mix;
 
 /**
@@ -127,6 +126,8 @@ public final class SchemaId implements Comparable<SchemaId> {
 
     static final class JsonDeserializer extends StdDeserializer<SchemaId> {
 
+        private static final long serialVersionUID = 265448445923892367L;
+
         private JsonDeserializer() {
             super(SchemaId.class);
         }
@@ -146,6 +147,8 @@ public final class SchemaId implements Comparable<SchemaId> {
     }
 
     static final class JsonSerializer extends StdSerializer<SchemaId> {
+
+        private static final long serialVersionUID = 6998423491450285472L;
 
         private JsonSerializer() {
             super(SchemaId.class);

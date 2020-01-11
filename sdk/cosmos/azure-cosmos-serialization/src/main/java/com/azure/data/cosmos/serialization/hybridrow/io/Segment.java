@@ -32,6 +32,7 @@ public final class Segment {
         this.length = value;
         return this;
     }
+
     public String sdl() {
         return this.sdl;
     }

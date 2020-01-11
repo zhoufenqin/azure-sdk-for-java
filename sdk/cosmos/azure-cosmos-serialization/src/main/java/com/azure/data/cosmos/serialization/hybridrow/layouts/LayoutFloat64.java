@@ -29,7 +29,8 @@ public final class LayoutFloat64 extends LayoutTypePrimitive<Double> {
 
     @Override
     @Nonnull
-    public Result readFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column, @Nonnull Out<Double> value) {
+    public Result readFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column,
+                            @Nonnull Out<Double> value) {
 
         checkArgument(scope.scopeType() instanceof LayoutUDT);
 
@@ -59,7 +60,8 @@ public final class LayoutFloat64 extends LayoutTypePrimitive<Double> {
 
     @Override
     @Nonnull
-    public Result writeFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn col, @Nonnull Double value) {
+    public Result writeFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn col,
+                             @Nonnull Double value) {
 
         checkArgument(scope.scopeType() instanceof LayoutUDT);
 
@@ -77,7 +79,8 @@ public final class LayoutFloat64 extends LayoutTypePrimitive<Double> {
     // UpdateOptions options = UpdateOptions.Upsert)
     @Override
     @Nonnull
-    public Result writeSparse(@Nonnull RowBuffer buffer, @Nonnull RowCursor edit, @Nonnull Double value, @Nonnull UpdateOptions options) {
+    public Result writeSparse(@Nonnull RowBuffer buffer, @Nonnull RowCursor edit, @Nonnull Double value,
+                              @Nonnull UpdateOptions options) {
 
         Result result = LayoutType.prepareSparseWrite(buffer, edit, this.typeArg(), options);
 

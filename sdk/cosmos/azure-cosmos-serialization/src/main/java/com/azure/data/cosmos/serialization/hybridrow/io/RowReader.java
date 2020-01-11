@@ -74,17 +74,18 @@ import static com.google.common.base.Strings.lenientFormat;
 @JsonSerialize(using = RowReader.JsonSerializer.class)
 public final class RowReader {
 
+    private final RowBuffer buffer;
+    private final List<LayoutColumn> columns;
+    private final RowCursor cursor;
+    private final int schematizedCount;
+
     private int columnIndex;
-    private List<LayoutColumn> columns;
-    private RowCursor cursor;
-    private RowBuffer buffer;
-    private int schematizedCount;
     private States state;
 
     /**
      * Initializes a new instance of the {@link RowReader} class.
      *
-     * @param buffer   The row to be read
+     * @param buffer The row to be read
      */
     public RowReader(@Nonnull RowBuffer buffer) {
         this(buffer, RowCursor.create(buffer));
@@ -135,6 +136,10 @@ public final class RowReader {
         this.columnIndex = -1;
     }
 
+    public boolean isDone() {
+        return this.state == States.DONE;
+    }
+
     /**
      * Read the current field as a fixed length {@code MongoDbObjectId} value.
      *
@@ -161,10 +166,6 @@ public final class RowReader {
         //                return Result.FAILURE;
         //        }
         throw new UnsupportedOperationException();
-    }
-
-    public boolean isDone() {
-        return this.state == States.DONE;
     }
 
     /**
@@ -539,14 +540,14 @@ public final class RowReader {
 
             case SPARSE:
                 if (!(this.cursor.cellType() instanceof LayoutInt16)) {
-                    value.set((short)0);
+                    value.set((short) 0);
                     return Result.TYPE_MISMATCH;
                 }
                 value.set(this.buffer.readSparseInt16(this.cursor));
                 return Result.SUCCESS;
 
             default:
-                value.set((short)0);
+                value.set((short) 0);
                 return Result.FAILURE;
         }
     }
@@ -620,14 +621,14 @@ public final class RowReader {
 
             case SPARSE:
                 if (!(this.cursor.cellType() instanceof LayoutInt8)) {
-                    value.set((byte)0);
+                    value.set((byte) 0);
                     return Result.TYPE_MISMATCH;
                 }
                 value.set(this.buffer.readSparseInt8(this.cursor));
                 return Result.SUCCESS;
 
             default:
-                value.set((byte)0);
+                value.set((byte) 0);
                 return Result.FAILURE;
         }
     }
@@ -666,8 +667,8 @@ public final class RowReader {
      * set, and maps.
      *
      * @param <TContext> a reader context type.
-     * @param context a reader context.
-     * @param func a reader function.
+     * @param context    a reader context.
+     * @param func       a reader function.
      * @return {@link Result#SUCCESS} if the read is successful, an error {@link Result} otherwise.
      */
     @Nonnull
@@ -693,7 +694,8 @@ public final class RowReader {
      *
      * @return a new {@link RowReader}.
      */
-    public @Nonnull RowReader readScope() {
+    public @Nonnull
+    RowReader readScope() {
         RowCursor scope = this.buffer.sparseIteratorReadScope(this.cursor, true);
         return new RowReader(this.buffer, scope);
     }
@@ -712,33 +714,6 @@ public final class RowReader {
         string.get().release();
 
         return result;
-    }
-
-    /**
-     * Read the current field as a variable length, UTF-8 encoded, string value.
-     *
-     * @param value On success, receives the value, undefined otherwise.
-     * @return {@link Result#SUCCESS} if the read is successful, an error {@link Result} otherwise.
-     */
-    public Result readUtf8String(Out<Utf8String> value) {
-
-        switch (this.state) {
-
-            case SCHEMATIZED:
-                return this.readPrimitiveValue(value);
-
-            case SPARSE:
-                if (!(this.cursor.cellType() instanceof LayoutUtf8)) {
-                    value.set(null);
-                    return Result.TYPE_MISMATCH;
-                }
-                value.set(this.buffer.readSparseString(this.cursor));
-                return Result.SUCCESS;
-
-            default:
-                value.set(null);
-                return Result.FAILURE;
-        }
     }
 
     /**
@@ -841,42 +816,16 @@ public final class RowReader {
 
             case SPARSE:
                 if (!(this.cursor.cellType() instanceof LayoutUInt8)) {
-                    value.set((short)0);
+                    value.set((short) 0);
                     return Result.TYPE_MISMATCH;
                 }
                 value.set(this.buffer.readSparseUInt8(this.cursor));
                 return Result.SUCCESS;
 
             default:
-                value.set((short)0);
+                value.set((short) 0);
                 return Result.FAILURE;
         }
-    }
-
-    /**
-     * Returns a string representation of the object. In general, the
-     * {@code toString} method returns a string that
-     * "textually represents" this object. The result should
-     * be a concise but informative representation that is easy for a
-     * person to read.
-     * It is recommended that all subclasses override this method.
-     * <p>
-     * The {@code toString} method for class {@code Object}
-     * returns a string consisting of the name of the class of which the
-     * object is an instance, the at-sign character `{@code @}', and
-     * the unsigned hexadecimal representation of the hash code of the
-     * object. In other words, this method returns a string equal to the
-     * value of:
-     * <blockquote>
-     * <pre>
-     * getClass().getName() + '@' + Integer.toHexString(hashCode())
-     * </pre></blockquote>
-     *
-     * @return a string representation of the object.
-     */
-    @Override
-    public String toString() {
-        return Json.toString(this);
     }
 
     /**
@@ -898,6 +847,33 @@ public final class RowReader {
                     return Result.TYPE_MISMATCH;
                 }
                 value.set(this.buffer.readSparseUnixDateTime(this.cursor));
+                return Result.SUCCESS;
+
+            default:
+                value.set(null);
+                return Result.FAILURE;
+        }
+    }
+
+    /**
+     * Read the current field as a variable length, UTF-8 encoded, string value.
+     *
+     * @param value On success, receives the value, undefined otherwise.
+     * @return {@link Result#SUCCESS} if the read is successful, an error {@link Result} otherwise.
+     */
+    public Result readUtf8String(Out<Utf8String> value) {
+
+        switch (this.state) {
+
+            case SCHEMATIZED:
+                return this.readPrimitiveValue(value);
+
+            case SPARSE:
+                if (!(this.cursor.cellType() instanceof LayoutUtf8)) {
+                    value.set(null);
+                    return Result.TYPE_MISMATCH;
+                }
+                value.set(this.buffer.readSparseString(this.cursor));
                 return Result.SUCCESS;
 
             default:
@@ -999,6 +975,32 @@ public final class RowReader {
     }
 
     /**
+     * Returns a string representation of the object. In general, the
+     * {@code toString} method returns a string that
+     * "textually represents" this object. The result should
+     * be a concise but informative representation that is easy for a
+     * person to read.
+     * It is recommended that all subclasses override this method.
+     * <p>
+     * The {@code toString} method for class {@code Object}
+     * returns a string consisting of the name of the class of which the
+     * object is an instance, the at-sign character `{@code @}', and
+     * the unsigned hexadecimal representation of the hash code of the
+     * object. In other words, this method returns a string equal to the
+     * value of:
+     * <blockquote>
+     * <pre>
+     * getClass().getName() + '@' + Integer.toHexString(hashCode())
+     * </pre></blockquote>
+     *
+     * @return a string representation of the object.
+     */
+    @Override
+    public String toString() {
+        return Json.toString(this);
+    }
+
+    /**
      * The type of the field--if positioned on a field--undefined otherwise.
      *
      * @return layout type or {@code null}.
@@ -1063,44 +1065,45 @@ public final class RowReader {
         }
     }
 
-//    /**
-//     * Reads a generic schematized field value via the scope's layout
-//     *
-//     * @param value On success, receives the value, undefined otherwise
-//     * @return {@link Result#SUCCESS} if the read is successful; an error {@link Result} otherwise
-//     */
-//    private Result readPrimitiveValue(Out<Utf8String> value) {
-//
-//        LayoutColumn column = this.columns.get(this.columnIndex);
-//        LayoutType type = this.columns.get(this.columnIndex).type();
-//
-//        if (!(type instanceof LayoutUtf8Readable)) {
-//            value.set(null);
-//            return Result.TYPE_MISMATCH;
-//        }
-//
-//        StorageKind storage = column == null ? StorageKind.NONE : column.storage();
-//
-//        switch (storage) {
-//
-//            case FIXED:
-//                return type.<LayoutUtf8Readable>typeAs().readFixed(this.row, this.cursor, column, value);
-//
-//            case VARIABLE:
-//                return type.<LayoutUtf8Readable>typeAs().readVariable(this.row, this.cursor, column, value);
-//
-//            default:
-//                assert false : lenientFormat("expected FIXED or VARIABLE column storage, not %s", storage);
-//                value.set(null);
-//                return Result.FAILURE;
-//        }
-//    }
-//
+    //    /**
+    //     * Reads a generic schematized field value via the scope's layout
+    //     *
+    //     * @param value On success, receives the value, undefined otherwise
+    //     * @return {@link Result#SUCCESS} if the read is successful; an error {@link Result} otherwise
+    //     */
+    //    private Result readPrimitiveValue(Out<Utf8String> value) {
+    //
+    //        LayoutColumn column = this.columns.get(this.columnIndex);
+    //        LayoutType type = this.columns.get(this.columnIndex).type();
+    //
+    //        if (!(type instanceof LayoutUtf8Readable)) {
+    //            value.set(null);
+    //            return Result.TYPE_MISMATCH;
+    //        }
+    //
+    //        StorageKind storage = column == null ? StorageKind.NONE : column.storage();
+    //
+    //        switch (storage) {
+    //
+    //            case FIXED:
+    //                return type.<LayoutUtf8Readable>typeAs().readFixed(this.row, this.cursor, column, value);
+    //
+    //            case VARIABLE:
+    //                return type.<LayoutUtf8Readable>typeAs().readVariable(this.row, this.cursor, column, value);
+    //
+    //            default:
+    //                assert false : lenientFormat("expected FIXED or VARIABLE column storage, not %s", storage);
+    //                value.set(null);
+    //                return Result.FAILURE;
+    //        }
+    //    }
+    //
+
     /**
      * Reads a generic schematized field value via the scope's layout
      *
      * @param <TElement> The sub-element type of the field
-     * @param value On success, receives the value, undefined otherwise
+     * @param value      On success, receives the value, undefined otherwise
      * @return {@link Result#SUCCESS} if the read is successful, an error {@link Result} otherwise.
      */
     private <TElement> Result readPrimitiveValueList(Out<List<TElement>> value) {
@@ -1118,10 +1121,12 @@ public final class RowReader {
         switch (storage) {
 
             case FIXED:
-                return type.<LayoutListReadable<TElement>>typeAs().readFixedList(this.buffer, this.cursor, column, value);
+                return type.<LayoutListReadable<TElement>>typeAs().readFixedList(this.buffer, this.cursor, column,
+                    value);
 
             case VARIABLE:
-                return type.<LayoutListReadable<TElement>>typeAs().readVariableList(this.buffer, this.cursor, column, value);
+                return type.<LayoutListReadable<TElement>>typeAs().readVariableList(this.buffer, this.cursor, column,
+                    value);
 
             default:
                 assert false : lenientFormat("expected FIXED or VARIABLE column storage, not %s", storage);
@@ -1187,7 +1192,7 @@ public final class RowReader {
     /**
      * A functional interface for reading content from a {@link RowBuffer}
      *
-     * @param <TContext>    The type of the context value passed by the caller
+     * @param <TContext> The type of the context value passed by the caller
      */
     @FunctionalInterface
     public interface ReaderFunc<TContext> {
@@ -1247,6 +1252,8 @@ public final class RowReader {
     }
 
     static final class JsonSerializer extends StdSerializer<RowReader> {
+
+        private static final long serialVersionUID = -6213091433480194231L;
 
         JsonSerializer() {
             super(RowReader.class);

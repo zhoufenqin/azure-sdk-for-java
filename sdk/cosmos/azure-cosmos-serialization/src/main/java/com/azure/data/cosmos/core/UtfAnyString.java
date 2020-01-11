@@ -22,7 +22,7 @@ public final class UtfAnyString implements CharSequence, Comparable<UtfAnyString
 
     private static final int NULL_HASHCODE = reduceHashCode(5_381, 5_381);
 
-    private CharSequence buffer;
+    private final CharSequence buffer;
 
     public UtfAnyString(final String value) {
         this.buffer = value;
@@ -33,6 +33,7 @@ public final class UtfAnyString implements CharSequence, Comparable<UtfAnyString
     }
 
     private UtfAnyString() {
+        this.buffer = null;
     }
 
     private UtfAnyString(final CharSequence sequence) {
@@ -83,7 +84,7 @@ public final class UtfAnyString implements CharSequence, Comparable<UtfAnyString
      * value specified by the {@code index} is a surrogate, the surrogate (not the surrogate pair) is returned.
      *
      * @param index the index of the {@code char} value to be returned.
-     * @return the specified {@code char} value
+     * @return the specified {@code char} value.
      * @throws IndexOutOfBoundsException     if the {@code index} argument is negative or not less than
      *                                       {@link UtfAnyString#length()}
      * @throws UnsupportedOperationException if this {@link UtfAnyString} is {@code null}.
@@ -228,7 +229,7 @@ public final class UtfAnyString implements CharSequence, Comparable<UtfAnyString
 
         if (this.buffer instanceof String) {
 
-            final int ignored = ((String) this.buffer).codePoints().reduce(0, (index, codePoint) -> {
+            final int ignored = this.buffer.codePoints().reduce(0, (index, codePoint) -> {
                 if (index % 2 == 0) {
                     hash[0] = ((hash[0] << 5) + hash[0]) ^ codePoint;
                 } else {
@@ -266,13 +267,12 @@ public final class UtfAnyString implements CharSequence, Comparable<UtfAnyString
      * index {@code end - 1}. The length (in {@code char}s) of the returned sequence is {@code end - start}, so if
      * {@code start == end}, an empty sequence is returned.
      *
-     * @param start the start index, inclusive
-     * @param end   the end index, exclusive
-     * @return the specified subsequence
+     * @param start the start index, inclusive.
+     * @param end   the end index, exclusive.
+     * @return the specified subsequence.
      * @throws IndexOutOfBoundsException     if {@code start} or {@code end} are negative, {@code end} is greater than
-     *                                       {@link UtfAnyString#length()}, or {@code start} is greater than {@code
-     *                                       end}.
-     * @throws UnsupportedOperationException if string is {@code null}
+     *                                       {@link UtfAnyString#length}, or {@code start} is greater than {@code end}.
+     * @throws UnsupportedOperationException if string is {@code null}.
      */
     @Override
     @Nonnull

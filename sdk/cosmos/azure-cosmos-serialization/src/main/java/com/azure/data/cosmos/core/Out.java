@@ -7,7 +7,7 @@ import java.util.Objects;
 
 /**
  * A container object which may or may not contain a non-null value
- *
+ * <p>
  * This is a value-based class and as such use of identity-sensitive operations--including reference equality
  * ({@code ==}), identity hash code, or synchronization--on instances of {@code Out} may have unpredictable results and
  * should be avoided.
@@ -17,18 +17,6 @@ import java.util.Objects;
 public final class Out<T> {
 
     private volatile T value;
-
-    public T get() {
-        return this.value;
-    }
-
-    public void set(T value) {
-        this.value = value;
-    }
-
-    public T setAndGet(T value) {
-        return this.value = value;
-    }
 
     /**
      * {@code true} if there is a value present, otherwise {@code false}
@@ -65,7 +53,11 @@ public final class Out<T> {
             return false;
         }
 
-        return Objects.equals(this.value, ((Out)other).value);
+        return Objects.equals(this.value, ((Out) other).value);
+    }
+
+    public T get() {
+        return this.value;
     }
 
     /**
@@ -77,6 +69,14 @@ public final class Out<T> {
     @Override
     public int hashCode() {
         return Objects.hashCode(this.value);
+    }
+
+    public void set(T value) {
+        this.value = value;
+    }
+
+    public T setAndGet(T value) {
+        return this.value = value;
     }
 
     @Override

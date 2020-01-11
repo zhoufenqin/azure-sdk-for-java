@@ -30,34 +30,27 @@ public class Schema {
 
     // Required fields
 
-    @JsonProperty(required = true)
-    private String name;
-
-    @JsonProperty(defaultValue = "schema", required = true)
-    private TypeKind type;
-
-    // Optional fields
-
     @JsonProperty
     private String comment;
-
     @JsonProperty()
     private SchemaId id;
 
+    // Optional fields
+    @JsonProperty(required = true)
+    private String name;
     @JsonProperty
     private SchemaOptions options;
-
+    private List<PartitionKey> partitionKeys;
+    private List<PrimarySortKey> primaryKeys;
     @JsonProperty
     private List<Property> properties;
 
+    // TODO: DANOBLE: how do these properties serialize?
+    private List<StaticKey> staticKeys;
+    @JsonProperty(defaultValue = "schema", required = true)
+    private TypeKind type;
     @JsonProperty
     private SchemaLanguageVersion version;
-
-    // TODO: DANOBLE: how do these properties serialize?
-
-    private List<PartitionKey> partitionKeys;
-    private List<PrimarySortKey> primaryKeys;
-    private List<StaticKey> staticKeys;
 
     /**
      * Initializes a new instance of the {@link Schema} class.

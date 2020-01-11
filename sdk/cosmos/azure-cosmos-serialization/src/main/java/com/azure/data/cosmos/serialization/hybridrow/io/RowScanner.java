@@ -104,7 +104,7 @@ public class RowScanner implements AutoCloseable, Iterable<DataItem> {
     @SuppressWarnings("unchecked")
     private static <TContext> Result visit(RowReader reader, DataItemVisitor<TContext> visitor) {
 
-        final Out value = new Out();
+        @SuppressWarnings("rawtypes") final Out value = new Out();
 
         while (reader.read()) {
 
@@ -287,6 +287,8 @@ public class RowScanner implements AutoCloseable, Iterable<DataItem> {
 
         final Deque<Utf8String> nodes;
         final Deque<RowReader> readers;
+
+        @SuppressWarnings("rawtypes")
         final Out value;
 
         DataItem dataItem;
@@ -295,7 +297,7 @@ public class RowScanner implements AutoCloseable, Iterable<DataItem> {
         DataItemIterator(RowReader reader) {
             this.readers = new ArrayDeque<>();
             this.nodes = new ArrayDeque<>();
-            this.value = new Out();
+            this.value = new Out<>();
             this.reader = reader;
         }
 

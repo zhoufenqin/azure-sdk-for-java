@@ -20,7 +20,6 @@ import com.azure.data.cosmos.serialization.hybridrow.schemas.TuplePropertyType;
 import com.azure.data.cosmos.serialization.hybridrow.schemas.TypeKind;
 import com.azure.data.cosmos.serialization.hybridrow.schemas.UdtPropertyType;
 import com.google.common.base.Strings;
-import org.checkerframework.checker.index.qual.NonNegative;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -37,8 +36,8 @@ public final class LayoutCompiler {
     /**
      * Compiles a logical schema into a physical layout that can be used to read and write rows
      *
-     * @param namespace     The namespace within which {@code schema} is defined
-     * @param schema The logical schema to produce a layout for
+     * @param namespace The namespace within which {@code schema} is defined
+     * @param schema    The logical schema to produce a layout for
      * @return The layout for the schema
      */
     @Nonnull
@@ -74,7 +73,7 @@ public final class LayoutCompiler {
                     if (!p.type().nullable()) {
                         throw new LayoutCompilationException("Non-nullable sparse column are not supported.");
                     }
-                    ObjectPropertyType op = (ObjectPropertyType)p.type();
+                    ObjectPropertyType op = (ObjectPropertyType) p.type();
                     builder.addObjectScope(p.path(), type);
                     LayoutCompiler.addProperties(builder, namespace, type.layoutCode(), op.properties());
                     builder.EndObjectScope();

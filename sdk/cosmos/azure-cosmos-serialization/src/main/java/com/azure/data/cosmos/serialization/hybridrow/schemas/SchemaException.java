@@ -7,6 +7,8 @@ import java.io.Serializable;
 
 public final class SchemaException extends RuntimeException implements Serializable {
 
+    private static final long serialVersionUID = -8290759858327074813L;
+
     public SchemaException() {
     }
 

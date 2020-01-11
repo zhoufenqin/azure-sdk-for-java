@@ -242,7 +242,8 @@ public final class RowBuffer {
 
         final int priorLength = this.length();
 
-        this.ensureSparse(0, edit, edit.cellType(), edit.cellTypeArgs(), RowOptions.DELETE, metaBytes, spaceNeeded, shift);
+        this.ensureSparse(0, edit, edit.cellType(), edit.cellTypeArgs(), RowOptions.DELETE, metaBytes, spaceNeeded,
+            shift);
 
         checkState(this.length() == priorLength + shift.get());
     }
@@ -398,7 +399,7 @@ public final class RowBuffer {
      * Read the value of a bit within the bit field at the given {@code offset} within this {@link RowBuffer}.
      *
      * @param offset offset of a bit field within this {@link RowBuffer}.
-     * @param bit the bit to read.
+     * @param bit    the bit to read.
      * @return {@code true} if the {@code bit} is set, otherwise {@code false}.
      */
     public boolean readBit(final int offset, @Nonnull final LayoutBit bit) {
@@ -409,7 +410,8 @@ public final class RowBuffer {
             return true;
         }
 
-        Item<Boolean> item = this.read(() -> (this.buffer.readByte() & (byte) (1 << bit.bit())) != 0, bit.offset(offset));
+        Item<Boolean> item = this.read(() -> (this.buffer.readByte() & (byte) (1 << bit.bit())) != 0,
+            bit.offset(offset));
         return item.value();
     }
 
@@ -1153,24 +1155,23 @@ public final class RowBuffer {
      * Move a sparse iterator to the next field within the same sparse scope.
      *
      * @param edit The iterator to advance.
-     *
+     *             <p>
      *             {@code edit.Path}
      *             On success, the path of the field at the given offset, otherwise
      *             undefined.
-     *
+     *             <p>
      *             {@code edit.MetaOffset}
      *             If found, the offset to the metadata of the field, otherwise a
      *             location to insert the field.
-     *
+     *             <p>
      *             {@code edit.cellType}
      *             If found, the layout code of the matching field found, otherwise
      *             undefined.
-     *
+     *             <p>
      *             {@code edit.ValueOffset}
      *             If found, the offset to the value of the field, otherwise
      *             undefined.
-     *.
-     *
+     *             .
      * @return {@code true} if there is another field; {@code false} if there is not.
      */
     public boolean sparseIteratorMoveNext(RowCursor edit) {
@@ -1223,7 +1224,8 @@ public final class RowBuffer {
      */
     public RowCursor sparseIteratorReadScope(@Nonnull final RowCursor edit, boolean immutable) {
 
-        LayoutTypeScope scopeType = edit.cellType() instanceof LayoutTypeScope ? (LayoutTypeScope) edit.cellType() : null;
+        LayoutTypeScope scopeType = edit.cellType() instanceof LayoutTypeScope ? (LayoutTypeScope) edit.cellType() :
+            null;
 
         if (scopeType instanceof LayoutObject || scopeType instanceof LayoutArray) {
             return new RowCursor()
@@ -1481,11 +1483,12 @@ public final class RowBuffer {
      * more bytes. An {@link IllegalArgumentException} is thrown, if the specified 64-bit integer value is outside
      * the range of an unsigned 32-bit integer, [0, 0x00000000FFFFFFFFL].
      *
-     * @param value   a 64-bit integer constrained to the range of an unsigned 32-bit integer, [0, 0x00000000FFFFFFFFL]
+     * @param value a 64-bit integer constrained to the range of an unsigned 32-bit integer, [0, 0x00000000FFFFFFFFL]
      * @return The number of bytes written
      */
     public int write7BitEncodedUInt(final long value) {
-        checkArgument(0 <= value && value <= 0x00000000FFFFFFFFL, "expected value in range [0, %s], not %s", 0x00000000FFFFFFFFL, value);
+        checkArgument(0 <= value && value <= 0x00000000FFFFFFFFL, "expected value in range [0, %s], not %s",
+         0x00000000FFFFFFFFL, value);
         long n = value;
         int i = 0;
         while (n >= 0x80L) {
@@ -1868,7 +1871,7 @@ public final class RowBuffer {
 
         final int priorLength = this.length();
 
-        this.ensureSparse(length, edit, type, TypeArgumentList.EMPTY,  options, metaBytes, spaceNeeded, shift);
+        this.ensureSparse(length, edit, type, TypeArgumentList.EMPTY, options, metaBytes, spaceNeeded, shift);
         this.writeSparseMetadata(edit, type, TypeArgumentList.EMPTY, metaBytes.get());
         this.writeGuid(edit.valueOffset(), value);
 
@@ -1994,7 +1997,7 @@ public final class RowBuffer {
         this.ensureSparse(length, edit, type, typeArgs, options, metaBytes, spaceNeeded, shift);
         this.writeSparseMetadata(edit, type, typeArgs, metaBytes.get());
 
-        checkState(spaceNeeded.get() == (int)metaBytes.get());
+        checkState(spaceNeeded.get() == (int) metaBytes.get());
         checkState(this.length() == priorLength + shift.get());
 
         edit.endOffset(edit.metaOffset() + spaceNeeded.get());
@@ -2266,7 +2269,8 @@ public final class RowBuffer {
         edit.endOffset(edit.metaOffset() + spaceNeeded.get());
     }
 
-    public void writeSparseVarInt(@Nonnull final RowCursor edit, final long value, @Nonnull final UpdateOptions options) {
+    public void writeSparseVarInt(@Nonnull final RowCursor edit, final long value,
+                                  @Nonnull final UpdateOptions options) {
 
         checkNotNull(edit, "expected non-null edit");
         checkNotNull(options, "expected non-null options");
@@ -2565,9 +2569,9 @@ public final class RowBuffer {
     /**
      * Compares the values of two encoded fields using the hybrid row binary collation.
      *
-     * @param left     An edit describing the left field.
+     * @param left        An edit describing the left field.
      * @param leftLength  The size of the left field's value in bytes.
-     * @param right    An edit describing the right field.
+     * @param right       An edit describing the right field.
      * @param rightLength The size of the right field's value in bytes.
      * @return <list type="table">
      * <item>
@@ -2916,7 +2920,8 @@ public final class RowBuffer {
         @Nonnull final Out<Integer> shift
     ) {
         checkNotNull(options, "expected non-null options");
-        this.ensureSparse(length, edit, type, typeArgs, RowOptions.from(options.value()), metaBytes, spaceNeeded, shift);
+        this.ensureSparse(length, edit, type, typeArgs, RowOptions.from(options.value()), metaBytes, spaceNeeded,
+         shift);
     }
 
     private void ensureVariable(
@@ -2951,7 +2956,7 @@ public final class RowBuffer {
      * Sorts a {@code uniqueIndex} list using the hybrid row binary collation.
      *
      * @param scope       The scope to be sorted.
-     * @param edit     A edit that points at the scope.
+     * @param edit        A edit that points at the scope.
      * @param uniqueIndex A unique index array structure that identifies the row offsets of each
      *                    element in the scope.
      * @return true if the array was sorted, false if a duplicate was found during sorting.
@@ -3126,27 +3131,27 @@ public final class RowBuffer {
      * Read the metadata of an encoded sparse field.
      *
      * @param edit The edit structure to fill in.
-     *
+     *             <p>
      *             {@code edit.Path}
      *             On success, the path of the field at the given offset, otherwise
      *             undefined.
-     *
+     *             <p>
      *             {@code edit.MetaOffset}
      *             On success, the offset to the metadata of the field, otherwise a
      *             location to insert the field.
-     *
+     *             <p>
      *             {@code edit.cellType}
      *             On success, the layout code of the existing field, otherwise
      *             undefined.
-     *
+     *             <p>
      *             {@code edit.TypeArgs}
      *             On success, the type args of the existing field, otherwise
      *             undefined.
-     *
+     *             <p>
      *             {@code edit.ValueOffset}
      *             On success, the offset to the value of the field, otherwise
      *             undefined.
-     *.
+     *             .
      */
     private void readSparseMetadata(@Nonnull final RowCursor edit) {
 
@@ -3232,13 +3237,13 @@ public final class RowBuffer {
     private Utf8String readUtf8String() {
         long length = this.read7BitEncodedUInt();
         checkState(length <= Integer.MAX_VALUE, "expected length <= %s, not %s", Integer.MAX_VALUE, length);
-        return Utf8String.fromUnsafe(this.buffer.readSlice((int)length));
+        return Utf8String.fromUnsafe(this.buffer.readSlice((int) length));
     }
 
     private ByteBuf readVariableBinary() {
         long length = this.read7BitEncodedUInt();
         checkState(length <= Integer.MAX_VALUE, "expected length <= %s, not %s", Integer.MAX_VALUE, length);
-        return this.buffer.readSlice((int)length).asReadOnly();
+        return this.buffer.readSlice((int) length).asReadOnly();
     }
 
     private void shift(int destination, int source, int length) {
@@ -3272,7 +3277,7 @@ public final class RowBuffer {
     /**
      * Compute the size of a sparse (primitive) field.
      *
-     * @param type    The type of the current sparse field.
+     * @param type        The type of the current sparse field.
      * @param metaOffset  The zero-based offset from the beginning of the row where the field begins.
      * @param valueOffset The zero-based offset from the beginning of the row where the field's value begins.
      * @return The length (in bytes) of the encoded field including the metadata and the value.
@@ -3662,39 +3667,10 @@ public final class RowBuffer {
     }
 
     private void writeVariableString(@Nonnull final Utf8String value) {
-        final int length = this.write7BitEncodedUInt((long) value.encodedLength());
+        final int length = this.write7BitEncodedUInt(value.encodedLength());
         assert length == value.encodedLength();
         assert value.content() != null;
         this.buffer.writeBytes(value.content().readerIndex(0));
-    }
-
-    private static class Item<T> {
-
-        private int length;
-        private int offset;
-        private T value;
-
-        private Item(T value, int offset, int length) {
-            this.value = value;
-            this.offset = offset;
-            this.length = length;
-        }
-
-        public int length() {
-            return this.length;
-        }
-
-        public static <T> Item<T> of(T value, int offset, int length) {
-            return new Item<>(value, offset, length);
-        }
-
-        public int offset() {
-            return this.offset;
-        }
-
-        public T value() {
-            return this.value;
-        }
     }
 
     /**
@@ -3756,6 +3732,35 @@ public final class RowBuffer {
         public UniqueIndexItem valueOffset(int valueOffset) {
             this.valueOffset = valueOffset;
             return this;
+        }
+    }
+
+    private static class Item<T> {
+
+        private int length;
+        private int offset;
+        private T value;
+
+        private Item(T value, int offset, int length) {
+            this.value = value;
+            this.offset = offset;
+            this.length = length;
+        }
+
+        public int length() {
+            return this.length;
+        }
+
+        public static <T> Item<T> of(T value, int offset, int length) {
+            return new Item<>(value, offset, length);
+        }
+
+        public int offset() {
+            return this.offset;
+        }
+
+        public T value() {
+            return this.value;
         }
     }
 }

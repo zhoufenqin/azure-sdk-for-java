@@ -5,7 +5,6 @@ package com.azure.data.cosmos.serialization.hybridrow.layouts;
 
 import com.azure.data.cosmos.core.Json;
 import com.azure.data.cosmos.serialization.hybridrow.SchemaId;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -59,6 +58,7 @@ public final class TypeArgumentList {
     /**
      * Number of elements in this {@link TypeArgumentList}
      * <p>
+     *
      * @return number of arguments in the list
      */
     public int count() {
@@ -83,6 +83,7 @@ public final class TypeArgumentList {
     /**
      * Element at the specified position in this {@link TypeArgumentList}
      * <p>
+     *
      * @param index index of the element to return
      * @return element at the specified position in this {@link TypeArgumentList}
      */
@@ -119,6 +120,7 @@ public final class TypeArgumentList {
     /**
      * Stream for iterating over elements in this {@link TypeArgumentList}
      * <p>
+     *
      * @return a stream for iterating over elements in this {@link TypeArgumentList}
      */
     public Stream<TypeArgument> stream() {
@@ -134,6 +136,8 @@ public final class TypeArgumentList {
     }
 
     static class JsonSerializer extends StdSerializer<TypeArgumentList> {
+
+        private static final long serialVersionUID = 3342591303413986726L;
 
         private JsonSerializer() {
             super(TypeArgumentList.class);

@@ -25,32 +25,6 @@ import static org.testng.Assert.assertTrue;
 public class Utf8StringTest {
 
     @Test
-    public void testIsEmpty() {
-
-        Utf8String value;
-
-        value = Utf8String.transcodeUtf16("");
-        assertTrue(value.isEmpty());
-        assertSame(value, Utf8String.EMPTY);
-
-        value = Utf8String.fromUnsafe(Unpooled.EMPTY_BUFFER);
-        assertTrue(value.isEmpty());
-        assertSame(value, Utf8String.EMPTY);
-
-        Optional<Utf8String> optional = Utf8String.from(Unpooled.EMPTY_BUFFER);
-        assertTrue(optional.isPresent());
-        assertTrue(optional.get().isEmpty());
-        assertSame(optional.get(), Utf8String.EMPTY);
-    }
-
-    @Test
-    public void testIsNull() {
-        Utf8String value = Utf8String.transcodeUtf16(null);
-        assertTrue(value.isNull());
-        assertSame(value, Utf8String.NULL);
-    }
-
-    @Test
     public void testChars() {
     }
 
@@ -111,34 +85,6 @@ public class Utf8StringTest {
     }
 
     @Test(dataProvider = "unicodeTextDataProvider")
-    public void testTestEquals(UnicodeText item) {
-
-        TestEquals testEquals = new TestEquals(item);
-
-        testEquals.invoke(item.byteBuf());
-        testEquals.invoke(item.value());
-        testEquals.invoke(Utf8String.fromUnsafe(item.byteBuf()));
-        testEquals.invoke((Object)Utf8String.fromUnsafe(item.byteBuf()));
-
-        TestNotEquals testNotEquals = new TestNotEquals(item);
-
-        testNotEquals.invoke(Utf8String.EMPTY);
-        testNotEquals.invoke(Unpooled.EMPTY_BUFFER);
-        testNotEquals.invoke((Object) Utf8String.EMPTY);
-        testNotEquals.invoke("");
-
-        testNotEquals.invoke(Utf8String.NULL);
-        testNotEquals.invoke((ByteBuf) null);
-        testNotEquals.invoke((Object) null);
-        testNotEquals.invoke((String) null);
-
-        testNotEquals.invoke((Object) item.byteBuf());
-        testNotEquals.invoke((Object) item.value());
-
-        testNotEquals.invoke((Utf8String) null);
-    }
-
-    @Test(dataProvider = "unicodeTextDataProvider")
     public void testFrom(UnicodeText item) {
         Optional<Utf8String> value = Utf8String.from(item.byteBuf());
         assertTrue(value.isPresent());
@@ -161,6 +107,32 @@ public class Utf8StringTest {
         assertEquals(value.hashCode(), item.byteBuf().hashCode());
     }
 
+    @Test
+    public void testIsEmpty() {
+
+        Utf8String value;
+
+        value = Utf8String.transcodeUtf16("");
+        assertTrue(value.isEmpty());
+        assertSame(value, Utf8String.EMPTY);
+
+        value = Utf8String.fromUnsafe(Unpooled.EMPTY_BUFFER);
+        assertTrue(value.isEmpty());
+        assertSame(value, Utf8String.EMPTY);
+
+        Optional<Utf8String> optional = Utf8String.from(Unpooled.EMPTY_BUFFER);
+        assertTrue(optional.isPresent());
+        assertTrue(optional.get().isEmpty());
+        assertSame(optional.get(), Utf8String.EMPTY);
+    }
+
+    @Test
+    public void testIsNull() {
+        Utf8String value = Utf8String.transcodeUtf16(null);
+        assertTrue(value.isNull());
+        assertSame(value, Utf8String.NULL);
+    }
+
     @Test(dataProvider = "unicodeTextDataProvider")
     public void testLength(UnicodeText item) {
         assertEquals(Utf8String.fromUnsafe(item.byteBuf()).length(), item.value().length());
@@ -171,7 +143,7 @@ public class Utf8StringTest {
 
         Utf8String value = Utf8String.fromUnsafe(item.byteBuf());
 
-        for (int start : new int[] {0, 1, 2 }) {
+        for (int start : new int[] { 0, 1, 2 }) {
 
             for (int end = start + 1; end <= value.length(); end++) {
                 try {
@@ -205,7 +177,36 @@ public class Utf8StringTest {
         assertThrows(IndexOutOfBoundsException.class, () -> value.subSequence(0, -1));
         assertThrows(IndexOutOfBoundsException.class, () -> value.subSequence(value.length() + 1, 1));
         assertThrows(IndexOutOfBoundsException.class, () -> value.subSequence(1, value.length() + 1));
-        assertThrows(IndexOutOfBoundsException.class, () -> value.subSequence(value.length() / 2, value.length() / 2 - 1));
+        assertThrows(IndexOutOfBoundsException.class, () -> value.subSequence(value.length() / 2,
+            value.length() / 2 - 1));
+    }
+
+    @Test(dataProvider = "unicodeTextDataProvider")
+    public void testTestEquals(UnicodeText item) {
+
+        TestEquals testEquals = new TestEquals(item);
+
+        testEquals.invoke(item.byteBuf());
+        testEquals.invoke(item.value());
+        testEquals.invoke(Utf8String.fromUnsafe(item.byteBuf()));
+        testEquals.invoke((Object) Utf8String.fromUnsafe(item.byteBuf()));
+
+        TestNotEquals testNotEquals = new TestNotEquals(item);
+
+        testNotEquals.invoke(Utf8String.EMPTY);
+        testNotEquals.invoke(Unpooled.EMPTY_BUFFER);
+        testNotEquals.invoke((Object) Utf8String.EMPTY);
+        testNotEquals.invoke("");
+
+        testNotEquals.invoke(Utf8String.NULL);
+        testNotEquals.invoke((ByteBuf) null);
+        testNotEquals.invoke((Object) null);
+        testNotEquals.invoke((String) null);
+
+        testNotEquals.invoke((Object) item.byteBuf());
+        testNotEquals.invoke((Object) item.value());
+
+        testNotEquals.invoke((Utf8String) null);
     }
 
     @Test
@@ -216,7 +217,7 @@ public class Utf8StringTest {
         assertEquals(Utf8String.EMPTY.toString(), "\"\"");
         assertEquals(Utf8String.EMPTY.toString(), "\"\"");
         assertEquals(Utf8String.fromUnsafe(Unpooled.EMPTY_BUFFER).toString(), "\"\"");
-        assertEquals(Utf8String.transcodeUtf16(new String("")).toString(), "\"\"");
+        assertEquals(Utf8String.transcodeUtf16("").toString(), "\"\"");
 
         assertEquals(Utf8String.transcodeUtf16("Hello World!").toString(), "\"Hello World!\"");
         assertEquals(Utf8String.transcodeUtf16("\"Hello World!\"").toString(), "\"\\\"Hello World!\\\"\"");
@@ -280,9 +281,10 @@ public class Utf8StringTest {
             // ..Japanese
             new UnicodeText("速い茶色のキツネは怠laな犬を飛び越えます。"),
 
-             // Deseret code block (21-bit encoding containing an English alphabet invented by the LDS Church)
-             // ..Deseret
-            new UnicodeText("\uD801\uDC10\uD801\uDC2F\uD801\uDC4A\uD801\uDC2C, \uD801\uDC38\uD801\uDC35 \uD801\uDC2A\uD801\uDC49 \uD801\uDC4F?")
+            // Deseret code block (21-bit encoding containing an English alphabet invented by the LDS Church)
+            // ..Deseret
+            new UnicodeText("\uD801\uDC10\uD801\uDC2F\uD801\uDC4A\uD801\uDC2C, \uD801\uDC38\uD801\uDC35 " +
+                "\uD801\uDC2A\uD801\uDC49 \uD801\uDC4F?")
         );
 
         return items.stream().map(item -> new Object[] { item }).iterator();
@@ -373,8 +375,8 @@ public class Utf8StringTest {
     private static class UnicodeAlphabet {
 
         private final ByteBuf[] encodedLetters;
-        private final String name;
         private final String[] letters;
+        private final String name;
 
         UnicodeAlphabet(String name, String[] letters) {
 
@@ -388,6 +390,11 @@ public class Utf8StringTest {
                 this.encodedLetters[i] = Unpooled.wrappedBuffer(letter.getBytes(StandardCharsets.UTF_8)).asReadOnly();
                 i++;
             }
+        }
+
+        @Override
+        public String toString() {
+            return this.name + " alphabet";
         }
 
         ByteBuf[] encodedLetters() {
@@ -443,7 +450,8 @@ public class Utf8StringTest {
             // Compare multi-character strings
 
             String word1 = Arrays.stream(this.letters).skip(i).limit(j - i).reduce("", (w, c) -> w + c);
-            String word2 = Arrays.stream(this.letters).skip(j).limit(this.letters.length - j).reduce("", (w, c) -> w + c);
+            String word2 = Arrays.stream(this.letters).skip(j).limit(this.letters.length - j).reduce("",
+                (w, c) -> w + c);
 
             assertEquals(
                 normalize(Utf8String.transcodeUtf16(word1).compareTo(word1)),
@@ -463,11 +471,6 @@ public class Utf8StringTest {
             assertEquals(
                 normalize(Utf8String.transcodeUtf16(word2).compareTo(Utf8String.transcodeUtf16(word1))),
                 normalize(word2.compareTo(word1)));
-        }
-
-        @Override
-        public String toString() {
-            return this.name + " alphabet";
         }
 
         private static int normalize(int comparison) {

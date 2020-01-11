@@ -27,12 +27,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.lenientFormat;
 import static java.lang.System.out;
-import static java.util.Objects.requireNonNull;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
@@ -43,7 +39,7 @@ public class RowReaderTest {
 
     // region Fields
 
-    private static final String basedir = System.getProperty("project.basedir", System.getProperty("user.dir"));
+    private static final String basedir = System.getProperty("azure.cosmos.basedir");
 
     private final Path dataFile;
     private final File schemaFile;
@@ -266,7 +262,7 @@ public class RowReaderTest {
                 Object value = out.get();
                 System.out.print(Strings.repeat("  ", level));
                 System.out.println(lenientFormat("%s: %s = %s",
-                    path, type.name(), value instanceof ByteBuf ? ByteBufUtil.hexDump((ByteBuf)value) : value)
+                    path, type.name(), value instanceof ByteBuf ? ByteBufUtil.hexDump((ByteBuf) value) : value)
                 );
             }
         }

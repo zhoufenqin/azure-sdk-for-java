@@ -44,7 +44,8 @@ public final class LayoutTypedArray extends LayoutIndexedScope {
 
     @Override
     @Nonnull
-    public TypeArgumentList readTypeArgumentList(@Nonnull RowBuffer buffer, int offset, @Nonnull Out<Integer> lenInBytes) {
+    public TypeArgumentList readTypeArgumentList(@Nonnull RowBuffer buffer, int offset,
+                                                 @Nonnull Out<Integer> lenInBytes) {
         return new TypeArgumentList(LayoutType.readTypeArgument(buffer, offset, lenInBytes));
     }
 

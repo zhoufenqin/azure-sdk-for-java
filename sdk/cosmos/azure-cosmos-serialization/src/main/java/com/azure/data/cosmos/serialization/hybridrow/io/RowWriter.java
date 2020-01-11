@@ -138,7 +138,7 @@ public final class RowWriter {
      * Write an entire buffer in a streaming left-to-right way.
      *
      * @param <TContext> The type of the context value to pass to {@code func}.
-     * @param buffer        The buffer to write.
+     * @param buffer     The buffer to write.
      * @param context    A context value to pass to {@code func}.
      * @param func       A function to write the entire buffer.
      * @return {@link Result#SUCCESS} if the write is successful, an error {@link Result} otherwise.
@@ -296,7 +296,8 @@ public final class RowWriter {
     //     */
     //    public Result WriteMongoDbObjectId(UtfAnyString path, MongoDbObjectId value) {
     //        throw new UnsupportedOperationException();
-    //        // return this.writePrimitive(path, value, LayoutTypes.MongoDbObjectId, (ref RowWriter w, MongoDbObjectId v) -> w.row.writeSparseMongoDbObjectId(ref w.cursor, v, UpdateOptions.UPSERT));
+    //        // return this.writePrimitive(path, value, LayoutTypes.MongoDbObjectId, (ref RowWriter w,
+    //        MongoDbObjectId v) -> w.row.writeSparseMongoDbObjectId(ref w.cursor, v, UpdateOptions.UPSERT));
     //    }
 
     /**
@@ -568,6 +569,7 @@ public final class RowWriter {
     }
 
     // TODO: DANOBLE: Does Java implementation need this method?
+
     /**
      * Helper for writing a primitive value.
      *
@@ -603,19 +605,19 @@ public final class RowWriter {
     }
 
     // TODO: DANOBLE: Does Java implementation need this method?
+
     /**
      * Helper for writing a primitive value.
      *
-     * @param <TLayoutType> The type of layout type.
-     * @param <TValue>      The sub-element type of the field.
-     * @param path          The scope-relative path of the field to write.
-     * @param value         The value to write.
-     * @param type          The layout type.
-     * @param sparse        The {@link RowBuffer} access method for {@code type}.
+     * @param <TValue> The type of the primitive value.
+     * @param path     The scope-relative path of the field to write.
+     * @param value    The value to write.
+     * @param type     The layout type.
+     * @param sparse   The {@link RowBuffer} access method for {@code type}.
      * @return {@link Result#SUCCESS} if the write is successful, an error {@link Result} otherwise.
      */
-    private <TLayoutType extends LayoutType & LayoutListWritable<TValue>, TValue>
-    Result writePrimitiveList(UtfAnyString path, List<TValue> value, TLayoutType type, Consumer<List<TValue>> sparse) {
+    private <TValue> Result writePrimitive(
+        UtfAnyString path, TValue value, LayoutTypePrimitive<TValue> type, Consumer<TValue> sparse) {
 
         Result result = Result.NOT_FOUND;
 
@@ -641,15 +643,16 @@ public final class RowWriter {
     /**
      * Helper for writing a primitive value.
      *
-     * @param <TValue> The type of the primitive value.
-     * @param path     The scope-relative path of the field to write.
-     * @param value    The value to write.
-     * @param type     The layout type.
-     * @param sparse   The {@link RowBuffer} access method for {@code type}.
+     * @param <TLayoutType> The type of layout type.
+     * @param <TValue>      The sub-element type of the field.
+     * @param path          The scope-relative path of the field to write.
+     * @param value         The value to write.
+     * @param type          The layout type.
+     * @param sparse        The {@link RowBuffer} access method for {@code type}.
      * @return {@link Result#SUCCESS} if the write is successful, an error {@link Result} otherwise.
      */
-    private <TValue> Result writePrimitive(
-        UtfAnyString path, TValue value, LayoutTypePrimitive<TValue> type, Consumer<TValue> sparse) {
+    private <TLayoutType extends LayoutType & LayoutListWritable<TValue>, TValue>
+    Result writePrimitiveList(UtfAnyString path, List<TValue> value, TLayoutType type, Consumer<List<TValue>> sparse) {
 
         Result result = Result.NOT_FOUND;
 
@@ -701,7 +704,7 @@ public final class RowWriter {
         }
 
         @SuppressWarnings("unchecked")
-        LayoutTypePrimitive<TValue> type = (LayoutTypePrimitive<TValue>)column.get().type();
+        LayoutTypePrimitive<TValue> type = (LayoutTypePrimitive<TValue>) column.get().type();
 
         switch (column.get().storage()) {
             case FIXED:
@@ -768,9 +771,11 @@ public final class RowWriter {
 
         switch (column.get().storage()) {
             case FIXED:
-                return type.<LayoutListWritable<TValue>>typeAs().writeFixedList(this.row, this.cursor, column.get(), value);
+                return type.<LayoutListWritable<TValue>>typeAs().writeFixedList(this.row, this.cursor, column.get(),
+                    value);
             case VARIABLE:
-                return type.<LayoutListWritable<TValue>>typeAs().writeVariableList(this.row, this.cursor, column.get(), value);
+                return type.<LayoutListWritable<TValue>>typeAs().writeVariableList(this.row, this.cursor,
+                    column.get(), value);
         }
 
         return Result.NOT_FOUND;

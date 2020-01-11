@@ -31,7 +31,8 @@ public final class LayoutGuid extends LayoutTypePrimitive<UUID> {
 
     @Override
     @Nonnull
-    public Result readFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column, @Nonnull Out<UUID> value) {
+    public Result readFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column,
+                            @Nonnull Out<UUID> value) {
 
         checkArgument(scope.scopeType() instanceof LayoutUDT);
 
@@ -61,7 +62,8 @@ public final class LayoutGuid extends LayoutTypePrimitive<UUID> {
 
     @Override
     @Nonnull
-    public Result writeFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column, @Nonnull UUID value) {
+    public Result writeFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column,
+                             @Nonnull UUID value) {
 
         checkArgument(scope.scopeType() instanceof LayoutUDT);
 
@@ -76,7 +78,8 @@ public final class LayoutGuid extends LayoutTypePrimitive<UUID> {
 
     @Override
     @Nonnull
-    public Result writeSparse(@Nonnull RowBuffer buffer, @Nonnull RowCursor edit, @Nonnull UUID value, @Nonnull UpdateOptions options) {
+    public Result writeSparse(@Nonnull RowBuffer buffer, @Nonnull RowCursor edit, @Nonnull UUID value,
+                              @Nonnull UpdateOptions options) {
 
         Result result = prepareSparseWrite(buffer, edit, this.typeArg(), options);
 

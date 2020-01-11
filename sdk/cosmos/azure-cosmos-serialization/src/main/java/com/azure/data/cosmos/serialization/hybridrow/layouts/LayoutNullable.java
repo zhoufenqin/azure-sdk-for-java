@@ -31,12 +31,6 @@ public final class LayoutNullable extends LayoutIndexedScope {
     }
 
     @Override
-    @Nonnull
-    public String name() {
-        return this.isImmutable() ? "im_nullable" : "nullable";
-    }
-
-    @Override
     public boolean hasImplicitTypeCode(@Nonnull final RowCursor edit) {
         checkNotNull(edit, "expected non-null edit");
         checkArgument(edit.index() >= 0);
@@ -53,6 +47,12 @@ public final class LayoutNullable extends LayoutIndexedScope {
         checkArgument(scope.scopeTypeArgs().count() == 1);
         boolean hasValue = buffer.readInt8(scope.start()) != 0;
         return hasValue ? Result.SUCCESS : Result.NOT_FOUND;
+    }
+
+    @Override
+    @Nonnull
+    public String name() {
+        return this.isImmutable() ? "im_nullable" : "nullable";
     }
 
     @Nonnull
@@ -139,6 +139,7 @@ public final class LayoutNullable extends LayoutIndexedScope {
 
         final TypeArgument typeArg = value.get(0);
         buffer.writeSparseTypeCode(offset, this.layoutCode());
-        return LayoutCode.BYTES + typeArg.type().writeTypeArgument(buffer, offset + LayoutCode.BYTES, typeArg.typeArgs());
+        return LayoutCode.BYTES + typeArg.type().writeTypeArgument(buffer, offset + LayoutCode.BYTES,
+            typeArg.typeArgs());
     }
 }

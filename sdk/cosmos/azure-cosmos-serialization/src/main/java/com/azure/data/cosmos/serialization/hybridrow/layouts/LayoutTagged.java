@@ -31,17 +31,17 @@ public final class LayoutTagged extends LayoutIndexedScope {
     }
 
     @Override
-    @Nonnull
-    public String name() {
-        return this.isImmutable() ? "im_tagged_t" : "tagged_t";
-    }
-
-    @Override
     public boolean hasImplicitTypeCode(@Nonnull RowCursor edit) {
         checkNotNull(edit, "expected non-null edit");
         checkArgument(edit.index() >= 0);
         checkArgument(edit.scopeTypeArgs().count() > edit.index());
         return !LayoutCodeTraits.alwaysRequiresTypeCode(edit.scopeTypeArgs().get(edit.index()).type().layoutCode());
+    }
+
+    @Override
+    @Nonnull
+    public String name() {
+        return this.isImmutable() ? "im_tagged_t" : "tagged_t";
     }
 
     @Override

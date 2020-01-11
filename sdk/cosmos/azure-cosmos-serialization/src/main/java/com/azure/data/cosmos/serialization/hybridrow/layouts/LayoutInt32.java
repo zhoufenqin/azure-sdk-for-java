@@ -29,7 +29,8 @@ public final class LayoutInt32 extends LayoutTypePrimitive<Integer> {
 
     @Override
     @Nonnull
-    public Result readFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column, @Nonnull Out<Integer> value) {
+    public Result readFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column,
+                            @Nonnull Out<Integer> value) {
 
         checkArgument(scope.scopeType() instanceof LayoutUDT);
 
@@ -59,7 +60,8 @@ public final class LayoutInt32 extends LayoutTypePrimitive<Integer> {
 
     @Override
     @Nonnull
-    public Result writeFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column, @Nonnull Integer value) {
+    public Result writeFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column,
+                             @Nonnull Integer value) {
 
         checkArgument(scope.scopeType() instanceof LayoutUDT);
 
@@ -74,7 +76,8 @@ public final class LayoutInt32 extends LayoutTypePrimitive<Integer> {
 
     @Override
     @Nonnull
-    public Result writeSparse(@Nonnull RowBuffer buffer, @Nonnull RowCursor edit, @Nonnull Integer value, @Nonnull UpdateOptions options) {
+    public Result writeSparse(@Nonnull RowBuffer buffer, @Nonnull RowCursor edit, @Nonnull Integer value,
+                              @Nonnull UpdateOptions options) {
 
         Result result = LayoutType.prepareSparseWrite(buffer, edit, this.typeArg(), options);
 

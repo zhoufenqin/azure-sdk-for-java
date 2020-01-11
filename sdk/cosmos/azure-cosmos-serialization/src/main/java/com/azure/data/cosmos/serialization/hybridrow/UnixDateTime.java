@@ -11,21 +11,16 @@ package com.azure.data.cosmos.serialization.hybridrow;
  */
 public final class UnixDateTime {
     /**
+     * Size in bytes of a {@link UnixDateTime}.
+     */
+    public static final int BYTES = Long.SIZE;
+    /**
      * Unix epoch.
      * <p>
      * {@link UnixDateTime} values are signed values centered on this value.
      */
     public static final UnixDateTime EPOCH = new UnixDateTime();
-
-    /**
-     * Size in bytes of a {@link UnixDateTime}.
-     */
-    public static final int BYTES = Long.SIZE;
-
     private long milliseconds;
-
-    private UnixDateTime() {
-    }
 
     /**
      * Initializes a new instance of the {@link UnixDateTime} class.
@@ -34,6 +29,9 @@ public final class UnixDateTime {
      */
     public UnixDateTime(long milliseconds) {
         this.milliseconds = milliseconds;
+    }
+
+    private UnixDateTime() {
     }
 
     /**
@@ -57,7 +55,7 @@ public final class UnixDateTime {
         if (this == other) {
             return true;
         }
-        return other instanceof UnixDateTime && this.equals((UnixDateTime)other);
+        return other instanceof UnixDateTime && this.equals((UnixDateTime) other);
     }
 
     @Override

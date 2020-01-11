@@ -29,7 +29,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * <p>
  * A layout is created by compiling a {@link Schema} through {@link Schema#compile(Namespace)} or by constructor through
  * a {@link LayoutBuilder}.
- *
+ * <p>
  * {@link Layout} is immutable.
  */
 public final class Layout {
@@ -94,38 +94,6 @@ public final class Layout {
         this.numFixed = numFixed;
         this.numVariable = numVariable;
         this.topColumns = builder.build();
-    }
-
-    /**
-     * Finds a column specification for a column with a matching path.
-     *
-     * @param path path of the column to find
-     * @return {@link LayoutColumn}, if a column with the {@code path} is found, {@link Optional#empty()}
-     */
-    public Optional<LayoutColumn> tryFind(@Nonnull UtfAnyString path) {
-
-        checkNotNull(path);
-
-        if (path.isNull()) {
-            return Optional.empty();
-        }
-
-        if (path.isUtf8()) {
-            return Optional.ofNullable(this.pathMap.get(path.toUtf8()));
-        }
-
-        return Optional.ofNullable(this.pathStringMap.get(path.toUtf16()));
-    }
-
-    /**
-     * Finds a column specification for a column with a matching path.
-     *
-     * @param path   The path of the column to find.
-     * @return True if a column with the path is found, otherwise false.
-     */
-    public Optional<LayoutColumn> tryFind(@Nonnull String path) {
-        checkNotNull(path);
-        return Optional.ofNullable(this.pathStringMap.get(path));
     }
 
     /**
@@ -219,12 +187,15 @@ public final class Layout {
         for (LayoutColumn column : this.topColumns) {
             if (column.type().isFixed()) {
                 if (column.type().isBoolean()) {
-                    sb.append(String.format("\t%1$s: %2$s @ %3$s:%4$s:%5$s\n", column.fullPath(), column.type().name(), column.offset(), column.nullBit(), column.booleanBit()));
+                    sb.append(String.format("\t%1$s: %2$s @ %3$s:%4$s:%5$s\n", column.fullPath(),
+                        column.type().name(), column.offset(), column.nullBit(), column.booleanBit()));
                 } else {
-                    sb.append(String.format("\t%1$s: %2$s @ %3$s\n", column.fullPath(), column.type().name(), column.offset()));
+                    sb.append(String.format("\t%1$s: %2$s @ %3$s\n", column.fullPath(), column.type().name(),
+                        column.offset()));
                 }
             } else {
-                sb.append(String.format("\t%1$s: %2$s[%4$s] @ %3$s\n", column.fullPath(), column.type().name(), column.offset(), column.size()));
+                sb.append(String.format("\t%1$s: %2$s[%4$s] @ %3$s\n", column.fullPath(), column.type().name(),
+                    column.offset(), column.size()));
             }
         }
 
@@ -238,5 +209,37 @@ public final class Layout {
      */
     public StringTokenizer tokenizer() {
         return this.tokenizer;
+    }
+
+    /**
+     * Finds a column specification for a column with a matching path.
+     *
+     * @param path path of the column to find
+     * @return {@link LayoutColumn}, if a column with the {@code path} is found, {@link Optional#empty()}
+     */
+    public Optional<LayoutColumn> tryFind(@Nonnull UtfAnyString path) {
+
+        checkNotNull(path);
+
+        if (path.isNull()) {
+            return Optional.empty();
+        }
+
+        if (path.isUtf8()) {
+            return Optional.ofNullable(this.pathMap.get(path.toUtf8()));
+        }
+
+        return Optional.ofNullable(this.pathStringMap.get(path.toUtf16()));
+    }
+
+    /**
+     * Finds a column specification for a column with a matching path.
+     *
+     * @param path The path of the column to find.
+     * @return True if a column with the path is found, otherwise false.
+     */
+    public Optional<LayoutColumn> tryFind(@Nonnull String path) {
+        checkNotNull(path);
+        return Optional.ofNullable(this.pathStringMap.get(path));
     }
 }

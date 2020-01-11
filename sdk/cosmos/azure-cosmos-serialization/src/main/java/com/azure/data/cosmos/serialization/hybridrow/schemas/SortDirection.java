@@ -39,11 +39,11 @@ public enum SortDirection {
         this.value = value;
     }
 
-    public int value() {
-        return this.value;
-    }
-
     public static SortDirection from(int value) {
         return mappings.get().get(value);
+    }
+
+    public int value() {
+        return this.value;
     }
 }

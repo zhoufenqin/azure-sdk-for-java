@@ -16,12 +16,12 @@ import java.util.function.Supplier;
  */
 public enum HybridRowVersion {
 
-    INVALID((byte)0),
+    INVALID((byte) 0),
 
     /**
      * Initial version of the HybridRow format.
      */
-    V1((byte)0x81);
+    V1((byte) 0x81);
 
     public static final int BYTES = Byte.BYTES;
 

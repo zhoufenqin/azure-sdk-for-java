@@ -30,7 +30,8 @@ public final class LayoutFloat128 extends LayoutTypePrimitive<Float128> {
 
     @Override
     @Nonnull
-    public Result readFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column, @Nonnull Out<Float128> value) {
+    public Result readFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column,
+                            @Nonnull Out<Float128> value) {
 
         checkArgument(scope.scopeType() instanceof LayoutUDT);
 
@@ -60,7 +61,8 @@ public final class LayoutFloat128 extends LayoutTypePrimitive<Float128> {
 
     @Override
     @Nonnull
-    public Result writeFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column, @Nonnull Float128 value) {
+    public Result writeFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column,
+                             @Nonnull Float128 value) {
 
         checkArgument(scope.scopeType() instanceof LayoutUDT);
 
@@ -75,7 +77,8 @@ public final class LayoutFloat128 extends LayoutTypePrimitive<Float128> {
 
     @Override
     @Nonnull
-    public Result writeSparse(@Nonnull RowBuffer buffer, @Nonnull RowCursor edit, @Nonnull Float128 value, @Nonnull UpdateOptions options) {
+    public Result writeSparse(@Nonnull RowBuffer buffer, @Nonnull RowCursor edit, @Nonnull Float128 value,
+                              @Nonnull UpdateOptions options) {
 
         Result result = LayoutType.prepareSparseWrite(buffer, edit, this.typeArg(), options);
 

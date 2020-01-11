@@ -4,7 +4,6 @@
 package com.azure.data.cosmos.serialization.hybridrow;
 
 import com.google.common.base.Suppliers;
-import it.unimi.dsi.fastutil.ints.Int2ReferenceArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ReferenceMap;
 import it.unimi.dsi.fastutil.ints.Int2ReferenceOpenHashMap;
 

@@ -33,7 +33,8 @@ public final class LayoutUDT extends LayoutPropertyScope {
 
     @Override
     @Nonnull
-    public TypeArgumentList readTypeArgumentList(@Nonnull RowBuffer row, int offset, @Nonnull Out<Integer> lengthInBytes) {
+    public TypeArgumentList readTypeArgumentList(@Nonnull RowBuffer row, int offset,
+                                                 @Nonnull Out<Integer> lengthInBytes) {
         SchemaId schemaId = row.readSchemaId(offset);
         lengthInBytes.set(SchemaId.BYTES);
         return new TypeArgumentList(schemaId);
@@ -41,13 +42,15 @@ public final class LayoutUDT extends LayoutPropertyScope {
 
     @Override
     @Nonnull
-    public Result writeScope(@Nonnull RowBuffer buffer, @Nonnull RowCursor edit, @Nonnull TypeArgumentList typeArgs, @Nonnull Out<RowCursor> value) {
+    public Result writeScope(@Nonnull RowBuffer buffer, @Nonnull RowCursor edit, @Nonnull TypeArgumentList typeArgs,
+                             @Nonnull Out<RowCursor> value) {
         return this.writeScope(buffer, edit, typeArgs, UpdateOptions.UPSERT, value);
     }
 
     @Override
     @Nonnull
-    public Result writeScope(@Nonnull RowBuffer buffer, @Nonnull RowCursor edit, @Nonnull TypeArgumentList typeArgs, @Nonnull UpdateOptions options,
+    public Result writeScope(@Nonnull RowBuffer buffer, @Nonnull RowCursor edit, @Nonnull TypeArgumentList typeArgs,
+                             @Nonnull UpdateOptions options,
                              @Nonnull Out<RowCursor> value) {
 
         Layout udt = buffer.resolver().resolve(typeArgs.schemaId());

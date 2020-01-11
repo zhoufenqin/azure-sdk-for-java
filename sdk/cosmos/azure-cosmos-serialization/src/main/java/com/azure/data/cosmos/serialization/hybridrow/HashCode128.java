@@ -14,11 +14,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * An immutable 128-bit hash code.
- *
+ * <p>
  * The hash code is represented by two {@code long} values: {@link #low()} and {@link #high()}.
  */
 @Immutable
-public class HashCode128 {
+public final class HashCode128 {
 
     private final long high;
     private final long low;
@@ -31,14 +31,6 @@ public class HashCode128 {
     private HashCode128(ByteBuf buffer) {
         this.low = buffer.readLongLE();
         this.high = buffer.readLongLE();
-    }
-
-    public long high() {
-        return this.high;
-    }
-
-    public long low() {
-        return this.low;
     }
 
     @Nonnull
@@ -68,6 +60,14 @@ public class HashCode128 {
         checkArgument(length >= 2 * Long.BYTES, "expected at least 16 readable bytes in buffer, not %s", length);
 
         return new HashCode128(buffer);
+    }
+
+    public long high() {
+        return this.high;
+    }
+
+    public long low() {
+        return this.low;
     }
 
     @Nonnull

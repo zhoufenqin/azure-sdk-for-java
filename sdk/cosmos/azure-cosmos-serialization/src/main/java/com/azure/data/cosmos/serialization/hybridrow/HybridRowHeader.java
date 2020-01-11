@@ -47,7 +47,7 @@ public final class HybridRowHeader {
     /**
      * The version of the HybridRow serialization library used to write this {@link HybridRowHeader}.
      *
-     * @return  version of the HybridRow serialization library used to write this {@link HybridRowHeader}.
+     * @return version of the HybridRow serialization library used to write this {@link HybridRowHeader}.
      */
     @Nonnull
     public HybridRowVersion version() {

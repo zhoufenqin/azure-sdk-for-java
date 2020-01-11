@@ -9,6 +9,10 @@ import org.testng.annotations.Test;
 public class UtfAnyStringTest {
 
     @Test
+    public void testCompareTo() {
+    }
+
+    @Test
     public void testIsEmpty() {
     }
 
@@ -25,7 +29,7 @@ public class UtfAnyStringTest {
     }
 
     @Test
-    public void testCompareTo() {
+    public void testLength() {
     }
 
     @Test
@@ -54,10 +58,6 @@ public class UtfAnyStringTest {
 
     @Test
     public void testTestHashCode() {
-    }
-
-    @Test
-    public void testLength() {
     }
 
     @Test

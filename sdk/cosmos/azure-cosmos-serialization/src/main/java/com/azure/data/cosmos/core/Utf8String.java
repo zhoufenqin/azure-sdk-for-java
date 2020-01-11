@@ -123,7 +123,7 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
      *
      * @return {@code true} if the length of this instance is zero.
      */
-    public final boolean isEmpty() {
+    public boolean isEmpty() {
         return this == EMPTY;
     }
 
@@ -132,7 +132,7 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
      *
      * @return {@code true} if this instance is {@code null}.
      */
-    public final boolean isNull() {
+    public boolean isNull() {
         return this == NULL;
     }
 
@@ -202,7 +202,7 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
      *
      * @return a stream of {@code int} code point values from this {@link Utf8String}.
      */
-    public final IntStream codePoints() {
+    public IntStream codePoints() {
         return this == NULL || this == EMPTY
             ? IntStream.empty()
             : StreamSupport.intStream(new CodePointSpliterator(this.buffer), false);
@@ -218,7 +218,7 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
      * this {@link Utf8String} is lexicographically less than the {@code string} argument; and a value greater than 0
      * if this {@link Utf8String} is lexicographically greater than the {@code string}  argument.
      */
-    public final int compareTo(@Nonnull final Utf8String other) {
+    public int compareTo(@Nonnull final Utf8String other) {
 
         checkNotNull(other, "expected non-null other");
 
@@ -250,7 +250,7 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
      * this {@link Utf8String} is lexicographically less than the {@code string} argument; and a value greater than 0
      * if this {@link Utf8String} is lexicographically greater than the {@code string} argument.
      */
-    public final int compareTo(final String string) {
+    public int compareTo(final String string) {
 
         if (null == string) {
             return null == this.buffer ? 0 : 1;
@@ -321,7 +321,7 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
      *
      * @return encoded length of this {@link Utf8String}
      */
-    public final int encodedLength() {
+    public int encodedLength() {
         return this == NULL || this == EMPTY ? 0 : this.buffer.writerIndex();
     }
 
@@ -335,7 +335,7 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
      * @return {@code true} if the given {@link String} represents the same sequence of characters as this
      * {@link Utf8String}, {@code false} otherwise.
      */
-    public final boolean equals(ByteBuf other) {
+    public boolean equals(ByteBuf other) {
         return Objects.equal(this.buffer, other);
     }
 
@@ -349,7 +349,7 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
      * @return {@code true} if the given {@link String} represents the same sequence of characters as this
      * {@link Utf8String}, {@code false} otherwise.
      */
-    public final boolean equals(String other) {
+    public boolean equals(String other) {
         if (other == null) {
             return false;
         }
@@ -366,7 +366,7 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
      * @return {@code true} if the given {@link Utf8String} represents the same sequence of characters as this
      * {@link Utf8String}, {@code false} otherwise.
      */
-    public final boolean equals(Utf8String other) {
+    public boolean equals(Utf8String other) {
         if (this == other) {
             return true;
         }
@@ -751,12 +751,16 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
      */
     static final class JsonDeserializer extends StdDeserializer<Utf8String> {
 
+        private static final long serialVersionUID = -5402603107887792469L;
+
         private JsonDeserializer() {
             super(Utf8String.class);
         }
 
         @Override
-        public Utf8String deserialize(final JsonParser parser, final DeserializationContext context) throws IOException {
+        public Utf8String deserialize(
+            final JsonParser parser,
+            final DeserializationContext context) throws IOException {
 
             final JsonNode node = parser.getCodec().readTree(parser);
             final JsonNodeType type = node.getNodeType();
@@ -779,12 +783,17 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
      */
     static final class JsonSerializer extends StdSerializer<Utf8String> {
 
+        private static final long serialVersionUID = -152639876180245745L;
+
         private JsonSerializer() {
             super(Utf8String.class);
         }
 
         @Override
-        public void serialize(final Utf8String value, final JsonGenerator generator, final SerializerProvider provider) throws IOException {
+        public void serialize(
+            final Utf8String value,
+            final JsonGenerator generator,
+            final SerializerProvider provider) throws IOException {
             generator.writeString(value.toUtf16());
         }
     }
@@ -861,7 +870,8 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
                     }
 
                     if (0xE0 <= leadingByte && leadingByte <= 0xEF) {
-                        // UTF-8-3 = 0xE0 0xA0-BF UTF8-tail / 0xE1-EC 2(UTF8-tail) / 0xED 0x80-9F UTF8-tail / 0xEE-EF 2(UTF8-tail)
+                        // UTF-8-3 = 0xE0 0xA0-BF UTF8-tail / 0xE1-EC 2(UTF8-tail) / 0xED 0x80-9F UTF8-tail / 0xEE-EF
+                        // 2(UTF8-tail)
                         this.codePoint = leadingByte << 2 * Byte.SIZE;
                         this.shift = Byte.SIZE;
                         return true;
@@ -896,7 +906,8 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
     private static class CodePointIterator extends CodePointGetter implements PrimitiveIterator.OfInt {
 
         private final ByteBuf buffer;
-        private int start, length;
+        private final int length;
+        private int start;
 
         CodePointIterator(final ByteBuf buffer) {
             this.buffer = buffer;
@@ -1003,7 +1014,6 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
          * Processes the next byte in a UTF-8 encoded code point sequence.
          *
          * @param value a {@code byte} representing the next code unit in a UTF-8 code point sequence.
-         *
          * @return {@code false} if the current code unit signals the end of an undefined code point; otherwise, a value
          * of {@code true}.
          */
@@ -1050,7 +1060,8 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
                     }
 
                     if (0xE0 <= leadingByte && leadingByte <= 0xEF) {
-                        // UTF-8-3 = 0xE0 0xA0-BF UTF8-tail / 0xE1-EC 2(UTF8-tail) / 0xED 0x80-9F UTF8-tail / 0xEE-EF 2(UTF8-tail)
+                        // UTF-8-3 = 0xE0 0xA0-BF UTF8-tail / 0xE1-EC 2(UTF8-tail) / 0xED 0x80-9F UTF8-tail / 0xEE-EF
+                        // 2(UTF8-tail)
                         this.codePoint = leadingByte << 2 * Byte.SIZE;
                         this.shift = Byte.SIZE;
                         return true;
@@ -1103,11 +1114,11 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
         @JsonProperty
         private int skip = 0;
 
-        public UTF16CodeUnitCounter() {
+        UTF16CodeUnitCounter() {
             this(Integer.MAX_VALUE);
         }
 
-        public UTF16CodeUnitCounter(int charLimit) {
+        UTF16CodeUnitCounter(int charLimit) {
             checkArgument(charLimit >= 0);
             this.charLimit = charLimit;
         }
@@ -1123,7 +1134,7 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
 
         /**
          * {@code char} index of the most-recently processed code point.
-         *
+         * <p>
          * This is the value that would be used to address the {@code char} after converting the UTF-8 code point
          * sequence to a {@link String}.
          *
@@ -1207,8 +1218,9 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
     private static class UTF16CodeUnitIterator extends CodePointGetter implements PrimitiveIterator.OfInt {
 
         private final ByteBuf buffer;
+        private final int length;
         private int lowSurrogate;
-        private int start, length;
+        private int start;
 
         UTF16CodeUnitIterator(final ByteBuf buffer) {
             this.buffer = buffer;
@@ -1330,7 +1342,7 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
 
         /**
          * Processes the next byte in a UTF-8 encoded code point sequence.
-         *
+         * <p>
          * Characters are appended to the result value at the end of each code point sequence that is encountered.
          *
          * @param value the next byte in a UTF-8 encoded code point sequence.
@@ -1356,9 +1368,9 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
                     this.codePoint = toCodePoint(this.codePoint | (value & 0xFF));
 
                     if (this.codePoint < 0) {
-                        this.builder.append((char)REPLACEMENT_CHARACTER);
+                        this.builder.append((char) REPLACEMENT_CHARACTER);
                     } else if (Character.isBmpCodePoint(this.codePoint)) {
-                        this.builder.append((char)this.codePoint);
+                        this.builder.append((char) this.codePoint);
                     } else {
                         this.builder.append(Character.highSurrogate(this.codePoint));
                         this.builder.append(Character.lowSurrogate(this.codePoint));
@@ -1375,7 +1387,7 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
 
                     if (leadingByte < 0x7F) {
                         // UTF-8-1 = 0x00-7F
-                        this.builder.append((char)leadingByte);
+                        this.builder.append((char) leadingByte);
                         return true;
                     }
 
@@ -1387,7 +1399,8 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
                     }
 
                     if (0xE0 <= leadingByte && leadingByte <= 0xEF) {
-                        // UTF-8-3 = 0xE0 0xA0-BF UTF8-tail / 0xE1-EC 2(UTF8-tail) / 0xED 0x80-9F UTF8-tail / 0xEE-EF 2(UTF8-tail)
+                        // UTF-8-3 = 0xE0 0xA0-BF UTF8-tail / 0xE1-EC 2(UTF8-tail) / 0xED 0x80-9F UTF8-tail / 0xEE-EF
+                        // 2(UTF8-tail)
                         this.codePoint = leadingByte << 2 * Byte.SIZE;
                         this.shift = Byte.SIZE;
                         return true;
@@ -1400,7 +1413,7 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
                         return true;
                     }
 
-                    this.builder.append((char)REPLACEMENT_CHARACTER);
+                    this.builder.append((char) REPLACEMENT_CHARACTER);
                     return true;
                 }
             }
@@ -1408,7 +1421,7 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
 
         /**
          * Returns the converted {@link String} value.
-         *
+         * <p>
          * A new {@link String} is allocated on each call to this method.
          *
          * @return the converted {@link String} value.

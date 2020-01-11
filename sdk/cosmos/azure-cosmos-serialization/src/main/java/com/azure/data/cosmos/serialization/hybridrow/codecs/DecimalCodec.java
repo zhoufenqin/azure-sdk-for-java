@@ -21,7 +21,7 @@ import static java.lang.Math.min;
 
 /**
  * Provides static methods for encoding and decoding {@link BigDecimal}s serialized as {@code System.Decimal}s
- *
+ * <p>
  * The serialization format is lossy as the {@link BigDecimal} class represents arbitrary-precision signed decimal
  * numbers while the binary representation of a {@code System.Decimal} value is constrained to a magnitude of 96-bits
  * with a scaling factor of 10 and a scale value between 0 and 28. This yields a precision between 28 and 29
@@ -38,16 +38,16 @@ public final class DecimalCodec {
     private static final int FLAGS_MASK_SIGN = 0b10000000000000000000000000000000;
 
     private static final BigInteger MAGNITUDE_MAX = new BigInteger(new byte[] {
-        (byte)0x00,
-        (byte)0xFF, (byte)0xFF, (byte)0xFF, (byte)0xFF,
-        (byte)0xFF, (byte)0xFF, (byte)0xFF, (byte)0xFF,
-        (byte)0xFF, (byte)0xFF, (byte)0xFF, (byte)0xFF });
+        (byte) 0x00,
+        (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF,
+        (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF,
+        (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF });
 
     private static final BigInteger MAGNITUDE_MIN = new BigInteger(new byte[] {
-        (byte)0xFF,
-        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
-        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00,
-        (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x01 });
+        (byte) 0xFF,
+        (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+        (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x01 });
 
     private static final MathContext REDUCED_PRECISION = new MathContext(28, RoundingMode.HALF_EVEN);
 
@@ -112,6 +112,7 @@ public final class DecimalCodec {
             final int start = target;
             in.forEachByteDesc(source + offset, Integer.BYTES, new ByteProcessor() {
                 int index = start;
+
                 @Override
                 public boolean process(byte value) {
                     magnitude[this.index++] = value;

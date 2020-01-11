@@ -14,7 +14,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Provides static methods for encoding and decoding {@link UUID}s serialized as {@code System.Guid}s
- *
+ * <p>
  * {@link UUID}s are serialized like {@code System.Guid}s read and written by {@code MemoryMarshal.Read} and
  * {@code MemoryMarshal.Write}.
  *

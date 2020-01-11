@@ -34,7 +34,8 @@ public final class LayoutNull extends LayoutTypePrimitive<NullValue> implements 
 
     @Override
     @Nonnull
-    public Result readFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column, @Nonnull Out<NullValue> value) {
+    public Result readFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column,
+                            @Nonnull Out<NullValue> value) {
         checkArgument(scope.scopeType() instanceof LayoutUDT);
         value.set(NullValue.DEFAULT);
         if (!buffer.readBit(scope.start(), column.nullBit())) {
@@ -57,7 +58,8 @@ public final class LayoutNull extends LayoutTypePrimitive<NullValue> implements 
 
     @Override
     @Nonnull
-    public Result writeFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column, @Nonnull NullValue value) {
+    public Result writeFixed(@Nonnull RowBuffer buffer, @Nonnull RowCursor scope, @Nonnull LayoutColumn column,
+                             @Nonnull NullValue value) {
         checkArgument(scope.scopeType() instanceof LayoutUDT);
         if (scope.immutable()) {
             return Result.INSUFFICIENT_PERMISSIONS;
@@ -68,7 +70,8 @@ public final class LayoutNull extends LayoutTypePrimitive<NullValue> implements 
 
     @Override
     @Nonnull
-    public Result writeSparse(@Nonnull RowBuffer buffer, @Nonnull RowCursor edit, @Nonnull NullValue value, @Nonnull UpdateOptions options) {
+    public Result writeSparse(@Nonnull RowBuffer buffer, @Nonnull RowCursor edit, @Nonnull NullValue value,
+                              @Nonnull UpdateOptions options) {
         Result result = prepareSparseWrite(buffer, edit, this.typeArg(), options);
         if (result != Result.SUCCESS) {
             return result;

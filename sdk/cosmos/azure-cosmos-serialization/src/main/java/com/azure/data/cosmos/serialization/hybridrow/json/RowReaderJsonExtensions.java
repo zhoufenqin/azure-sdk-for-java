@@ -64,6 +64,34 @@ public final class RowReaderJsonExtensions {
         return Result.SUCCESS;
     }
 
+    @NonNull
+    private static Result endScope(
+        @Nonnull RowReader reader, @Nonnull ReaderStringContext context, char scopeBracket, char scopeCloseBracket) {
+
+        Result result;
+        context.builder().append(scopeBracket);
+        int snapshot = context.builder().length();
+
+        result = reader.readScope(
+            new ReaderStringContext(
+                context.builder(),
+                context.settings(),
+                context.indent() + 1),
+            RowReaderJsonExtensions::toJson);
+
+        if (result != Result.SUCCESS) {
+            return result;
+        }
+
+        if (context.builder().length() != snapshot) {
+            context.builder().append(context.newline());
+            context.writeIndent();
+        }
+
+        context.builder().append(scopeCloseBracket);
+        return result;
+    }
+
     @Nonnull
     private static Result toJson(@Nonnull final RowReader reader, @Nonnull final ReaderStringContext context) {
 
@@ -71,7 +99,8 @@ public final class RowReaderJsonExtensions {
 
         while (reader.read()) {
             String path = !reader.path().isNull()
-                ? lenientFormat("%s%s%s:", context.settings().quoteChar(), reader.path(), context.settings().quoteChar())
+                ? lenientFormat("%s%s%s:", context.settings().quoteChar(), reader.path(),
+                context.settings().quoteChar())
                 : null;
             if (index != 0) {
                 context.builder().append(',');
@@ -86,7 +115,7 @@ public final class RowReaderJsonExtensions {
                 context.builder().append(context.separator());
             }
 
-            final Out out = new Out<>();
+            @SuppressWarnings("rawtypes") final Out out = new Out<>();
             Result result;
             char scopeBracket = '\0';
             char scopeCloseBracket = '\0';
@@ -253,7 +282,7 @@ public final class RowReaderJsonExtensions {
                     if (result != Result.SUCCESS) {
                         return result;
                     }
-                    context.builder().append(((UnixDateTime)out.get()).milliseconds());
+                    context.builder().append(((UnixDateTime) out.get()).milliseconds());
                     break;
                 }
 
@@ -271,7 +300,8 @@ public final class RowReaderJsonExtensions {
                 case MONGODB_OBJECT_ID: {
                     // TODO: DANOBLE: Resurrect this code block
                     //                    MongoDbObjectId value;
-                    //                    Out<azure.data.cosmos.serialization.hybridrow.MongoDbObjectId> tempOut_value18 =
+                    //                    Out<azure.data.cosmos.serialization.hybridrow.MongoDbObjectId>
+                    //                    tempOut_value18 =
                     //                        new Out<azure.data.cosmos.serialization.hybridrow.MongoDbObjectId>();
                     //                    result = reader.ReadMongoDbObjectId(tempOut_value18);
                     //                    value = tempOut_value18.get();
@@ -280,7 +310,8 @@ public final class RowReaderJsonExtensions {
                     //                    }
                     //
                     //                    context.builder().append(context.settings().quoteChar());
-                    //                    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
+                    //                    //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct
+                    //                    equivalent in Java:
                     //                    //ORIGINAL LINE: ReadOnlyMemory<byte> bytes = value.ToByteArray();
                     //                    ReadOnlyMemory<Byte> bytes = value.ToByteArray();
                     //                    context.builder().append(bytes.Span.ToHexString());
@@ -365,34 +396,6 @@ public final class RowReaderJsonExtensions {
         }
 
         return Result.SUCCESS;
-    }
-
-    @NonNull
-    private static Result endScope(
-        @Nonnull RowReader reader, @Nonnull ReaderStringContext context, char scopeBracket, char scopeCloseBracket) {
-
-        Result result;
-        context.builder().append(scopeBracket);
-        int snapshot = context.builder().length();
-
-        result = reader.readScope(
-            new ReaderStringContext(
-                context.builder(),
-                context.settings(),
-                context.indent() + 1),
-            RowReaderJsonExtensions::toJson);
-
-        if (result != Result.SUCCESS) {
-            return result;
-        }
-
-        if (context.builder().length() != snapshot) {
-            context.builder().append(context.newline());
-            context.writeIndent();
-        }
-
-        context.builder().append(scopeCloseBracket);
-        return result;
     }
 
     private final static class ReaderStringContext {

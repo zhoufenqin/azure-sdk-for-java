@@ -22,17 +22,14 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class DataItem {
 
+    private final Supplier<String> name;
     @JsonProperty
     private final List<String> nodes;
-
+    private final Supplier<String> path;
     @JsonProperty
     private final LayoutCode type;
-
     @JsonProperty
     private final Object value;
-
-    private final Supplier<String> name;
-    private final Supplier<String> path;
 
     @SuppressWarnings("UnstableApiUsage")
     DataItem(

@@ -31,7 +31,7 @@ public final class NullValue {
         if (null == other) {
             return false;
         }
-        return other instanceof NullValue && this.equals((NullValue)other);
+        return other instanceof NullValue && this.equals((NullValue) other);
     }
 
     @Override

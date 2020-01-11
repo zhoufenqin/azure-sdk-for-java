@@ -38,6 +38,11 @@ public final class LayoutBuilder {
         this.reset();
     }
 
+    public void EndObjectScope() {
+        checkArgument(this.scope.size() > 0);
+        this.scope.pop();
+    }
+
     public void addFixedColumn(@Nonnull String path, @Nonnull LayoutType type, boolean nullable, int length) {
 
         checkNotNull(path, "expected non-null path");
@@ -148,14 +153,10 @@ public final class LayoutBuilder {
 
         updatedColumns.addAll(this.sparseColumns);
 
-        Layout layout = new Layout(this.name, this.schemaId, this.bitAllocator.numBytes(), this.fixedSize + fixedDelta, updatedColumns);
+        Layout layout = new Layout(this.name, this.schemaId, this.bitAllocator.numBytes(),
+            this.fixedSize + fixedDelta, updatedColumns);
         this.reset();
         return layout;
-    }
-
-    public void EndObjectScope() {
-        checkArgument(this.scope.size() > 0);
-        this.scope.pop();
     }
 
     private LayoutColumn parent() {

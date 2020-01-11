@@ -10,9 +10,6 @@ import com.google.common.base.Suppliers;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
-import java.security.CodeSource;
-import java.util.Enumeration;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -20,24 +17,20 @@ import static com.google.common.base.Strings.lenientFormat;
 
 public final class SystemSchema {
 
-    public static final String specificationTitle = "HybridRow serialization library";
-
     /**
      * SchemaId of the empty schema. This schema has no defined cells but can accomodate
      * unschematized sparse content.
      */
     public static final SchemaId EMPTY_SCHEMA_ID = SchemaId.from(2147473650);
-
     /**
      * SchemaId of HybridRow RecordIO Record Headers.
      */
     public static final SchemaId RECORD_SCHEMA_ID = SchemaId.from(2147473649);
-
     /**
      * SchemaId of HybridRow RecordIO Segments.
      */
     public static final SchemaId SEGMENT_SCHEMA_ID = SchemaId.from(2147473648);
-
+    public static final String specificationTitle = "HybridRow serialization library";
     private static final Supplier<LayoutResolver> layoutResolver = Suppliers.memoize(() -> {
 
         final Optional<Namespace> namespace;

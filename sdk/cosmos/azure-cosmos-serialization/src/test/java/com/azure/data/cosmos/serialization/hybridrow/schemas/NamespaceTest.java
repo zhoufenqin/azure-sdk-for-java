@@ -21,7 +21,7 @@ import static org.testng.Assert.fail;
 
 public class NamespaceTest {
 
-    private static final String basedir = System.getProperty("project.basedir", System.getProperty("user.dir"));
+    private static final String basedir = System.getProperty("azure.cosmos.basedir");
     private final File schemaFile;
     private Namespace namespace;
 
@@ -136,7 +136,8 @@ public class NamespaceTest {
         @Factory
         public static Object[] create() {
             return new Object[] {
-                new NamespaceTest(Paths.get(basedir, "test-data", "RootSegment.json").toFile())
+                new NamespaceTest(
+                    Paths.get(basedir, "test-data", "RootSegment.json").toFile())
             };
         }
     }

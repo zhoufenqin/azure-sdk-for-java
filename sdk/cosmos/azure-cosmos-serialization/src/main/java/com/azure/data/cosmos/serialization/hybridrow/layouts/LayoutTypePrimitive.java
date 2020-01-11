@@ -41,20 +41,6 @@ public abstract class LayoutTypePrimitive<T> extends LayoutType implements ILayo
     // * Ensure that all primitive types inherit from this type
 
     @Nonnull
-    public final Result hasValue(
-        @Nonnull final RowBuffer buffer, @Nonnull final RowCursor scope, @Nonnull final LayoutColumn column) {
-
-        checkNotNull(buffer, "expected non-null buffer");
-        checkNotNull(scope, "expected non-null scope");
-        checkNotNull(column, "expected non-null column");
-
-        if (!buffer.readBit(scope.start(), column.nullBit())) {
-            return Result.NOT_FOUND;
-        }
-        return Result.SUCCESS;
-    }
-
-    @Nonnull
     public final Result deleteFixed(
         @Nonnull final RowBuffer buffer, @Nonnull final RowCursor scope, @Nonnull final LayoutColumn column) {
 
@@ -84,7 +70,7 @@ public abstract class LayoutTypePrimitive<T> extends LayoutType implements ILayo
      * a decrease in required space.  If no value exists this operation is a no-op.
      *
      * @param buffer target {@link RowBuffer}.
-     * @param edit a {@link RowCursor} that identifies and locates the field to be deleted.
+     * @param edit   a {@link RowCursor} that identifies and locates the field to be deleted.
      * @return {@link Result#SUCCESS} if the value was deleted; otherwise an error {@link Result}.
      */
     @Nonnull
@@ -138,6 +124,20 @@ public abstract class LayoutTypePrimitive<T> extends LayoutType implements ILayo
     }
 
     @Nonnull
+    public final Result hasValue(
+        @Nonnull final RowBuffer buffer, @Nonnull final RowCursor scope, @Nonnull final LayoutColumn column) {
+
+        checkNotNull(buffer, "expected non-null buffer");
+        checkNotNull(scope, "expected non-null scope");
+        checkNotNull(column, "expected non-null column");
+
+        if (!buffer.readBit(scope.start(), column.nullBit())) {
+            return Result.NOT_FOUND;
+        }
+        return Result.SUCCESS;
+    }
+
+    @Nonnull
     public abstract Result readFixed(
         @Nonnull final RowBuffer buffer,
         @Nonnull final RowCursor scope,
@@ -148,7 +148,7 @@ public abstract class LayoutTypePrimitive<T> extends LayoutType implements ILayo
     public abstract Result readSparse(
         @Nonnull final RowBuffer buffer,
         @Nonnull final RowCursor edit,
-        @Nonnull final  Out<T> value);
+        @Nonnull final Out<T> value);
 
     @Nonnull
     public Result readVariable(

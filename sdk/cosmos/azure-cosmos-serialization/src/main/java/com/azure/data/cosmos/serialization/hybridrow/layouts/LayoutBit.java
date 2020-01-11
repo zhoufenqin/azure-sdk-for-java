@@ -23,15 +23,8 @@ public final class LayoutBit {
         this.index = index;
     }
 
-    /**
-     * Compute the division rounding up to the next whole number
-     *
-     * @param numerator The numerator to divide.
-     * @param divisor   The divisor to divide by.
-     * @return The ceiling(numerator/divisor).
-     */
-    public static int divCeiling(int numerator, int divisor) {
-        return (numerator + (divisor - 1)) / divisor;
+    public boolean isInvalid() {
+        return this.index == INVALID.index;
     }
 
     /**
@@ -46,16 +39,37 @@ public final class LayoutBit {
     }
 
     /**
+     * Compute the division rounding up to the next whole number
+     *
+     * @param numerator The numerator to divide.
+     * @param divisor   The divisor to divide by.
+     * @return The ceiling(numerator/divisor).
+     */
+    public static int divCeiling(int numerator, int divisor) {
+        return (numerator + (divisor - 1)) / divisor;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof LayoutBit && this.equals((LayoutBit) other);
+    }
+
+    public boolean equals(LayoutBit other) {
+        return other != null && this.index() == other.index();
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.valueOf(this.index()).hashCode();
+    }
+
+    /**
      * Zero-based offset into the layout bitmask.
      *
      * @return zero-based offset into the layout bitmask.
      */
     public int index() {
         return this.index;
-    }
-
-    public boolean isInvalid() {
-        return this.index == INVALID.index;
     }
 
     /**
@@ -68,20 +82,6 @@ public final class LayoutBit {
      */
     public int offset(int offset) {
         return offset + (this.index() / Byte.SIZE);
-    }
-
-    @Override
-    public boolean equals(Object other) {
-        return other instanceof LayoutBit && this.equals((LayoutBit)other);
-    }
-
-    public boolean equals(LayoutBit other) {
-        return other != null && this.index() == other.index();
-    }
-
-    @Override
-    public int hashCode() {
-        return Integer.valueOf(this.index()).hashCode();
     }
 
     /**
@@ -101,19 +101,19 @@ public final class LayoutBit {
         }
 
         /**
-         * The number of bytes needed to hold all bits so far allocated.
-         */
-        public final int numBytes() {
-            return LayoutBit.divCeiling(this.next, Byte.SIZE);
-        }
-
-        /**
          * Allocates a new bit from the bitmask.
          *
          * @return The allocated bit.
          */
         public final LayoutBit allocate() {
             return new LayoutBit(this.next++);
+        }
+
+        /**
+         * The number of bytes needed to hold all bits so far allocated.
+         */
+        public final int numBytes() {
+            return LayoutBit.divCeiling(this.next, Byte.SIZE);
         }
     }
 }

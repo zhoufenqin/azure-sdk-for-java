@@ -72,7 +72,8 @@ public final class LayoutColumn {
      *
      * @return for boolean fields, the zero-based index into the bit mask for the boolean value.
      */
-    public @Nonnull LayoutBit booleanBit() {
+    public @Nonnull
+    LayoutBit booleanBit() {
         return this.booleanBit;
     }
 
@@ -84,7 +85,8 @@ public final class LayoutColumn {
      *
      * @return Full logical path of the field within the row.
      */
-    public @Nonnull Utf8String fullPath() {
+    public @Nonnull
+    Utf8String fullPath() {
         return this.fullPath;
     }
 
@@ -104,7 +106,8 @@ public final class LayoutColumn {
      *
      * @return For nullable fields, the zero-based index into the bit mask for the null bit.
      */
-    public @Nonnull LayoutBit nullBit() {
+    public @Nonnull
+    LayoutBit nullBit() {
         return this.nullBit;
     }
 
@@ -139,7 +142,8 @@ public final class LayoutColumn {
      *
      * @return the relative path of the field within its parent scope.
      */
-    public @Nonnull Utf8String path() {
+    public @Nonnull
+    Utf8String path() {
         return this.path;
     }
 
@@ -159,7 +163,8 @@ public final class LayoutColumn {
      *
      * @return the storage kind of the field.
      */
-    public @Nonnull StorageKind storage() {
+    public @Nonnull
+    StorageKind storage() {
         return this.storage;
     }
 
@@ -168,7 +173,8 @@ public final class LayoutColumn {
      *
      * @return the physical layout type of the field.
      */
-    public @Nonnull LayoutType type() {
+    public @Nonnull
+    LayoutType type() {
         return this.type;
     }
 
@@ -177,7 +183,8 @@ public final class LayoutColumn {
      *
      * @return the full logical type.
      */
-    public @Nonnull TypeArgument typeArg() {
+    public @Nonnull
+    TypeArgument typeArg() {
         return this.typeArg;
     }
 
@@ -186,7 +193,8 @@ public final class LayoutColumn {
      *
      * @return for types with generic parameters (e.g. {@link LayoutTuple}, the type parameters.
      */
-    public @Nonnull TypeArgumentList typeArgs() {
+    public @Nonnull
+    TypeArgumentList typeArgs() {
         return this.typeArgs;
     }
 
@@ -194,11 +202,11 @@ public final class LayoutColumn {
      * The physical layout type of the field cast to the specified type.
      *
      * @param <T> a type that implements {@code ILayoutType}.
-     *
      * @return The physical layout type of the field cast to the specified type.
      */
     @SuppressWarnings("unchecked")
-    public @Nonnull <T extends ILayoutType> T typeAs() {
+    public @Nonnull
+    <T extends ILayoutType> T typeAs() {
         return (T) this.type().typeAs();
     }
 
@@ -219,7 +227,8 @@ public final class LayoutColumn {
      * @param path   The path to the field relative to parent scope.
      * @return The full logical path.
      */
-    private static @Nonnull String fullPath(final LayoutColumn parent, @Nonnull final String path) {
+    private static @Nonnull
+    String fullPath(final LayoutColumn parent, @Nonnull final String path) {
 
         if (parent != null) {
             switch (LayoutCodeTraits.clearImmutableBit(parent.type().layoutCode())) {
@@ -232,7 +241,8 @@ public final class LayoutColumn {
                 case TYPED_MAP_SCOPE:
                     return parent.fullPath().toString() + "[]" + path;
                 default:
-                    final String message = lenientFormat("Parent scope type not supported: %s", parent.type().layoutCode());
+                    final String message = lenientFormat("Parent scope type not supported: %s",
+                        parent.type().layoutCode());
                     throw new IllegalStateException(message);
             }
         }

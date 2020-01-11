@@ -39,35 +39,6 @@ public final class StringTokenizer {
     }
 
     /**
-     * Looks up a token's corresponding string.
-     *
-     * @param token The token to look up.
-     * @return True if successful, false otherwise.
-     */
-    public Optional<Utf8String> tryFindString(long token) {
-        return token >= (long)this.strings.size() ? Optional.empty() : Optional.of(this.strings.get((int) token));
-    }
-
-    /**
-     * Looks up a string's corresponding token.
-     *
-     * @param path  The string to look up.
-     * @return {@code true} if successful, {@code false} otherwise.
-     */
-    public Optional<StringToken> tryFindToken(UtfAnyString path) {
-
-        if (path.isNull()) {
-            return Optional.empty();
-        }
-
-        if (path.isUtf8()) {
-            return Optional.ofNullable(this.tokens.get(path.toUtf8()));
-        }
-
-        return Optional.ofNullable(this.stringTokens.get(path.toUtf16()));
-    }
-
-    /**
      * Assign a token to a string
      * <p>
      * If the string already has a token, that token is returned instead.
@@ -91,6 +62,35 @@ public final class StringTokenizer {
     }
 
     /**
+     * Looks up a token's corresponding string.
+     *
+     * @param token The token to look up.
+     * @return True if successful, false otherwise.
+     */
+    public Optional<Utf8String> tryFindString(long token) {
+        return token >= (long) this.strings.size() ? Optional.empty() : Optional.of(this.strings.get((int) token));
+    }
+
+    /**
+     * Looks up a string's corresponding token.
+     *
+     * @param path The string to look up.
+     * @return {@code true} if successful, {@code false} otherwise.
+     */
+    public Optional<StringToken> tryFindToken(UtfAnyString path) {
+
+        if (path.isNull()) {
+            return Optional.empty();
+        }
+
+        if (path.isUtf8()) {
+            return Optional.ofNullable(this.tokens.get(path.toUtf8()));
+        }
+
+        return Optional.ofNullable(this.stringTokens.get(path.toUtf16()));
+    }
+
+    /**
      * Allocates a new token and assigns the string to it.
      *
      * @param path The string that needs a new token.
@@ -104,7 +104,7 @@ public final class StringTokenizer {
         this.tokens.put(path, token);
         this.strings.add(path);
 
-        checkState((long)this.strings.size() - 1 == token.id());
+        checkState((long) this.strings.size() - 1 == token.id());
         return token;
     }
 }

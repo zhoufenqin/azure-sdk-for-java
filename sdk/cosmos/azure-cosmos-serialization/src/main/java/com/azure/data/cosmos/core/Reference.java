@@ -7,7 +7,7 @@ import java.util.Objects;
 
 /**
  * A container object which may or may not contain a non-null value.
- *
+ * <p>
  * This is a value-based class and as such use of identity-sensitive operations--including reference equality
  * ({@code ==}), identity hash code, or synchronization--on instances of {@link Reference} may have unpredictable
  * results and should be avoided.
@@ -22,20 +22,9 @@ public final class Reference<T> {
         this.setAndGet(value);
     }
 
-    public T get() {
-        return this.value;
-    }
-
-    public void set(T value) {
-        this.value = value;
-    }
-    public T setAndGet(T value) {
-        return this.value = value;
-    }
-
     /**
      * {@code true} if there is a value present, otherwise {@code false}.
-     *
+     * <p>
      * This is equivalent to evaluating the expression {@code ref.get() == null}.
      *
      * @return {@code true} if there is a value present, otherwise {@code false}
@@ -45,7 +34,7 @@ public final class Reference<T> {
     }
 
     /**
-     * Indicates whether some other object is equal to this {@link Reference} value. 
+     * Indicates whether some other object is equal to this {@link Reference} value.
      * <p>
      * The other object is considered equal if:
      * <ul>
@@ -68,9 +57,25 @@ public final class Reference<T> {
             return false;
         }
 
-        return Objects.equals(this.value, ((Reference)other).value);
+        return Objects.equals(this.value, ((Reference) other).value);
     }
 
+    public T get() {
+        return this.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.value);
+    }
+
+    public void set(T value) {
+        this.value = value;
+    }
+
+    public T setAndGet(T value) {
+        return this.value = value;
+    }
 
     @Override
     public String toString() {

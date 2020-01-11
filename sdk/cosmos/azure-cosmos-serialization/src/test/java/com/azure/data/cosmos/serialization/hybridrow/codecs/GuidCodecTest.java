@@ -22,7 +22,8 @@ import static org.testng.Assert.assertEquals;
  * var buffer = new byte[16];
  * var value = Guid.NewGuid();
  * MemoryMarshal.Write(buffer, ref value);
- * Console.WriteLine($"new GuidItem(new byte[] {{ (byte) {string.Join(", (byte) ", buffer )} }}, UUID.fromString(\"{value.ToString()}\"))");
+ * Console.WriteLine($"new GuidItem(new byte[] {{ (byte) {string.Join(", (byte) ", buffer )} }}, UUID.fromString(\"{
+ * value.ToString()}\"))");
  * }
  */
 @Test(groups = "unit")
