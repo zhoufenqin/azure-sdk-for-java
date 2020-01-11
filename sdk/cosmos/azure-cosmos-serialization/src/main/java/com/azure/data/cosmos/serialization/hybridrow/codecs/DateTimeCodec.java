@@ -9,6 +9,7 @@ import io.netty.buffer.Unpooled;
 import javax.annotation.Nonnull;
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 
 import static com.google.common.base.Preconditions.checkArgument;
@@ -31,9 +32,9 @@ import static com.google.common.base.Preconditions.checkNotNull;
  *          Bits 63-64
  *      </td><td>
  *          Contain a four-state value that describes the {@code System.DateTimeKind} value of the date time, with a
- *          2nd value for the rare case where the date time is local, but is in an overlapped daylight savings time
- *          hour and it is in daylight savings time. This allows distinction of these otherwise ambiguous local times
- *          and prevents data loss when round tripping from Local to UTC time.
+ *          2nd value for the rare case where the date time is local. It is in an overlapped daylight savings time
+ *          hour and it is in daylight savings time. This representation allows distinction of these otherwise ambiguous
+ *          local times and prevents data loss when round tripping from Local to UTC time.
  *      </td></tr>
  *   </tbody>
  * </table>
@@ -52,9 +53,15 @@ public final class DateTimeCodec {
 
     private static final long UNIX_EPOCH_TICKS = 0x89F7FF5F7B58000L;
 
-    private static final ZoneOffset ZONE_OFFSET_LOCAL = OffsetDateTime.now().getOffset();
-    private static final int ZONE_OFFSET_LOCAL_TOTAL_SECONDS = ZONE_OFFSET_LOCAL.getTotalSeconds();
-    private static final int ZONE_OFFSET_UTC_TOTAL_SECONDS = ZoneOffset.UTC.getTotalSeconds();
+    private static final ZoneId ZONE_ID = ZoneId.systemDefault();
+    private static final int ZONE_OFFSET_LOCAL_DAYLIGHT_TOTAL_SECONDS;
+    private static final int ZONE_OFFSET_LOCAL_STANDARD_TOTAL_SECONDS;
+
+    static {
+        final ZoneOffset zoneOffset = ZONE_ID.getRules().getStandardOffset(Instant.now());
+        ZONE_OFFSET_LOCAL_STANDARD_TOTAL_SECONDS = zoneOffset.getTotalSeconds();
+        ZONE_OFFSET_LOCAL_DAYLIGHT_TOTAL_SECONDS = ZONE_OFFSET_LOCAL_STANDARD_TOTAL_SECONDS + 3_600;
+    }
 
     private DateTimeCodec() {
     }
@@ -63,7 +70,7 @@ public final class DateTimeCodec {
      * Decode an {@link OffsetDateTime} serialized like a {@code System.DateTime} by {@code MemoryMarshal.Write}.
      *
      * @param bytes an array containing the serialized value to be decoded.
-     * @return a new {@link OffsetDateTime}.
+     * @return a new {@link OffsetDateTime}.((byte[])((UnpooledHeapByteBuf)in).array)[0]
      * @see <a href="https://referencesource.microsoft.com/mscorlib/a.html#df6b1eba7461813b">struct DateTime source</a>
      */
     public static OffsetDateTime decode(@Nonnull final byte[] bytes) {
@@ -88,12 +95,20 @@ public final class DateTimeCodec {
 
         final long data = in.readLongLE();
         final long ticks = data & TICKS_MASK;
-        final ZoneOffset zoneOffset = (data & FLAGS_MASK) == KIND_UTC ? ZoneOffset.UTC : ZONE_OFFSET_LOCAL;
+        final long epochSecond = ((ticks - UNIX_EPOCH_TICKS) / 10_000_000L);
+        final int nanoSecond = (int) (100L * (ticks % 10_000_000L));
 
-        final long epochSecond = ((ticks - UNIX_EPOCH_TICKS) / 10_000_000L) - zoneOffset.getTotalSeconds();
-        final int nanos = (int) (100L * (ticks % 10_000_000L));
+        if ((data & FLAGS_MASK) == KIND_UTC) {
+            return OffsetDateTime.ofInstant(Instant.ofEpochSecond(epochSecond, nanoSecond), ZoneOffset.UTC);
+        }
 
-        return OffsetDateTime.ofInstant(Instant.ofEpochSecond(epochSecond, nanos), zoneOffset);
+        // KIND_LOCAL or KIND_AMBIGUOUS
+
+        final Instant instant = Instant.ofEpochSecond(epochSecond, nanoSecond);
+
+        return ZONE_ID.getRules().isDaylightSavings(instant)
+            ? OffsetDateTime.ofInstant(instant.minusSeconds(ZONE_OFFSET_LOCAL_STANDARD_TOTAL_SECONDS + 3_600L), ZONE_ID)
+            : OffsetDateTime.ofInstant(instant.minusSeconds(ZONE_OFFSET_LOCAL_STANDARD_TOTAL_SECONDS), ZONE_ID);
     }
 
     /**
@@ -112,31 +127,41 @@ public final class DateTimeCodec {
     /**
      * Encode an {@link OffsetDateTime} like a {@code System.DateTime} produced by {@code MemoryMarshal.Write}.
      *
-     * @param offsetDateTime an {@link OffsetDateTime} to be encoded.
+     * @param dateTime an {@link OffsetDateTime} to be encoded.
      * @param out            an output {@link ByteBuf}.
      * @see <a href="https://referencesource.microsoft.com/mscorlib/a.html#df6b1eba7461813b">struct DateTime source</a>
      */
-    public static void encode(final OffsetDateTime offsetDateTime, final ByteBuf out) {
+    public static void encode(final OffsetDateTime dateTime, final ByteBuf out) {
 
-        final ZoneOffset offset = offsetDateTime.getOffset();
-        final Instant instant = offsetDateTime.toInstant();
+        checkNotNull(dateTime, "expected non-null dateTime");
+        checkNotNull(out, "expected non-null out");
 
-        final long ticks = UNIX_EPOCH_TICKS + 10_000_000L * (instant.getEpochSecond() + offset.getTotalSeconds())
-            + instant.getNano() / 100L;
+        final Instant instant = dateTime.toInstant();
 
-        checkArgument(ticks <= TICKS_MASK, "expected offsetDateTime epoch second in range [0, %s], not %s",
+        final long zoneOffsetTotalSeconds = dateTime.getOffset().getTotalSeconds();
+        final long epochSecond = instant.getEpochSecond() + zoneOffsetTotalSeconds;
+
+        final long ticks = UNIX_EPOCH_TICKS + 10_000_000L * epochSecond + instant.getNano() / 100L;
+
+        checkArgument(ticks <= TICKS_MASK, "expected dateTime epoch second in range [0, %s], not %s",
             TICKS_MASK,
             ticks);
 
-        final int zoneOffsetTotalSeconds = offsetDateTime.getOffset().getTotalSeconds();
         final long value;
 
-        if (zoneOffsetTotalSeconds == ZONE_OFFSET_UTC_TOTAL_SECONDS) {
+        if (zoneOffsetTotalSeconds == 0) {
+
             value = ticks | KIND_UTC;
-        } else if (zoneOffsetTotalSeconds == ZONE_OFFSET_LOCAL_TOTAL_SECONDS) {
-            value = ticks | KIND_LOCAL;
+
         } else {
-            value = ticks | KIND_AMBIGUOUS;
+
+            final long daylightSavingsAdjustment = ZONE_ID.getRules().isDaylightSavings(instant) ? 0L : 3_600L;
+
+            if (zoneOffsetTotalSeconds + daylightSavingsAdjustment == ZONE_OFFSET_LOCAL_DAYLIGHT_TOTAL_SECONDS) {
+                value = ticks | KIND_LOCAL;
+            } else {
+                value = ticks | KIND_AMBIGUOUS;
+            }
         }
 
         out.writeLongLE(value);

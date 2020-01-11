@@ -18,10 +18,11 @@ import static org.testng.Assert.assertEquals;
  * Tests the DateTimeCodec using data generated from C# code.
  * <p>
  * Test data was generated from code that looks like this:<pre>{@code
+ * using System.Runtime.InteropServices;
  * var buffer = new byte[8];
  * var value = DateTime.Now;
  * MemoryMarshal.Write(buffer, ref value);
- * Console.WriteLine($"new DateTimeItem(new byte[] {{ (byte) {string.Join(", (byte) ", buffer )} }}, OffsetDateTime.parse(\"{value.ToString("o")}\"))");
+ * Console.WriteLine($"new DateTimeItem(new byte[] {{ {string.Join(", ", (sbyte[])(Array)buffer )} }}, OffsetDateTime.parse(\"{value.ToString("o")}\"))");
  * }</pre>
  */
 @Test(groups = "unit")
@@ -57,12 +58,15 @@ public class DateTimeCodecTest {
     private static Iterator<Object[]> dateTimeData() {
 
         ImmutableList<DateTimeItem> items = ImmutableList.of(
-            new DateTimeItem(new byte[] {
-                (byte) 120, (byte) 212, (byte) 106, (byte) 251, (byte) 105, (byte) 48, (byte) 215, (byte) 136 },
+            new DateTimeItem(  // PDT, DateTimeCodec.KIND_LOCAL
+                new byte[] { 120, -44, 106, -5, 105, 48, -41, -120 },
                 OffsetDateTime.parse("2019-09-03T12:26:44.3996280-07:00")),
-            new DateTimeItem(new byte[] {
-                (byte) 226, (byte) 108, (byte) 87, (byte) 194, (byte) 164, (byte) 48, (byte) 215, (byte) 72 },
-                OffsetDateTime.parse("2019-09-03T19:27:28.9493730Z"))
+            new DateTimeItem(  // PST, DateTimeCodec.KIND_LOCAL
+                new byte[] { 84, -5, 108, 5, -31, -107, -41, -120 },
+                OffsetDateTime.parse("2020-01-10T15:23:18.7423060-08:00")),
+            new DateTimeItem(  // UTC, DateTimeCodec.KIND_UTC
+                new byte[] { 48, -121, 27, 8, 44, -106, -41, 72 },
+                OffsetDateTime.parse("2020-01-11T00:20:15.4963760Z"))
         );
 
         return items.stream().map(item -> new Object[] { item.buffer, item.value }).iterator();
