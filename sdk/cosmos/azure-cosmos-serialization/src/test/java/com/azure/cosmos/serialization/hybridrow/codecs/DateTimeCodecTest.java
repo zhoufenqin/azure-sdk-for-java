@@ -58,13 +58,16 @@ public class DateTimeCodecTest {
     private static Iterator<Object[]> dateTimeData() {
 
         ImmutableList<DateTimeItem> items = ImmutableList.of(
-            new DateTimeItem(  // PDT, DateTimeCodec.KIND_LOCAL
+            // PDT, DateTimeCodec.KIND_LOCAL
+            new DateTimeItem(
                 new byte[] { 120, -44, 106, -5, 105, 48, -41, -120 },
                 OffsetDateTime.parse("2019-09-03T12:26:44.3996280-07:00")),
-            new DateTimeItem(  // PST, DateTimeCodec.KIND_LOCAL
+            // PST, DateTimeCodec.KIND_LOCAL
+            new DateTimeItem(
                 new byte[] { 84, -5, 108, 5, -31, -107, -41, -120 },
                 OffsetDateTime.parse("2020-01-10T15:23:18.7423060-08:00")),
-            new DateTimeItem(  // UTC, DateTimeCodec.KIND_UTC
+            // UTC, DateTimeCodec.KIND_UTC
+            new DateTimeItem(
                 new byte[] { 48, -121, 27, 8, 44, -106, -41, 72 },
                 OffsetDateTime.parse("2020-01-11T00:20:15.4963760Z"))
         );

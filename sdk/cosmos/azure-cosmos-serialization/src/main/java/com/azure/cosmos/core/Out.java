@@ -61,8 +61,7 @@ public final class Out<T> {
     }
 
     /**
-     * Returns the hash code value of the present value, if any, or 0 (zero) if
-     * no value is present.
+     * Returns the hash code value of the present value, if any, or 0 (zero) if no value is present.
      *
      * @return hash code value of the present value or 0 if no value is present
      */
@@ -71,12 +70,14 @@ public final class Out<T> {
         return Objects.hashCode(this.value);
     }
 
-    public void set(T value) {
+    public Out<T> set(T value) {
         this.value = value;
+        return this;
     }
 
     public T setAndGet(T value) {
-        return this.value = value;
+        this.value = value;
+        return value;
     }
 
     @Override

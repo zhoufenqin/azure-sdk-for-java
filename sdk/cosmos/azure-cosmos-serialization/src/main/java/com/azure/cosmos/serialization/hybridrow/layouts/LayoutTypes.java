@@ -32,7 +32,7 @@ public abstract class LayoutTypes {
     public static final LayoutInt32 INT_32 = new LayoutInt32();
     public static final LayoutInt64 INT_64 = new LayoutInt64();
     public static final LayoutInt8 INT_8 = new LayoutInt8();
-    public static final LayoutTuple ImmutableTuple = new LayoutTuple(true);
+    public static final LayoutTuple IMMUTABLE_TUPLE = new LayoutTuple(true);
     public static final LayoutMongoDbObjectId MONGODB_OBJECT_ID = new LayoutMongoDbObjectId();
     public static final LayoutNull NULL = new LayoutNull();
     public static final LayoutNullable NULLABLE = new LayoutNullable(false);

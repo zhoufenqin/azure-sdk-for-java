@@ -38,7 +38,9 @@ public final class SchemaId implements Comparable<SchemaId> {
 
     static {
         cache = new Int2ReferenceOpenHashMap<>();
-        cache.put(0, INVALID = NONE = new SchemaId(0));
+        NONE = new SchemaId(0);
+        INVALID = NONE;
+        cache.put(0, NONE);
     }
 
     private final int value;

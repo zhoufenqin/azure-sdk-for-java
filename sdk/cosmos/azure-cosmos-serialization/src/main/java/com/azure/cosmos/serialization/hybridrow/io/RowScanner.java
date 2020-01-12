@@ -3,11 +3,11 @@
 
 package com.azure.cosmos.serialization.hybridrow.io;
 
+import com.azure.cosmos.core.Out;
+import com.azure.cosmos.core.Utf8String;
 import com.azure.cosmos.serialization.hybridrow.HybridRowVersion;
 import com.azure.cosmos.serialization.hybridrow.Result;
 import com.azure.cosmos.serialization.hybridrow.RowBuffer;
-import com.azure.cosmos.core.Out;
-import com.azure.cosmos.core.Utf8String;
 import com.azure.cosmos.serialization.hybridrow.layouts.LayoutResolver;
 import com.azure.cosmos.serialization.hybridrow.layouts.LayoutResolverNamespace;
 import com.azure.cosmos.serialization.hybridrow.layouts.LayoutType;
@@ -34,7 +34,7 @@ import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.lenientFormat;
 import static java.util.Objects.requireNonNull;
 
-public class RowScanner implements AutoCloseable, Iterable<DataItem> {
+public final class RowScanner implements AutoCloseable, Iterable<DataItem> {
 
     private final AtomicBoolean closed;
     private final ByteBuf data;
@@ -65,6 +65,16 @@ public class RowScanner implements AutoCloseable, Iterable<DataItem> {
         return new DataItemIterator(reader);
     }
 
+    /**
+     * Opens a new {@link RowScanner} to read data from a file defined by a namespace.
+     *
+     * @param namespace specifies the schema of the data to be read.
+     * @param file contains the data to be read.
+     *
+     * @return a new {@link RowScanner}.
+     *
+     * @throws IOException if an I/O error occurs opening the {@code file}.
+     */
     public static RowScanner open(@Nonnull Namespace namespace, @Nonnull File file) throws IOException {
 
         checkNotNull(namespace, "expected non-null namespace");
@@ -88,10 +98,30 @@ public class RowScanner implements AutoCloseable, Iterable<DataItem> {
         return new RowScanner(resolver, data);
     }
 
+    /**
+     * Opens a new {@link RowScanner} to read data from a file defined by a namespace.
+     *
+     * @param namespace specifies the schema of the data to be read.
+     * @param path location of the file containing data to be read.
+     *
+     * @return a new {@link RowScanner}.
+     *
+     * @throws IOException if an I/O error occurs opening the {@code file}.
+     */
     public static RowScanner open(@Nonnull Namespace namespace, @Nonnull Path path) throws IOException {
         return RowScanner.open(namespace, requireNonNull(path, "expected non-null path").toFile());
     }
 
+    /**
+     * Opens a new {@link RowScanner} to read data from a file defined by a namespace.
+     *
+     * @param namespace specifies the schema of the data to be read.
+     * @param path location of the file containing data to be read.
+     *
+     * @return a new {@link RowScanner}.
+     *
+     * @throws IOException if an I/O error occurs opening the {@code file}.
+     */
     public static RowScanner open(@Nonnull Namespace namespace, @Nonnull String path) throws IOException {
         return RowScanner.open(namespace, new File(requireNonNull(path, "expected non-null path")));
     }
@@ -124,97 +154,97 @@ public class RowScanner implements AutoCloseable, Iterable<DataItem> {
 
             switch (type.layoutCode()) {
 
-                case NULL: {
+                case NULL:
                     result = reader.readNull(value);
                     break;
-                }
-                case BOOLEAN: {
+
+                case BOOLEAN:
                     result = reader.readBoolean(value);
                     break;
-                }
-                case INT_8: {
+
+                case INT_8:
                     result = reader.readInt8(value);
                     break;
-                }
-                case INT_16: {
+
+                case INT_16:
                     result = reader.readInt16(value);
                     break;
-                }
-                case INT_32: {
+
+                case INT_32:
                     result = reader.readInt32(value);
                     break;
-                }
-                case INT_64: {
+
+                case INT_64:
                     result = reader.readInt64(value);
                     break;
-                }
-                case VAR_INT: {
+
+                case VAR_INT:
                     result = reader.readVarInt(value);
                     break;
-                }
-                case UINT_8: {
+
+                case UINT_8:
                     result = reader.readUInt8(value);
                     break;
-                }
-                case UINT_16: {
+
+                case UINT_16:
                     result = reader.readUInt16(value);
                     break;
-                }
-                case UINT_32: {
+
+                case UINT_32:
                     result = reader.readUInt32(value);
                     break;
-                }
-                case UINT_64: {
+
+                case UINT_64:
                     result = reader.readUInt64(value);
                     break;
-                }
-                case VAR_UINT: {
+
+                case VAR_UINT:
                     result = reader.readVarUInt(value);
                     break;
-                }
-                case FLOAT_32: {
+
+                case FLOAT_32:
                     result = reader.readFloat32(value);
                     break;
-                }
-                case FLOAT_64: {
+
+                case FLOAT_64:
                     result = reader.readFloat64(value);
                     break;
-                }
-                case FLOAT_128: {
+                case FLOAT_128:
                     result = reader.readFloat128(value);
                     break;
-                }
-                case DECIMAL: {
+
+                case DECIMAL:
                     result = reader.readDecimal(value);
                     break;
-                }
-                case GUID: {
+
+                case GUID:
                     result = reader.readGuid(value);
                     break;
-                }
-                case DATE_TIME: {
+
+                case DATE_TIME:
                     result = reader.readDateTime(value);
                     break;
-                }
-                case UNIX_DATE_TIME: {
+
+                case UNIX_DATE_TIME:
                     result = reader.readUnixDateTime(value);
                     break;
-                }
-                case BINARY: {
+
+                case BINARY:
                     result = reader.readBinary(value);
                     break;
-                }
-                case UTF_8: {
+
+                case UTF_8:
                     result = reader.readUtf8String(value);
                     break;
-                }
+
                 case NULLABLE_SCOPE:
-                case IMMUTABLE_NULLABLE_SCOPE: {
+                case IMMUTABLE_NULLABLE_SCOPE:
+
                     if (!reader.hasValue()) {
                         result = Result.SUCCESS;
                         break;
                     }
-                }
+
                 case ARRAY_SCOPE:
                 case IMMUTABLE_ARRAY_SCOPE:
 
@@ -249,7 +279,7 @@ public class RowScanner implements AutoCloseable, Iterable<DataItem> {
                 case IMMUTABLE_TYPED_SET_SCOPE:
 
                 case TYPED_TUPLE_SCOPE:
-                case IMMUTABLE_TYPED_TUPLE_SCOPE: {
+                case IMMUTABLE_TYPED_TUPLE_SCOPE:
 
                     visitor.nodes().push(path.isEmpty()
                         ? Utf8String.transcodeUtf16(lenientFormat("[%s]", reader.index()))
@@ -263,18 +293,17 @@ public class RowScanner implements AutoCloseable, Iterable<DataItem> {
                     }
 
                     continue;
-                }
-                case MONGODB_OBJECT_ID: {
+
+                case MONGODB_OBJECT_ID:
                     throw new IllegalStateException(lenientFormat("unsupported layout type: %s", type));
-                }
+
                 case BOOLEAN_FALSE:
                 case END_SCOPE:
-                case INVALID: {
+                case INVALID:
                     throw new IllegalStateException(lenientFormat("unexpected layout type: %s", type));
-                }
-                default: {
+
+                default:
                     throw new IllegalStateException(lenientFormat("unknown layout type: %s", type));
-                }
             }
 
             if (result != Result.SUCCESS) {
@@ -356,97 +385,98 @@ public class RowScanner implements AutoCloseable, Iterable<DataItem> {
 
                     switch (type.layoutCode()) {
 
-                        case NULL: {
+                        case NULL:
                             result = this.reader.readNull(this.value);
                             break;
-                        }
-                        case BOOLEAN: {
+
+                        case BOOLEAN:
                             result = this.reader.readBoolean(this.value);
                             break;
-                        }
-                        case INT_8: {
+
+                        case INT_8:
                             result = this.reader.readInt8(this.value);
                             break;
-                        }
-                        case INT_16: {
+
+                        case INT_16:
                             result = this.reader.readInt16(this.value);
                             break;
-                        }
-                        case INT_32: {
+
+                        case INT_32:
                             result = this.reader.readInt32(this.value);
                             break;
-                        }
-                        case INT_64: {
+
+                        case INT_64:
                             result = this.reader.readInt64(this.value);
                             break;
-                        }
-                        case VAR_INT: {
+
+                        case VAR_INT:
                             result = this.reader.readVarInt(this.value);
                             break;
-                        }
-                        case UINT_8: {
+
+                        case UINT_8:
                             result = this.reader.readUInt8(this.value);
                             break;
-                        }
-                        case UINT_16: {
+
+                        case UINT_16:
                             result = this.reader.readUInt16(this.value);
                             break;
-                        }
-                        case UINT_32: {
+
+                        case UINT_32:
                             result = this.reader.readUInt32(this.value);
                             break;
-                        }
-                        case UINT_64: {
+
+                        case UINT_64:
                             result = this.reader.readUInt64(this.value);
                             break;
-                        }
-                        case VAR_UINT: {
+
+                        case VAR_UINT:
                             result = this.reader.readVarUInt(this.value);
                             break;
-                        }
-                        case FLOAT_32: {
+
+                        case FLOAT_32:
                             result = this.reader.readFloat32(this.value);
                             break;
-                        }
-                        case FLOAT_64: {
+
+                        case FLOAT_64:
                             result = this.reader.readFloat64(this.value);
                             break;
-                        }
-                        case FLOAT_128: {
+
+                        case FLOAT_128:
                             result = this.reader.readFloat128(this.value);
                             break;
-                        }
-                        case DECIMAL: {
+
+                        case DECIMAL:
                             result = this.reader.readDecimal(this.value);
                             break;
-                        }
-                        case GUID: {
+
+                        case GUID:
                             result = this.reader.readGuid(this.value);
                             break;
-                        }
-                        case DATE_TIME: {
+
+                        case DATE_TIME:
                             result = this.reader.readDateTime(this.value);
                             break;
-                        }
-                        case UNIX_DATE_TIME: {
+
+                        case UNIX_DATE_TIME:
                             result = this.reader.readUnixDateTime(this.value);
                             break;
-                        }
-                        case BINARY: {
+
+                        case BINARY:
                             result = this.reader.readBinary(this.value);
                             break;
-                        }
-                        case UTF_8: {
+
+                        case UTF_8:
                             result = this.reader.readUtf8String(this.value);
                             break;
-                        }
+
                         case NULLABLE_SCOPE:
-                        case IMMUTABLE_NULLABLE_SCOPE: {
+                        case IMMUTABLE_NULLABLE_SCOPE:
+
                             if (!this.reader.hasValue()) {
                                 result = Result.SUCCESS;
                                 break;
                             }
-                        }
+
                         case ARRAY_SCOPE:
                         case IMMUTABLE_ARRAY_SCOPE:
 
@@ -481,7 +511,7 @@ public class RowScanner implements AutoCloseable, Iterable<DataItem> {
                         case IMMUTABLE_TYPED_SET_SCOPE:
 
                         case TYPED_TUPLE_SCOPE:
-                        case IMMUTABLE_TYPED_TUPLE_SCOPE: {
+                        case IMMUTABLE_TYPED_TUPLE_SCOPE:
 
                             this.readers.push(this.reader);
 
@@ -491,18 +521,17 @@ public class RowScanner implements AutoCloseable, Iterable<DataItem> {
 
                             this.reader = this.reader.readScope();
                             continue;
-                        }
-                        case MONGODB_OBJECT_ID: {
+
+                        case MONGODB_OBJECT_ID:
                             throw new IllegalStateException(lenientFormat("unsupported layout type: %s", type));
-                        }
+
                         case BOOLEAN_FALSE:
                         case END_SCOPE:
-                        case INVALID: {
+                        case INVALID:
                             throw new IllegalStateException(lenientFormat("unexpected layout type: %s", type));
-                        }
-                        default: {
+
+                        default:
                             throw new IllegalStateException(lenientFormat("unknown layout type: %s", type));
-                        }
                     }
 
                     if (result != Result.SUCCESS) {

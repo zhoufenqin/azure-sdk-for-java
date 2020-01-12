@@ -573,6 +573,7 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
      * Whether the exception is thrown on sequences containing 4-byte UTF-8 encodings depends on the values of
      * {@code start} and {@code end}. To avoid this exception at the cost of data conversion and memory allocation,
      * convert this {@link Utf8String} to a {@link String} and call {@link String#subSequence}.
+     *
      * @throws IndexOutOfBoundsException if {@code start} or {@code end} are negative, {@code end} is greater than
      * {@link #length()}, {@code start} is greater than {@code end}, or {@link #isNull()} is {@code true}.
      */
@@ -782,10 +783,9 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
                     return Utf8String.transcodeUtf16(node.textValue());
                 case NULL:
                     return null;
-                default: {
+                default:
                     String message = lenientFormat("expected string value or null, not %s", type.name().toLowerCase());
                     throw new JsonParseException(parser, message);
-                }
             }
         }
     }
@@ -841,15 +841,15 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
 
             switch (this.shift) {
 
-                default: {
+                default:
 
                     // Next unit (byte) of multi-byte code point sequence
 
                     this.codePoint |= ((value & 0xFF) << this.shift);
                     this.shift -= Byte.SIZE;
                     return true;
-                }
-                case 0: {
+
+                case 0:
 
                     // End of multi-byte code point sequence
 
@@ -862,8 +862,8 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
                     }
 
                     return false;
-                }
-                case -1: {
+
+                case -1:
 
                     // Start of code point sequence
 
@@ -899,7 +899,6 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
 
                     this.codePoint = REPLACEMENT_CHARACTER;
                     return false;
-                }
             }
         }
 
@@ -1037,15 +1036,15 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
 
             switch (this.shift) {
 
-                default: {
+                default:
 
                     // Next unit (byte) of multi-byte code point sequence
 
                     this.codePoint |= ((value & 0xFF) << this.shift);
                     this.shift -= Byte.SIZE;
                     return true;
-                }
-                case 0: {
+
+                case 0:
 
                     // End of multi-byte code point sequence
 
@@ -1054,8 +1053,8 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
                     this.codePoint = toCodePoint(this.codePoint);
 
                     return Character.isDefined(this.codePoint);
-                }
-                case -1: {
+
+                case -1:
 
                     // Start of code point sequence
 
@@ -1090,7 +1089,6 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
                     }
 
                     return false;
-                }
             }
         }
 
@@ -1372,15 +1370,15 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
 
             switch (this.shift) {
 
-                default: {
+                default:
 
                     // Next unit (byte) of multi-byte code point sequence
 
                     this.codePoint |= ((value & 0xFF) << this.shift);
                     this.shift -= Byte.SIZE;
                     return true;
-                }
-                case 0: {
+
+                case 0:
 
                     // End of multi-byte code point sequence
 
@@ -1397,8 +1395,8 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
 
                     this.shift = -1;
                     return true;
-                }
-                case -1: {
+
+                case -1:
 
                     // Start of code point sequence
 
@@ -1434,7 +1432,6 @@ public final class Utf8String implements ByteBufHolder, CharSequence, Comparable
 
                     this.builder.append((char) REPLACEMENT_CHARACTER);
                     return true;
-                }
             }
         }
 

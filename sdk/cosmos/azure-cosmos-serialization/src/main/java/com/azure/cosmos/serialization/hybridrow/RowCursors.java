@@ -18,7 +18,7 @@ public final class RowCursors {
     private RowCursors() {
     }
 
-    public static RowCursor Find(@Nonnull RowCursor edit, @Nonnull RowBuffer row, @Nonnull UtfAnyString path) {
+    public static RowCursor find(@Nonnull RowCursor edit, @Nonnull RowBuffer row, @Nonnull UtfAnyString path) {
         checkArgument(!edit.scopeType().isIndexedScope());
 
         if (!(edit.cellType() instanceof LayoutEndScope)) {
@@ -36,7 +36,7 @@ public final class RowCursors {
         return edit;
     }
 
-    public static RowCursor Find(@Nonnull RowCursor edit, @Nonnull RowBuffer row, @Nonnull StringToken pathToken) {
+    public static RowCursor find(@Nonnull RowCursor edit, @Nonnull RowBuffer row, @Nonnull StringToken pathToken) {
 
         checkNotNull(edit);
         checkNotNull(row);

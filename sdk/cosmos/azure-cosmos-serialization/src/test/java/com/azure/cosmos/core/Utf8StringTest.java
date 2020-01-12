@@ -283,8 +283,8 @@ public class Utf8StringTest {
 
             // Deseret code block (21-bit encoding containing an English alphabet invented by the LDS Church)
             // ..Deseret
-            new UnicodeText("\uD801\uDC10\uD801\uDC2F\uD801\uDC4A\uD801\uDC2C, \uD801\uDC38\uD801\uDC35 " +
-                "\uD801\uDC2A\uD801\uDC49 \uD801\uDC4F?")
+            new UnicodeText("\uD801\uDC10\uD801\uDC2F\uD801\uDC4A\uD801\uDC2C, \uD801\uDC38\uD801\uDC35 "
+                + "\uD801\uDC2A\uD801\uDC49 \uD801\uDC4F?")
         );
 
         return items.stream().map(item -> new Object[] { item }).iterator();
@@ -295,7 +295,7 @@ public class Utf8StringTest {
         private final UnicodeText item;
         private final Utf8String[] variants;
 
-        public TestEquals(UnicodeText item) {
+        TestEquals(UnicodeText item) {
 
             this.item = item;
 
@@ -336,7 +336,7 @@ public class Utf8StringTest {
         private final UnicodeText item;
         private final Utf8String[] variants;
 
-        public TestNotEquals(UnicodeText item) {
+        TestNotEquals(UnicodeText item) {
 
             this.item = item;
 

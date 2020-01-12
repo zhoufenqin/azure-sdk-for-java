@@ -19,7 +19,7 @@ import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertThrows;
 import static org.testng.Assert.fail;
 
-public class NamespaceTest {
+public final class NamespaceTest {
 
     private static final String BASEDIR = System.getProperty("azure.cosmos.basedir");
 

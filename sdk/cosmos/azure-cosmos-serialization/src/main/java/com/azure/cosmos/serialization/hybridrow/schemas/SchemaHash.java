@@ -27,8 +27,8 @@ public final class SchemaHash {
     public static HashCode128 computeHash(Namespace namespace, Schema schema, HashCode128 seed) {
         HashCode128 hash = seed;
 
-        hash = Murmur3Hash.Hash128(schema.schemaId().value(), hash);
-        hash = Murmur3Hash.Hash128(schema.type().value(), hash);
+        hash = Murmur3Hash.hash128(schema.schemaId().value(), hash);
+        hash = Murmur3Hash.hash128(schema.type().value(), hash);
         hash = computeHash(namespace, schema.options(), hash);
 
         if (schema.partitionKeys() != null) {
@@ -62,9 +62,9 @@ public final class SchemaHash {
 
         HashCode128 hash = seed;
 
-        hash = Murmur3Hash.Hash128(options != null && options.disallowUnschematized(), hash);
-        hash = Murmur3Hash.Hash128(options != null && options.enablePropertyLevelTimestamp(), hash);
-        hash = Murmur3Hash.Hash128(options != null && options.disableSystemPrefix(), hash);
+        hash = Murmur3Hash.hash128(options != null && options.disallowUnschematized(), hash);
+        hash = Murmur3Hash.hash128(options != null && options.enablePropertyLevelTimestamp(), hash);
+        hash = Murmur3Hash.hash128(options != null && options.disableSystemPrefix(), hash);
 
         return hash;
     }
@@ -73,7 +73,7 @@ public final class SchemaHash {
 
         HashCode128 hash = seed;
 
-        hash = Murmur3Hash.Hash128(p.path(), hash);
+        hash = Murmur3Hash.hash128(p.path(), hash);
         hash = SchemaHash.computeHash(ns, p.type(), hash);
 
         return hash;
@@ -83,26 +83,26 @@ public final class SchemaHash {
 
         HashCode128 hash = seed;
 
-        hash = Murmur3Hash.Hash128(p.type().value(), hash);
-        hash = Murmur3Hash.Hash128(p.nullable(), hash);
+        hash = Murmur3Hash.hash128(p.type().value(), hash);
+        hash = Murmur3Hash.hash128(p.nullable(), hash);
 
         if (p.apiType() != null) {
-            hash = Murmur3Hash.Hash128(p.apiType(), hash);
+            hash = Murmur3Hash.hash128(p.apiType(), hash);
         }
 
         if (p instanceof PrimitivePropertyType) {
 
             PrimitivePropertyType pp = (PrimitivePropertyType) p;
 
-            hash = Murmur3Hash.Hash128(pp.storage().value(), hash);
-            hash = Murmur3Hash.Hash128(pp.length(), hash);
+            hash = Murmur3Hash.hash128(pp.storage().value(), hash);
+            hash = Murmur3Hash.hash128(pp.length(), hash);
 
             return hash;
         }
 
         checkState(p instanceof ScopePropertyType);
         ScopePropertyType pp = (ScopePropertyType) p;
-        hash = Murmur3Hash.Hash128(pp.immutable(), hash);
+        hash = Murmur3Hash.hash128(pp.immutable(), hash);
 
         if (p instanceof ArrayPropertyType) {
             ArrayPropertyType spp = (ArrayPropertyType) p;
@@ -196,19 +196,19 @@ public final class SchemaHash {
     }
 
     private static HashCode128 computeHash(Namespace namespace, PartitionKey key, HashCode128 seed) {
-        return key == null ? seed : Murmur3Hash.Hash128(key.path(), seed);
+        return key == null ? seed : Murmur3Hash.hash128(key.path(), seed);
     }
 
     private static HashCode128 computeHash(Namespace namespace, PrimarySortKey key, HashCode128 seed) {
         HashCode128 hash = seed;
         if (key != null) {
-            hash = Murmur3Hash.Hash128(key.path(), hash);
-            hash = Murmur3Hash.Hash128(key.direction().value(), hash);
+            hash = Murmur3Hash.hash128(key.path(), hash);
+            hash = Murmur3Hash.hash128(key.direction().value(), hash);
         }
         return hash;
     }
 
     private static HashCode128 computeHash(Namespace ns, StaticKey key, HashCode128 seed) {
-        return key == null ? seed : Murmur3Hash.Hash128(key.path(), seed);
+        return key == null ? seed : Murmur3Hash.hash128(key.path(), seed);
     }
 }

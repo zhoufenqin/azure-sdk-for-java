@@ -1270,6 +1270,8 @@ public final class RowBuffer {
      * @param immutable {@code true} if the new scope should be marked immutable (read-only).
      *
      * @return A new scope beginning at the current iterator position.
+     *
+     * @throws IllegalStateException if edit points to an unknown scope type.
      */
     public RowCursor sparseIteratorReadScope(@Nonnull final RowCursor edit, boolean immutable) {
 
@@ -1372,7 +1374,7 @@ public final class RowBuffer {
                 .immutable(immutable);
         }
 
-        throw new IllegalStateException(lenientFormat("Not a scope type: %s", scopeType));
+        throw new IllegalStateException(lenientFormat("not a scope type: %s", scopeType));
     }
 
     public byte[] toArray() {
@@ -3329,10 +3331,11 @@ public final class RowBuffer {
      * @param valueOffset The zero-based offset from the beginning of the row where the field's value begins.
      *
      * @return The length (in bytes) of the encoded field including the metadata and the value.
+     *
+     * @throws IllegalStateException if the {@link LayoutType#layoutCode()} of {@code type} is not implemented.
      */
+    @SuppressWarnings("checkstyle:AvoidNestedBlocks")
     private int sparseComputePrimitiveSize(LayoutType type, int metaOffset, int valueOffset) {
-
-        // TODO: JTH: convert to a virtual?
 
         int metaBytes = valueOffset - metaOffset;
         LayoutCode code = type.layoutCode();
@@ -3398,16 +3401,16 @@ public final class RowBuffer {
 
             case UTF_8:
             case BINARY: {
-                Item<Long> item = this.read(this::read7BitEncodedUInt, metaOffset + metaBytes);
+                final Item<Long> item = this.read(this::read7BitEncodedUInt, metaOffset + metaBytes);
                 return metaBytes + item.length() + item.value().intValue();
             }
             case VAR_INT:
             case VAR_UINT: {
-                Item<Long> item = this.read(this::read7BitEncodedUInt, metaOffset + metaBytes);
+                final Item<Long> item = this.read(this::read7BitEncodedUInt, metaOffset + metaBytes);
                 return metaBytes + item.length();
             }
             default:
-                throw new IllegalStateException(lenientFormat("Not Implemented: %s", code));
+                throw new IllegalStateException(lenientFormat("not implemented: %s", code));
         }
     }
 

@@ -69,12 +69,14 @@ public final class Reference<T> {
         return Objects.hashCode(this.value);
     }
 
-    public void set(T value) {
+    public Reference<T> set(T value) {
         this.value = value;
+        return this;
     }
 
     public T setAndGet(T value) {
-        return this.value = value;
+        this.value = value;
+        return value;
     }
 
     @Override

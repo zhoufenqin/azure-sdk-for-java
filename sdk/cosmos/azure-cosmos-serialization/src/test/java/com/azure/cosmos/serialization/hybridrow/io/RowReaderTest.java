@@ -35,7 +35,7 @@ import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 import static org.testng.AssertJUnit.assertNotNull;
 
-public class RowReaderTest {
+public final class RowReaderTest {
 
     // region Fields
 
@@ -67,7 +67,7 @@ public class RowReaderTest {
 
     @Test(groups = "unit")
     public void testIterable() throws IOException {
-        try (final RowScanner scanner = RowScanner.open(this.namespace, this.dataFile)) {
+        try (RowScanner scanner = RowScanner.open(this.namespace, this.dataFile)) {
             for (DataItem item : scanner) {
                 assertNotNull(item);
                 out.println(item);
@@ -106,7 +106,7 @@ public class RowReaderTest {
 
     @Test(groups = "unit")
     public void testScanner() throws Exception {
-        try (final RowScanner scanner = RowScanner.open(this.namespace, this.dataFile)) {
+        try (RowScanner scanner = RowScanner.open(this.namespace, this.dataFile)) {
             scanner.visit((DataItem item, Object context) -> {
                 assertNull(context);
                 assertNotNull(item);
@@ -137,42 +137,42 @@ public class RowReaderTest {
 
             switch (type.layoutCode()) {
 
-                case BOOLEAN: {
+                case BOOLEAN:
                     result = reader.readBoolean(out);
                     break;
-                }
-                case INT_16: {
+
+                case INT_16:
                     result = reader.readInt16(out);
                     break;
-                }
-                case INT_32: {
+
+                case INT_32:
                     result = reader.readInt32(out);
                     break;
-                }
-                case INT_64: {
+
+                case INT_64:
                     result = reader.readInt64(out);
                     break;
-                }
-                case UINT_8: {
+
+                case UINT_8:
                     result = reader.readUInt8(out);
                     break;
-                }
-                case UINT_32: {
+
+                case UINT_32:
                     result = reader.readUInt32(out);
                     break;
-                }
-                case UINT_64: {
+
+                case UINT_64:
                     result = reader.readUInt64(out);
                     break;
-                }
-                case BINARY: {
+
+                case BINARY:
                     result = reader.readBinary(out);
                     break;
-                }
-                case GUID: {
+
+                case GUID:
                     result = reader.readGuid(out);
                     break;
-                }
+
                 case NULL:
                 case BOOLEAN_FALSE:
                 case INT_8:
@@ -185,15 +185,16 @@ public class RowReaderTest {
                 case DECIMAL:
                 case DATE_TIME:
                 case UNIX_DATE_TIME:
-                case UTF_8: {
+                case UTF_8:
                     break;
-                }
+
                 case NULLABLE_SCOPE:
-                case IMMUTABLE_NULLABLE_SCOPE: {
+                case IMMUTABLE_NULLABLE_SCOPE:
+
                     if (!reader.hasValue()) {
                         break;
                     }
-                }
+
                 case ARRAY_SCOPE:
                 case IMMUTABLE_ARRAY_SCOPE:
 
@@ -228,30 +229,23 @@ public class RowReaderTest {
                 case IMMUTABLE_TYPED_SET_SCOPE:
 
                 case TYPED_TUPLE_SCOPE:
-                case IMMUTABLE_TYPED_TUPLE_SCOPE: {
-
-                    System.out.print(Strings.repeat("  ", level));
-                    System.out.println(lenientFormat("%s: %s", path, type.name()));
+                case IMMUTABLE_TYPED_TUPLE_SCOPE:
 
                     result = reader.readScope(null, (RowReader child, Object ignored) -> visitFields(child, level + 1));
-
-                    System.out.print(Strings.repeat("  ", level));
-                    System.out.println("end");
                     break;
-                }
-                case END_SCOPE: {
+
+                case END_SCOPE:
                     fail(lenientFormat("unexpected layout type: %s", type));
                     break;
-                }
+
                 case INVALID:
-                case MONGODB_OBJECT_ID: {
+                case MONGODB_OBJECT_ID:
                     fail(lenientFormat("unsupported layout type: %s", type));
                     break;
-                }
-                default: {
+
+                default:
                     fail(lenientFormat("unknown layout type: %s", type));
                     break;
-                }
             }
 
             if (result != Result.SUCCESS) {

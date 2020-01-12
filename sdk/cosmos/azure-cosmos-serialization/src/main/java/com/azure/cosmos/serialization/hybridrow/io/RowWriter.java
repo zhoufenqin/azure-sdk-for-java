@@ -3,6 +3,8 @@
 
 package com.azure.cosmos.serialization.hybridrow.io;
 
+import com.azure.cosmos.core.Utf8String;
+import com.azure.cosmos.core.UtfAnyString;
 import com.azure.cosmos.serialization.hybridrow.Float128;
 import com.azure.cosmos.serialization.hybridrow.NullValue;
 import com.azure.cosmos.serialization.hybridrow.Result;
@@ -10,8 +12,6 @@ import com.azure.cosmos.serialization.hybridrow.RowBuffer;
 import com.azure.cosmos.serialization.hybridrow.RowCursor;
 import com.azure.cosmos.serialization.hybridrow.RowCursors;
 import com.azure.cosmos.serialization.hybridrow.UnixDateTime;
-import com.azure.cosmos.core.Utf8String;
-import com.azure.cosmos.core.UtfAnyString;
 import com.azure.cosmos.serialization.hybridrow.layouts.Layout;
 import com.azure.cosmos.serialization.hybridrow.layouts.LayoutArray;
 import com.azure.cosmos.serialization.hybridrow.layouts.LayoutColumn;
@@ -327,6 +327,19 @@ public final class RowWriter {
         );
     }
 
+    /** Write content to a specified area in the scope of a row writer.
+     * <p>
+     * @param path a path string identifying the scope.
+     * @param typeArg a type argument specifying the layout of the content.
+     * @param context a context for writing content to the scope using {@code func} or {@code null}.
+     * @param func a function that will be called to write content to the scope using {@code context} or {@code null}.
+     * @param <TContext> the type of {@code context}.
+     *
+     * @return the {@link Result} of the write to the specified scope.
+     *
+     * @throws IllegalStateException if the {@code typeArg}.{@link TypeArgument#type()} is not an instance of a known
+     * {@link LayoutType}.
+     */
     public <TContext> Result writeScope(
         @Nonnull final UtfAnyString path,
         @Nonnull final TypeArgument typeArg,
@@ -744,9 +757,9 @@ public final class RowWriter {
                 return type.writeFixed(this.row, this.cursor, column.get(), value);
             case VARIABLE:
                 return type.writeVariable(this.row, this.cursor, column.get(), value);
+            default:
+                return Result.NOT_FOUND;
         }
-
-        return Result.NOT_FOUND;
     }
 
     /**
@@ -776,9 +789,9 @@ public final class RowWriter {
                 return type.<LayoutUtf8Writable>typeAs().writeFixed(this.row, this.cursor, column.get(), value);
             case VARIABLE:
                 return type.<LayoutUtf8Writable>typeAs().writeVariable(this.row, this.cursor, column.get(), value);
+            default:
+                return Result.NOT_FOUND;
         }
-
-        return Result.NOT_FOUND;
     }
 
     /**
@@ -811,9 +824,9 @@ public final class RowWriter {
             case VARIABLE:
                 return type.<LayoutListWritable<TValue>>typeAs().writeVariableList(this.row, this.cursor,
                     column.get(), value);
+            default:
+                return Result.NOT_FOUND;
         }
-
-        return Result.NOT_FOUND;
     }
 
     /**

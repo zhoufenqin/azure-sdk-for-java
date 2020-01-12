@@ -3,17 +3,19 @@
 
 package com.azure.cosmos.serialization.hybridrow.layouts;
 
+import com.azure.cosmos.core.Out;
 import com.azure.cosmos.serialization.hybridrow.Result;
 import com.azure.cosmos.serialization.hybridrow.RowBuffer;
 import com.azure.cosmos.serialization.hybridrow.RowCursor;
-import com.azure.cosmos.core.Out;
 
 import javax.annotation.Nonnull;
 
 public final class LayoutArray extends LayoutIndexedScope {
 
     public LayoutArray(final boolean immutable) {
-        super(immutable ? LayoutCode.IMMUTABLE_ARRAY_SCOPE : LayoutCode.ARRAY_SCOPE, immutable, false, false, false, false);
+        super(immutable
+            ? LayoutCode.IMMUTABLE_ARRAY_SCOPE
+            : LayoutCode.ARRAY_SCOPE, immutable, false, false, false, false);
     }
 
     @Nonnull

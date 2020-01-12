@@ -250,11 +250,11 @@ public final class RowReader {
 
             switch (this.state) {
 
-                case NONE: {
+                case NONE:
                     this.state = this.cursor.scopeType() instanceof LayoutUDT ? States.SCHEMATIZED : States.SPARSE;
                     break;
-                }
-                case SCHEMATIZED: {
+
+                case SCHEMATIZED:
 
                     this.columnIndex++;
 
@@ -271,15 +271,17 @@ public final class RowReader {
                     }
 
                     return true;
-                }
-                case SPARSE: {
+
+                case SPARSE:
 
                     if (!RowCursors.moveNext(this.cursor, this.buffer)) {
                         this.state = States.DONE;
                         break;
                     }
                     return true;
-                }
+
+                default:
+                    break;
             }
         }
 

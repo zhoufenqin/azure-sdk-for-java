@@ -3,8 +3,8 @@
 
 package com.azure.cosmos.serialization.hybridrow.layouts;
 
-import com.azure.cosmos.serialization.hybridrow.SchemaId;
 import com.azure.cosmos.core.Out;
+import com.azure.cosmos.serialization.hybridrow.SchemaId;
 import com.azure.cosmos.serialization.hybridrow.schemas.ArrayPropertyType;
 import com.azure.cosmos.serialization.hybridrow.schemas.MapPropertyType;
 import com.azure.cosmos.serialization.hybridrow.schemas.Namespace;
@@ -70,16 +70,18 @@ public final class LayoutCompiler {
 
             switch (LayoutCodeTraits.clearImmutableBit(type.layoutCode())) {
 
-                case OBJECT_SCOPE: {
+                case OBJECT_SCOPE:
+
                     if (!p.type().nullable()) {
                         throw new LayoutCompilationException("Non-nullable sparse column are not supported.");
                     }
+
                     ObjectPropertyType op = (ObjectPropertyType) p.type();
                     builder.addObjectScope(p.path(), type);
+
                     LayoutCompiler.addProperties(builder, namespace, type.layoutCode(), op.properties());
                     builder.endObjectScope();
                     break;
-                }
 
                 case ARRAY_SCOPE:
                 case TYPED_ARRAY_SCOPE:
@@ -91,19 +93,19 @@ public final class LayoutCompiler {
                 case TYPED_TUPLE_SCOPE:
                 case TAGGED_SCOPE:
                 case TAGGED2_SCOPE:
-                case SCHEMA: {
+                case SCHEMA:
+
                     if (!p.type().nullable()) {
                         throw new LayoutCompilationException("Non-nullable sparse column are not supported.");
                     }
+
                     builder.addTypedScope(p.path(), type, typeArgs.get());
                     break;
-                }
 
-                case NULLABLE_SCOPE: {
+                case NULLABLE_SCOPE:
                     throw new LayoutCompilationException("Nullables cannot be explicitly declared as columns.");
-                }
 
-                default: {
+                default:
 
                     if (p.type() instanceof PrimitivePropertyType) {
 
@@ -153,7 +155,6 @@ public final class LayoutCompiler {
                     }
 
                     break;
-                }
             }
         }
     }
@@ -236,7 +237,7 @@ public final class LayoutCompiler {
             case OBJECT:
                 return immutable ? LayoutTypes.IMMUTABLE_OBJECT : LayoutTypes.OBJECT;
 
-            case ARRAY: {
+            case ARRAY:
 
                 assert logicalType instanceof ArrayPropertyType;
                 ArrayPropertyType ap = (ArrayPropertyType) logicalType;
@@ -258,8 +259,8 @@ public final class LayoutCompiler {
                 }
 
                 return immutable ? LayoutTypes.IMMUTABLE_ARRAY : LayoutTypes.ARRAY;
-            }
-            case SET: {
+
+            case SET:
 
                 assert logicalType instanceof SetPropertyType;
                 SetPropertyType sp = (SetPropertyType) logicalType;
@@ -286,8 +287,8 @@ public final class LayoutCompiler {
                     "Unknown property type: %s",
                     logicalType.type()
                 ));
-            }
-            case MAP: {
+
+            case MAP:
 
                 assert logicalType instanceof MapPropertyType;
                 MapPropertyType mp = (MapPropertyType) logicalType;
@@ -326,7 +327,7 @@ public final class LayoutCompiler {
                 throw new LayoutCompilationException(lenientFormat(
                     "Unknown property type: %s", logicalType.type())
                 );
-            }
+
             case TUPLE: {
 
                 assert logicalType instanceof TuplePropertyType;
@@ -395,7 +396,7 @@ public final class LayoutCompiler {
                         throw new LayoutCompilationException("Unexpected tagged arity");
                 }
             }
-            case SCHEMA: {
+            case SCHEMA:
 
                 assert logicalType instanceof UdtPropertyType;
                 UdtPropertyType up = (UdtPropertyType) logicalType;
@@ -425,11 +426,9 @@ public final class LayoutCompiler {
 
                 typeArgs.set(new TypeArgumentList(udtSchema.get().schemaId()));
                 return immutable ? LayoutTypes.IMMUTABLE_UDT : LayoutTypes.UDT;
-            }
+
             default:
-                throw new LayoutCompilationException(Strings.lenientFormat(
-                    "Unknown property type: %s", logicalType.type()
-                ));
+                throw new LayoutCompilationException(lenientFormat("unknown property type: %s", logicalType.type()));
         }
     }
 }

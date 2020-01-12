@@ -60,7 +60,8 @@ public class DecimalCodecTest {
     private static Iterator<Object[]> decimalData() {
 
         ImmutableList<DecimalItem> items = ImmutableList.of(
-            new DecimalItem( // decimal.MinusOne
+            // decimal.MinusOne
+            new DecimalItem(
                 new byte[] {
                     (byte) 0, (byte) 0, (byte) 0, (byte) 128, // flags
                     (byte) 0, (byte) 0, (byte) 0, (byte) 0,   // high
@@ -68,7 +69,8 @@ public class DecimalCodecTest {
                     (byte) 0, (byte) 0, (byte) 0, (byte) 0,   // mid
                 },
                 new BigDecimal("-1")),
-            new DecimalItem( // decimal.Zero
+            // decimal.Zero
+            new DecimalItem(
                 new byte[] {
                     (byte) 0, (byte) 0, (byte) 0, (byte) 0,  // flags
                     (byte) 0, (byte) 0, (byte) 0, (byte) 0,  // high
@@ -76,7 +78,8 @@ public class DecimalCodecTest {
                     (byte) 0, (byte) 0, (byte) 0, (byte) 0,  // mid
                 },
                 new BigDecimal("0")),
-            new DecimalItem( // decimal.One
+            // decimal.One
+            new DecimalItem(
                 new byte[] {
                     (byte) 0, (byte) 0, (byte) 0, (byte) 0,  // flags
                     (byte) 0, (byte) 0, (byte) 0, (byte) 0,  // high
@@ -84,7 +87,8 @@ public class DecimalCodecTest {
                     (byte) 0, (byte) 0, (byte) 0, (byte) 0,  // mid
                 },
                 new BigDecimal("1")),
-            new DecimalItem( // decimal.MinValue
+            // decimal.MinValue
+            new DecimalItem(
                 new byte[] {
                     (byte) 0, (byte) 0, (byte) 0, (byte) 128,        // flags
                     (byte) 255, (byte) 255, (byte) 255, (byte) 255,  // high
@@ -92,7 +96,8 @@ public class DecimalCodecTest {
                     (byte) 255, (byte) 255, (byte) 255, (byte) 255,  // mid
                 },
                 new BigDecimal("-79228162514264337593543950335")),
-            new DecimalItem( // decimal.MaxValue
+            // decimal.MaxValue
+            new DecimalItem(
                 new byte[] {
                     (byte) 0, (byte) 0, (byte) 0, (byte) 0,          // flags
                     (byte) 255, (byte) 255, (byte) 255, (byte) 255,  // high
@@ -100,7 +105,8 @@ public class DecimalCodecTest {
                     (byte) 255, (byte) 255, (byte) 255, (byte) 255,  // mid
                 },
                 new BigDecimal("79228162514264337593543950335")),
-            new DecimalItem( // new decimal(Math.PI)
+            // new decimal(Math.PI)
+            new DecimalItem(
                 new byte[] {
                     (byte) 0, (byte) 0, (byte) 14, (byte) 0,         // flags
                     (byte) 0, (byte) 0, (byte) 0, (byte) 0,          // high

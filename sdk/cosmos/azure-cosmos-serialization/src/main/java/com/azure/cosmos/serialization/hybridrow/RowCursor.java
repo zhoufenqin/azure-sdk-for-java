@@ -53,6 +53,7 @@ public final class RowCursor implements Cloneable {
      * Sets the layout type of an existing field.
      *
      * @param value a {@link LayoutType}.
+     *
      * @return a reference to this {@link RowCursor}.
      */
     public RowCursor cellType(LayoutType value) {
@@ -73,6 +74,7 @@ public final class RowCursor implements Cloneable {
      * Sets the layout type arguments of an existing field.
      *
      * @param value a {@link TypeArgumentList} or {@code null}.
+     *
      * @return a reference to this {@link RowCursor}.
      */
     public RowCursor cellTypeArgs(TypeArgumentList value) {
@@ -80,6 +82,13 @@ public final class RowCursor implements Cloneable {
         return this;
     }
 
+    /**
+     * Clone this {@link RowCursor}.
+     *
+     * @return a clone of this {@link RowCursor}.
+     *
+     * @throws IllegalStateException if this method catches a {@link CloneNotSupportedException}.
+     */
     public RowCursor clone() {
         try {
             return (RowCursor) super.clone();
@@ -101,6 +110,7 @@ public final class RowCursor implements Cloneable {
      * Sets the number of elements for a sized scope.
      *
      * @param count the number of elements for a sized scope.
+     *
      * @return a reference to this {@link RowCursor}.
      */
     public RowCursor count(int count) {
@@ -150,6 +160,7 @@ public final class RowCursor implements Cloneable {
      * Sets a value that indicates whether this cursor identifies a unique index scope.
      *
      * @param value {@code true}, if this cursor identifies a unique index scope, otherwise {@code false}.
+     *
      * @return a reference to this {@link RowCursor}.
      */
     public RowCursor deferUniqueIndex(boolean value) {
@@ -172,6 +183,7 @@ public final class RowCursor implements Cloneable {
      * Sets a value that indicates whether this cursor identifies a unique index scope.
      *
      * @param value {@code true}, if this cursor identifies a unique index scope, otherwise {@code false}.
+     *
      * @return a reference to this {@link RowCursor}.
      */
     public RowCursor endOffset(int value) {
@@ -192,6 +204,7 @@ public final class RowCursor implements Cloneable {
      * Sets a value that indicates whether this cursor identifies a field matching search criteria.
      *
      * @param value {@code true}, if this cursor identifies a field matching search criteria, otherwise {@code false}.
+     *
      * @return a reference to this {@link RowCursor}.
      */
     public RowCursor exists(boolean value) {
@@ -216,6 +229,7 @@ public final class RowCursor implements Cloneable {
      * The entire scope can still be replaced.
      *
      * @param value {@code true} if this scope's nested fields cannot be updated individually, otherwise {@code false}.
+     *
      * @return a reference to this {@link RowCursor}.
      */
     public RowCursor immutable(boolean value) {
@@ -236,6 +250,7 @@ public final class RowCursor implements Cloneable {
      * Sets the zero-based index into the scope of a sparse field in an indexed scope (e.g. an Array scope).
      *
      * @param value the zero-based index into the scope of the sparse field.
+     *
      * @return a reference to this {@link RowCursor}.
      */
     public RowCursor index(int value) {
