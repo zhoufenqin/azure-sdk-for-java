@@ -33,7 +33,6 @@ public final class Murmur3Hash {
     private static final ByteBuf TRUE = Constant.add(true);
     private static final ByteBuf EMPTY_STRING = Constant.add("");
 
-    @SuppressWarnings("checkstyle:ConstantName")
     private static final ByteBufAllocator allocator = ByteBufAllocator.DEFAULT;
 
     /**

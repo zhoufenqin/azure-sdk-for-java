@@ -3334,7 +3334,6 @@ public final class RowBuffer {
      *
      * @throws IllegalStateException if the {@link LayoutType#layoutCode()} of {@code type} is not implemented.
      */
-    @SuppressWarnings("checkstyle:AvoidNestedBlocks")
     private int sparseComputePrimitiveSize(LayoutType type, int metaOffset, int valueOffset) {
 
         int metaBytes = valueOffset - metaOffset;
