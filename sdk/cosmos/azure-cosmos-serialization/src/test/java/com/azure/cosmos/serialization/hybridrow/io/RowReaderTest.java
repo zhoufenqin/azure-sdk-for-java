@@ -118,10 +118,10 @@ public final class RowReaderTest {
 
     // region Privates
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "fallthrough", "unchecked" })
     private static Result visitFields(RowReader reader, int level) {
 
-        Out out = new Out();
+        @SuppressWarnings("rawtypes") Out out = new Out();
 
         while (reader.read()) {
 

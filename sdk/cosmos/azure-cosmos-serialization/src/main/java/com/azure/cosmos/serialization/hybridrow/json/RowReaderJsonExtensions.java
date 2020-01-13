@@ -99,6 +99,7 @@ public final class RowReaderJsonExtensions {
         return result;
     }
 
+    @SuppressWarnings({ "fallthrough", "unchecked" })
     @Nonnull
     private static Result toJson(@Nonnull final RowReader reader, @Nonnull final ReaderStringContext context) {
 

@@ -136,7 +136,7 @@ public final class RowScanner implements AutoCloseable, Iterable<DataItem> {
         return visit(reader, new DataItemVisitor<>(accept, context));
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "fallthrough", "unchecked" })
     private static <TContext> Result visit(RowReader reader, DataItemVisitor<TContext> visitor) {
 
         @SuppressWarnings("rawtypes") final Out value = new Out();
@@ -369,7 +369,7 @@ public final class RowScanner implements AutoCloseable, Iterable<DataItem> {
             return dataItem;
         }
 
-        @SuppressWarnings("unchecked")
+        @SuppressWarnings({ "fallthrough", "unchecked" })
         private void advance() {
 
             do {
