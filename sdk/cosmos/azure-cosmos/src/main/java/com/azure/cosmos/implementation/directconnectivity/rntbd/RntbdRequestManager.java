@@ -719,9 +719,9 @@ public final class RntbdRequestManager implements ChannelHandler, ChannelInbound
 
             // ..Create Error instance
 
-            final CosmosError error = response.hasPayload() ?
-                BridgeInternal.createCosmosError(RntbdObjectMapper.readTree(response)) :
-                new CosmosError(Integer.toString(status.code()), status.reasonPhrase(), status.codeClass().name());
+            final CosmosError error = response.hasPayload()
+                ? BridgeInternal.createCosmosError(RntbdObjectMapper.readTree(response))
+                : new CosmosError(Integer.toString(status.code()), status.reasonPhrase(), status.codeClass().name());
 
             // ..Map RNTBD response headers to HTTP response headers
 
@@ -854,6 +854,7 @@ public final class RntbdRequestManager implements ChannelHandler, ChannelInbound
     private static final class UnhealthyChannelException extends ChannelException {
 
         static final UnhealthyChannelException INSTANCE = new UnhealthyChannelException();
+        private static final long serialVersionUID = -4259064430464164415L;
 
         private UnhealthyChannelException() {
             super("health check failed");

@@ -643,6 +643,8 @@ public final class RntbdClientChannelPool extends SimpleChannelPool {
 
     static final class JsonSerializer extends StdSerializer<RntbdClientChannelPool> {
 
+        private static final long serialVersionUID = 2948792259862903784L;
+
         JsonSerializer() {
             super(RntbdClientChannelPool.class);
         }

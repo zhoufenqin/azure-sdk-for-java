@@ -65,8 +65,8 @@ public final class RntbdUUID {
      * @return a new byte array containing the encoded
      */
     public static byte[] encode(final UUID uuid) {
-        final byte[] bytes = new byte[2 * Integer.BYTES];
-        encode(uuid, Unpooled.wrappedBuffer(bytes));
+        final byte[] bytes = new byte[2 * Long.BYTES];
+        encode(uuid, Unpooled.wrappedBuffer(bytes).writerIndex(0));
         return bytes;
     }
 
@@ -80,14 +80,14 @@ public final class RntbdUUID {
 
         final long mostSignificantBits = uuid.getMostSignificantBits();
 
-        out.writeIntLE((int)((mostSignificantBits & 0xFFFFFFFF00000000L) >>> 32));
-        out.writeShortLE((short)((mostSignificantBits & 0x00000000FFFF0000L) >>> 16));
-        out.writeShortLE((short)(mostSignificantBits & 0x000000000000FFFFL));
+        out.writeIntLE((int) ((mostSignificantBits & 0xFFFFFFFF00000000L) >>> 32));
+        out.writeShortLE((short) ((mostSignificantBits & 0x00000000FFFF0000L) >>> 16));
+        out.writeShortLE((short) (mostSignificantBits & 0x000000000000FFFFL));
 
         final long leastSignificantBits = uuid.getLeastSignificantBits();
 
-        out.writeShortLE((short)((leastSignificantBits & 0xFFFF000000000000L) >>> (32 + 16)));
-        out.writeShort((short)((leastSignificantBits & 0x0000FFFF00000000L) >>> 32));
-        out.writeInt((int)(leastSignificantBits & 0x00000000FFFFFFFFL));
+        out.writeShortLE((short) ((leastSignificantBits & 0xFFFF000000000000L) >>> (32 + 16)));
+        out.writeShort((short) ((leastSignificantBits & 0x0000FFFF00000000L) >>> 32));
+        out.writeInt((int) (leastSignificantBits & 0x00000000FFFFFFFFL));
     }
 }

@@ -9,9 +9,9 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class RntbdContextRequestEncoder extends MessageToByteEncoder {
+final class RntbdContextRequestEncoder extends MessageToByteEncoder<Object> {
 
-    private static final Logger Logger = LoggerFactory.getLogger(RntbdContextRequestEncoder.class);
+    private static final Logger logger = LoggerFactory.getLogger(RntbdContextRequestEncoder.class);
 
     /**
      * Returns {@code true} if the given message is an @{link RntbdContextRequest} instance
@@ -49,6 +49,6 @@ final class RntbdContextRequestEncoder extends MessageToByteEncoder {
             throw error;
         }
 
-        Logger.debug("{}: ENCODE COMPLETE: request={}", context.channel(), request);
+        logger.debug("{}: ENCODE COMPLETE: request={}", context.channel(), request);
     }
 }

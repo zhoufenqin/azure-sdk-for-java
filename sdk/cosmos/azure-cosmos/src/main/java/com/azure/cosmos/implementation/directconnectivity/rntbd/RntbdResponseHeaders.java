@@ -501,7 +501,8 @@ class RntbdResponseHeaders extends RntbdTokenStream<RntbdResponseHeader> {
     }
 
     private Map.Entry<String, String> toSessionTokenEntry(final String name, final RntbdToken token) {
-        return new Entry(name, this.partitionKeyRangeId.getValue(String.class) + ":" + this.sessionToken.getValue(String.class));
+        return new Entry(
+            name, this.partitionKeyRangeId.getValue(String.class) + ":" + this.sessionToken.getValue(String.class));
     }
 
     private static Map.Entry<String, String> toStringEntry(final String name, final RntbdToken token) {
@@ -509,6 +510,9 @@ class RntbdResponseHeaders extends RntbdTokenStream<RntbdResponseHeader> {
     }
 
     private static final class Entry extends AbstractMap.SimpleImmutableEntry<String, String> {
+
+        private static final long serialVersionUID = 724041261693507789L;
+
         Entry(final String name, final String value) {
             super(name, value);
         }

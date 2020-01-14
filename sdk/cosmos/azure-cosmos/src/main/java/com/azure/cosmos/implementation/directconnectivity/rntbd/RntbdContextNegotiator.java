@@ -20,7 +20,8 @@ import java.util.concurrent.CompletableFuture;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public final class RntbdContextNegotiator extends CombinedChannelDuplexHandler<RntbdContextDecoder, RntbdContextRequestEncoder> {
+public final class RntbdContextNegotiator extends
+    CombinedChannelDuplexHandler<RntbdContextDecoder, RntbdContextRequestEncoder> {
 
     private static final Logger logger = LoggerFactory.getLogger(RntbdContextNegotiator.class);
     private final RntbdRequestManager manager;
@@ -50,10 +51,13 @@ public final class RntbdContextNegotiator extends CombinedChannelDuplexHandler<R
      * @throws Exception thrown if an error occurs
      */
     @Override
-    public void write(final ChannelHandlerContext context, final Object message, final ChannelPromise promise) throws Exception {
+    public void write(
+        final ChannelHandlerContext context,
+        final Object message,
+        final ChannelPromise promise) throws Exception {
 
         checkArgument(message instanceof ByteBuf, "message: %s", message.getClass());
-        final ByteBuf out = (ByteBuf)message;
+        final ByteBuf out = (ByteBuf) message;
 
         if (this.manager.hasRntbdContext()) {
             context.writeAndFlush(out, promise);
@@ -77,10 +81,11 @@ public final class RntbdContextNegotiator extends CombinedChannelDuplexHandler<R
         final RntbdContextRequest request = new RntbdContextRequest(Utils.randomUUID(), this.userAgent);
         final CompletableFuture<RntbdContextRequest> contextRequestFuture = this.manager.rntbdContextRequestFuture();
 
-        super.write(context, request, channel.newPromise().addListener((ChannelFutureListener)future -> {
+        super.write(context, request, channel.newPromise().addListener((ChannelFutureListener) future -> {
 
             if (future.isSuccess()) {
                 contextRequestFuture.complete(request);
+                super.flush(context);
                 return;
             }
 

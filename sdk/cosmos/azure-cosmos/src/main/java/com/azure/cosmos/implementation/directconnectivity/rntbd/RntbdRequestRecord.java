@@ -14,6 +14,8 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import io.micrometer.core.instrument.Timer;
 import io.netty.util.Timeout;
 import io.netty.util.TimerTask;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.time.Duration;
@@ -31,8 +33,13 @@ import static com.google.common.base.Strings.lenientFormat;
 @JsonSerialize(using = RntbdRequestRecord.JsonSerializer.class)
 public final class RntbdRequestRecord extends CompletableFuture<StoreResponse> {
 
-    private static final AtomicReferenceFieldUpdater<RntbdRequestRecord, Stage> updater = AtomicReferenceFieldUpdater
-        .newUpdater(RntbdRequestRecord.class, Stage.class, "stage");
+    private static final Logger logger = LoggerFactory.getLogger(RntbdRequestRecord.class);
+
+    private static final AtomicReferenceFieldUpdater<RntbdRequestRecord, Stage> stageUpdater =
+        AtomicReferenceFieldUpdater.newUpdater(
+            RntbdRequestRecord.class,
+            Stage.class,
+            "stage");
 
     private final RntbdRequestArgs args;
     private final RntbdRequestTimer timer;
@@ -71,35 +78,38 @@ public final class RntbdRequestRecord extends CompletableFuture<StoreResponse> {
     }
 
     public Stage stage() {
-        return updater.get(this);
+        return stageUpdater.get(this);
     }
 
     public RntbdRequestRecord stage(final Stage value) {
 
         final OffsetDateTime time = OffsetDateTime.now();
 
-        updater.updateAndGet(this, current -> {
+        stageUpdater.updateAndGet(this, current -> {
 
             switch (value) {
                 case PIPELINED:
-                    checkState(current == Stage.QUEUED,
-                        "expected transition from QUEUED to PIPELINED, not %s",
-                        current);
+                    if (current != Stage.QUEUED) {
+                        logger.debug("Expected transition from QUEUED to PIPELINED, not {} to PIPELINED", current);
+                    }
                     this.timePipelined = time;
                     break;
                 case SENT:
-                    checkState(current == Stage.PIPELINED,
-                        "expected transition from PIPELINED to SENT, not %s",
-                        current);
+                    if (current != Stage.PIPELINED) {
+                        logger.debug("Expected transition from PIPELINED to SENT, not {} to SENT", current);
+                    }
                     this.timeSent = time;
                     break;
                 case RECEIVED:
-                    checkState(current == Stage.SENT,
-                        "expected transition from SENT to RECEIVED, not %s",
-                        current);
+                    if (current != Stage.SENT) {
+                        logger.debug("Expected transition from SENT to RECEIVED, not {} to RECEIVED", current);
+                    }
                     this.timeReceived = time;
                     break;
                 case COMPLETED:
+                    if (current == Stage.COMPLETED) {
+                        logger.debug("Request already COMPLETED", current);
+                    }
                     this.timeCompleted = time;
                     break;
                 default:
@@ -201,6 +211,8 @@ public final class RntbdRequestRecord extends CompletableFuture<StoreResponse> {
     }
 
     static final class JsonSerializer extends StdSerializer<RntbdRequestRecord> {
+
+        private static final long serialVersionUID = -6869331366500298083L;
 
         JsonSerializer() {
             super(RntbdRequestRecord.class);
