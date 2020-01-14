@@ -52,7 +52,6 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
-import io.reactivex.subscribers.TestSubscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.DataProvider;
@@ -60,7 +59,6 @@ import org.testng.annotations.Test;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
-import java.lang.reflect.Method;
 import java.net.SocketAddress;
 import java.net.URI;
 import java.time.Duration;
@@ -522,8 +520,12 @@ public final class RntbdTransportClientTest {
         throw new UnsupportedOperationException("TODO: DANOBLE: Implement this test");
     }
 
+    // TODO (DANOBLE) rename this method after addressing this issue:
+    //  Each verifyRequestFailure test times out if run after verifyRequestCancellation.
+    //  Workaround: rename verifyRequestCancellation as xverifyRequestCancellation to ensure the test runs after
+    //  verifyRequestFailure.
     @Test(enabled = true, groups = "unit")
-    public void verifyRequestCancellation(Method method) {
+    public void xverifyRequestCancellation() {
 
         final UserAgentContainer userAgent = new UserAgentContainer();
         final Duration requestTimeout = Duration.ofSeconds(5);
@@ -556,13 +558,13 @@ public final class RntbdTransportClientTest {
 
             try {
                 storeResponseMono = client.invokeStoreAsync(PHYSICAL_ADDRESS, request).doOnCancel(() -> {
-                    logger.info("{}: request cancelled as expected", method.getName());
+                    logger.info("verifyRequestCancellation: request cancelled as expected");
                     cancelled.set(true);
                 }).doOnError(error -> {
-                    logger.info("{}: unexpected {}", method.getName(), error.getClass().getSimpleName());
+                    logger.info("verifyRequestCancellation: : unexpected {}", error.getClass().getSimpleName());
                     throwable.set(error);
                 }).doOnSuccess(result -> {
-                    logger.info("{}: unexpected {}}", method.getName(), result.getClass().getSimpleName());
+                    logger.info("verifyRequestCancellation: unexpected {}}", result.getClass().getSimpleName());
                     storeResponse.set(result);
                 });
             } catch (final Throwable error) {
@@ -579,19 +581,18 @@ public final class RntbdTransportClientTest {
 
     /**
      * Validates the error handling behavior of the {@link RntbdTransportClient} for HTTP status codes >= 400
-     *
-     * @param expectedError a {@link CosmosClientException} specifying the kind of request failure expected.
+     *  @param expectedError a {@link CosmosClientException} specifying the kind of request failure expected.
      * @param request an RNTBD request instance
      * @param response the RNTBD response instance to be returned as a result of the request
      */
     @Test(enabled = true, groups = "unit", dataProvider = "fromMockedRntbdResponseToExpectedCosmosClientException")
-    public void verifyRequestFailures(
+    public void verifyRequestFailure(
         final Class<? extends CosmosClientException> expectedError,
         final RxDocumentServiceRequest request,
         final RntbdResponse response) {
 
         final UserAgentContainer userAgent = new UserAgentContainer();
-        final Duration requestTimeout = Duration.ofSeconds(10);
+        final Duration requestTimeout = Duration.ofSeconds(5);
 
         try (RntbdTransportClient client = getRntbdTransportClientUnderTest(userAgent, requestTimeout, response)) {
 
@@ -646,25 +647,25 @@ public final class RntbdTransportClientTest {
 
         @Override
         public boolean writeInbound(Object... msgs) {
-            logger.info("writeInbound");
+            logger.debug("writeInbound");
             return super.writeInbound(msgs);
         }
 
         @Override
         protected void doClose() throws Exception {
-            logger.info("doClose");
+            logger.debug("doClose");
             super.doClose();
         }
 
         @Override
         protected void handleInboundMessage(final Object message) {
-            logger.info("handleInboundMessage");
+            logger.debug("handleInboundMessage");
             super.handleInboundMessage(message);
         }
 
         @Override
         public Channel flush() {
-            logger.info("flush");
+            logger.debug("flush");
             return super.flush();
         }
 
@@ -673,7 +674,7 @@ public final class RntbdTransportClientTest {
 
             // This is the end of the outbound pipeline and so we can do what we wish with the outbound message
 
-            logger.info("handleOutboundMessage");
+            logger.debug("handleOutboundMessage");
             assertTrue(message instanceof ByteBuf);
 
             final ByteBuf out = Unpooled.buffer().retain();
