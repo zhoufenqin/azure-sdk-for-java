@@ -10,17 +10,17 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class RntbdRequestEncoder extends MessageToByteEncoder<Object> {
+public final class RntbdRequestEncoder extends MessageToByteEncoder<RntbdRequestArgs> {
 
     private static final Logger logger = LoggerFactory.getLogger(RntbdRequestEncoder.class);
 
     /**
-     * Returns {@code true} if the given message is an @{link RntbdRequest} instance
+     * Returns {@code true} if the given message is an {@link RntbdRequest} instance
      * <p>
      * If {@code false} this message should be passed to the next {@link ChannelOutboundHandler} in the pipeline.
      *
      * @param message the message to encode
-     * @return {@code true}, if the given message is an an {@link RntbdRequest} instance; otherwise @{false}
+     * @return {@code true}, if the given message is an an {@link RntbdRequest} instance; otherwise {@code false}
      */
     @Override
     public boolean acceptOutboundMessage(final Object message) {
@@ -34,12 +34,16 @@ public final class RntbdRequestEncoder extends MessageToByteEncoder<Object> {
      *
      * @param context the {@link ChannelHandlerContext} which this {@link MessageToByteEncoder} belongs encode
      * @param message the message to encode
-     * @param out     the {@link ByteBuf} into which the encoded message will be written
+     * @param out the {@link ByteBuf} into which the encoded message will be written
      */
     @Override
-    protected void encode(final ChannelHandlerContext context, final Object message, final ByteBuf out) throws Exception {
+    protected void encode(
+        final ChannelHandlerContext context,
+        final RntbdRequestArgs message,
+        final ByteBuf out
+    ) {
 
-        final RntbdRequest request = RntbdRequest.from((RntbdRequestArgs) message);
+        final RntbdRequest request = RntbdRequest.from(message);
         final int start = out.writerIndex();
 
         try {

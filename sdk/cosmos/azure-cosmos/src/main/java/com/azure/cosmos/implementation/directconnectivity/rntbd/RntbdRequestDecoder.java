@@ -11,7 +11,7 @@ import java.util.List;
 
 public final class RntbdRequestDecoder extends ByteToMessageDecoder {
     /**
-     * Prepare for decoding an @{link RntbdRequest} or fire a channel readTree event to pass the input message along
+     * Prepare for decoding an {@link RntbdRequest} or fire a channel read event to pass the input message along.
      *
      * @param context the {@link ChannelHandlerContext} which this {@link ByteToMessageDecoder} belongs to
      * @param message the message to be decoded
@@ -35,25 +35,26 @@ public final class RntbdRequestDecoder extends ByteToMessageDecoder {
     }
 
     /**
-     * Decode the input {@link ByteBuf} to an RntbdRequest instance
+     * Decode the input {@link ByteBuf} to an {@link RntbdRequest} instance.
      * <p>
-     * This method will be called till either the input {@link ByteBuf} has nothing to readTree after return from this
-     * method or till nothing was readTree from the input {@link ByteBuf}.
+     * This method will be called till either the input {@link ByteBuf} has nothing to read after return from this
+     * method or till nothing was read from the input {@link ByteBuf}.
      *
-     * @param context the {@link ChannelHandlerContext} which this {@link ByteToMessageDecoder} belongs to
-     * @param in      the {@link ByteBuf} from which to readTree data
-     * @param out     the {@link List} to which decoded messages should be added
+     * @param context the {@link ChannelHandlerContext} to which this {@link ByteToMessageDecoder} belongs.
+     * @param in the {@link ByteBuf} from which to read data
+     * @param out the {@link List} to which decoded messages should be added.
+     *
      * @throws IllegalStateException thrown if an error occurs
      */
     @Override
-    protected void decode(final ChannelHandlerContext context, final ByteBuf in, final List<Object> out) throws IllegalStateException {
+    protected void decode(final ChannelHandlerContext context, final ByteBuf in, final List<Object> out) {
 
         final RntbdRequest request;
         in.markReaderIndex();
 
         try {
             request = RntbdRequest.decode(in);
-        } catch (final IllegalStateException error) {
+        } catch (final Throwable error) {
             in.resetReaderIndex();
             throw error;
         }

@@ -9,17 +9,17 @@ import io.netty.handler.codec.MessageToByteEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final class RntbdContextRequestEncoder extends MessageToByteEncoder<Object> {
+final class RntbdContextRequestEncoder extends MessageToByteEncoder<RntbdContextRequest> {
 
     private static final Logger logger = LoggerFactory.getLogger(RntbdContextRequestEncoder.class);
 
     /**
-     * Returns {@code true} if the given message is an @{link RntbdContextRequest} instance
+     * Returns {@code true} if the given message is an {@link RntbdContextRequest} instance.
      * <p>
-     * If {@code false} this message should be passed to the next @{link ChannelOutboundHandler} in the pipeline.
+     * If {@code false} this message should be passed to the next outbound handler in the pipeline.
      *
-     * @param message the message to encode
-     * @return @{code true}, if the given message is an an @{link RntbdContextRequest} instance; otherwise @{false}
+     * @param message the message to encode.
+     * @return {@code true}, if the given message is an {@link RntbdContextRequest} instance; {@code false} otherwise.
      */
     @Override
     public boolean acceptOutboundMessage(final Object message) {
@@ -27,28 +27,30 @@ final class RntbdContextRequestEncoder extends MessageToByteEncoder<Object> {
     }
 
     /**
-     * Encode an @{link RntbdContextRequest} message into a {@link ByteBuf}
+     * Encode an {@link RntbdContextRequest} message into a {@link ByteBuf}.
      * <p>
-     * This method will be called for each written message that can be handled by this encoder.
+     * This method will be called for each outbound message that can be handled by this encoder.
      *
-     * @param context the {@link ChannelHandlerContext} which this {@link MessageToByteEncoder} belongs to
-     * @param message the message to encode
-     * @param out     the {@link ByteBuf} into which the encoded message will be written
-     * @throws IllegalStateException is thrown if an error occurs
+     * @param context the {@link ChannelHandlerContext} to which this {@link MessageToByteEncoder} belongs.
+     * @param message the message to encode.
+     * @param out the {@link ByteBuf} into which the encoded message will be written.
      */
     @Override
-    protected void encode(final ChannelHandlerContext context, final Object message, final ByteBuf out) throws IllegalStateException {
+    protected void encode(
+        final ChannelHandlerContext context,
+        final RntbdContextRequest message,
+        final ByteBuf out
+    ) {
 
-        final RntbdContextRequest request = (RntbdContextRequest)message;
         out.markWriterIndex();
 
         try {
-            request.encode(out);
-        } catch (final IllegalStateException error) {
+            message.encode(out);
+        } catch (final Throwable error) {
             out.resetWriterIndex();
             throw error;
         }
 
-        logger.debug("{}: ENCODE COMPLETE: request={}", context.channel(), request);
+        logger.debug("{}: ENCODE COMPLETE: request={}", context.channel(), message);
     }
 }

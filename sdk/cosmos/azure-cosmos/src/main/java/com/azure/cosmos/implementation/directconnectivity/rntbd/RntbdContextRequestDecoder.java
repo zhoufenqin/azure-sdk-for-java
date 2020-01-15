@@ -16,7 +16,7 @@ public class RntbdContextRequestDecoder extends ByteToMessageDecoder {
     }
 
     /**
-     * Prepare for decoding an @{link RntbdContextRequest} or fire a channel readTree event to pass the input message along
+     * Prepare for decoding an {@link RntbdContextRequest} or fire a channel readTree event to pass the input message along
      *
      * @param context the {@link ChannelHandlerContext} which this {@link ByteToMessageDecoder} belongs to
      * @param message the message to be decoded

@@ -33,28 +33,31 @@ public final class RntbdContextNegotiator extends
 
         super(new RntbdContextDecoder(), new RntbdContextRequestEncoder());
 
-        checkNotNull(manager, "manager");
-        checkNotNull(userAgent, "userAgent");
+        checkNotNull(manager, "expected non-null manager");
+        checkNotNull(userAgent, "expected non-null userAgent");
 
         this.manager = manager;
         this.userAgent = userAgent;
     }
 
     /**
-     * Called once a write operation is made. The write operation will write the messages through the
-     * {@link ChannelPipeline}. Those are then ready to be flushed to the actual {@link Channel} once
-     * {@link Channel#flush()} is called
+     * Called once a write operation is made.
+     * <p>
+     * The write operation will write the messages through the {@link ChannelPipeline}. Those are then ready to be
+     * flushed to the actual {@link Channel} once {@link Channel#flush} is called.
      *
-     * @param context the {@link ChannelHandlerContext} for which the write operation is made
-     * @param message the message to write
-     * @param promise the {@link ChannelPromise} to notify once the operation completes
-     * @throws Exception thrown if an error occurs
+     * @param context the {@link ChannelHandlerContext} for which the write operation is made.
+     * @param message the message to write.
+     * @param promise the {@link ChannelPromise} to notify once the operation completes.
+     *
+     * @throws Exception thrown if an error occurs.
      */
     @Override
     public void write(
         final ChannelHandlerContext context,
         final Object message,
-        final ChannelPromise promise) throws Exception {
+        final ChannelPromise promise
+    ) throws Exception {
 
         checkArgument(message instanceof ByteBuf, "message: %s", message.getClass());
         final ByteBuf out = (ByteBuf) message;

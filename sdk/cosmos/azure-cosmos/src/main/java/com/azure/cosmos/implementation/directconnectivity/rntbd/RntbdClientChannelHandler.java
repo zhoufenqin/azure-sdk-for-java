@@ -36,7 +36,7 @@ public class RntbdClientChannelHandler extends ChannelInitializer<Channel> imple
     }
 
     /**
-     * Called by {@link ChannelPool#acquire} after a {@link Channel} is acquired
+     * Called by {@link ChannelPool#acquire} after a {@link Channel} is acquired.
      * <p>
      * This method is called within the {@link EventLoop} of the {@link Channel}.
      *
@@ -48,7 +48,7 @@ public class RntbdClientChannelHandler extends ChannelInitializer<Channel> imple
     }
 
     /**
-     * Called by {@link ChannelPool#release} after a {@link Channel} is created
+     * Called by {@link ChannelPool#release} after a {@link Channel} is created.
      * <p>
      * This method is called within the {@link EventLoop} of the {@link Channel}.
      *
@@ -61,7 +61,7 @@ public class RntbdClientChannelHandler extends ChannelInitializer<Channel> imple
     }
 
     /**
-     * Called by {@link ChannelPool#release} after a {@link Channel} is released
+     * Called by {@link ChannelPool#release} after a {@link Channel} is released.
      * <p>
      * This method is called within the {@link EventLoop} of the {@link Channel}.
      *
@@ -73,7 +73,7 @@ public class RntbdClientChannelHandler extends ChannelInitializer<Channel> imple
     }
 
     /**
-     * Called by @{ChannelPipeline} initializer after the current channel is registered to an event loop.
+     * Called by {@link ChannelPipeline} initializer after the current channel is registered to an event loop.
      * <p>
      * This method constructs this pipeline:
      * <pre>{@code
