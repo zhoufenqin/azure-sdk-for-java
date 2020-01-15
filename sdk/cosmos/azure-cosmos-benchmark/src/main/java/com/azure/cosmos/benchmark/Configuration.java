@@ -60,6 +60,10 @@ class Configuration {
     @Parameter(names = "-maxConnectionPoolSize", description = "Max Connection Pool Size")
     private Integer maxConnectionPoolSize = 1000;
 
+    @Parameter(names = "-disablePassingPartitionKeyAsOptionOnWrite", description = "Disables passing partition in request options for write operation;" +
+        " in this case, json will be parsed and partition key will be extracted (this requires more computational overhead).")
+    private boolean disablePassingPartitionKeyAsOptionOnWrite = false;
+
     @Parameter(names = "-consistencyLevel", description = "Consistency Level", converter = ConsistencyLevelConverter.class)
     private ConsistencyLevel consistencyLevel = ConsistencyLevel.SESSION;
 
@@ -117,6 +121,9 @@ class Configuration {
 
     @Parameter(names = "-numberOfPreCreatedDocuments", description = "Total NUMBER Of Documents To pre create for a read workload to use")
     private int numberOfPreCreatedDocuments = 1000;
+
+    @Parameter(names = "-useSync", description = "Uses Sync API")
+    private boolean useSync = false;
 
     @Parameter(names = {"-h", "-help", "--help"}, description = "Help", help = true)
     private boolean help = false;
@@ -193,6 +200,15 @@ class Configuration {
             }
             return ret;
         }
+    }
+
+
+    boolean isDisablePassingPartitionKeyAsOptionOnWrite() {
+        return disablePassingPartitionKeyAsOptionOnWrite;
+    }
+
+    boolean isSync() {
+        return useSync;
     }
 
     Duration getMaxRunningTimeDuration() {
