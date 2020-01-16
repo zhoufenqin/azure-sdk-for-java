@@ -10,7 +10,7 @@ resources:
       type: github
       name: Azure/azure-sdk-tools
       endpoint: azure
-      
+
 trigger:
   branches:
     include:
@@ -40,4 +40,7 @@ stages:
       Artifacts:
         - name: azure-cosmos
           safeName: azurecosmos
+          stagingProfileId: 88192f04117501
+        - name: azure-cosmos-serialization
+          safeName: azurecosmosserialization
           stagingProfileId: 88192f04117501
