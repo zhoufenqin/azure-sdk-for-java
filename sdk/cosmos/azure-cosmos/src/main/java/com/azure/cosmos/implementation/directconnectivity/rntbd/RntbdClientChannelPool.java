@@ -563,14 +563,14 @@ public final class RntbdClientChannelPool extends SimpleChannelPool {
                             if (completed.isSuccess()) {
 
                                 reportIssueUnless(logger, this.acquired && requestManager.hasRntbdContext(),
-                                    channel,"acquired: {}, rntbdContext: {}", this.acquired,
+                                    channel, "acquired: {}, rntbdContext: {}", this.acquired,
                                     requestManager.rntbdContext());
 
                                 this.originalPromise.setSuccess(channel);
 
                             } else {
 
-                                logger.warn("Channel({}) health check request failed due to:", channel, completed.cause());
+                                logger.debug("Channel({}) health check request failed due to:", channel, completed.cause());
                                 this.fail(completed.cause());
                             }
                         });
@@ -578,7 +578,7 @@ public final class RntbdClientChannelPool extends SimpleChannelPool {
                 });
 
             } else {
-                logger.warn("channel acquisition failed due to:", future.cause());
+                logger.debug("channel acquisition failed due to:", future.cause());
                 this.fail(future.cause());
             }
         }

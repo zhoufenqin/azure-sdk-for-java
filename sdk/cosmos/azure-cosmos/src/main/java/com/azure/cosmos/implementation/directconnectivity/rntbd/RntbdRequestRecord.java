@@ -34,7 +34,7 @@ public final class RntbdRequestRecord extends CompletableFuture<StoreResponse> {
 
     private static final Logger logger = LoggerFactory.getLogger(RntbdRequestRecord.class);
 
-    private static final AtomicReferenceFieldUpdater<RntbdRequestRecord, Stage> stageUpdater =
+    private static final AtomicReferenceFieldUpdater<RntbdRequestRecord, Stage> STAGE =
         AtomicReferenceFieldUpdater.newUpdater(
             RntbdRequestRecord.class,
             Stage.class,
@@ -77,37 +77,41 @@ public final class RntbdRequestRecord extends CompletableFuture<StoreResponse> {
     }
 
     public Stage stage() {
-        return stageUpdater.get(this);
+        return STAGE.get(this);
     }
 
     public RntbdRequestRecord stage(final Stage value) {
 
         final OffsetDateTime time = OffsetDateTime.now();
 
-        stageUpdater.updateAndGet(this, current -> {
+        STAGE.updateAndGet(this, current -> {
 
             switch (value) {
                 case PIPELINED:
                     if (current != Stage.QUEUED) {
                         logger.debug("Expected transition from QUEUED to PIPELINED, not {} to PIPELINED", current);
+                        break;
                     }
                     this.timePipelined = time;
                     break;
                 case SENT:
                     if (current != Stage.PIPELINED) {
                         logger.debug("Expected transition from PIPELINED to SENT, not {} to SENT", current);
+                        break;
                     }
                     this.timeSent = time;
                     break;
                 case RECEIVED:
                     if (current != Stage.SENT) {
                         logger.debug("Expected transition from SENT to RECEIVED, not {} to RECEIVED", current);
+                        break;
                     }
                     this.timeReceived = time;
                     break;
                 case COMPLETED:
                     if (current == Stage.COMPLETED) {
                         logger.debug("Request already COMPLETED", current);
+                        break;
                     }
                     this.timeCompleted = time;
                     break;
