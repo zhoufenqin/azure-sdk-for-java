@@ -27,7 +27,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReferenceFieldUpdater;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.base.Strings.lenientFormat;
 
 @JsonSerialize(using = RntbdRequestRecord.JsonSerializer.class)

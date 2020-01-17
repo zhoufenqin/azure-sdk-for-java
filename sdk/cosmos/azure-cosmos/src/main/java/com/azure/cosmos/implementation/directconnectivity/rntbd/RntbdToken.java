@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ser.PropertyWriter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.CorruptedFrameException;
+import io.netty.handler.codec.DecoderException;
 
 import static com.azure.cosmos.implementation.directconnectivity.rntbd.RntbdConstants.RntbdHeader;
 import static com.google.common.base.Preconditions.checkArgument;
@@ -74,13 +75,13 @@ final class RntbdToken {
         }
 
         if (this.value instanceof ByteBuf) {
-            final ByteBuf buffer = (ByteBuf)this.value;
+            final ByteBuf buffer = (ByteBuf) this.value;
             this.value = codec.defaultValue();
             try {
                 this.value = codec.read(buffer);
-            } catch (final CorruptedFrameException error) {
-                String message = lenientFormat("failed to read %s value: %s", this.getName(), error.getMessage());
-                throw new CorruptedFrameException(message);
+            } catch (final DecoderException | IndexOutOfBoundsException cause) {
+                String reason = lenientFormat("failed to read %s: %s", this.getName(), cause.getMessage());
+                throw new CorruptedFrameException(reason, cause);
             } finally {
                 buffer.release();
             }
@@ -104,7 +105,7 @@ final class RntbdToken {
     }
 
     @JsonIgnore
-    public final Class<?> getValueType() {
+    public Class<?> getValueType() {
         return this.header.type().codec().valueType();
     }
 
@@ -150,7 +151,7 @@ final class RntbdToken {
         checkNotNull(in, "expected non-null in");
 
         if (this.value instanceof ByteBuf) {
-            ((ByteBuf)this.value).release();
+            ((ByteBuf) this.value).release();
         }
 
         this.value = this.header.type().codec().readSlice(in).retain(); // No data transfer until first call to RntbdToken.getValue
@@ -172,7 +173,7 @@ final class RntbdToken {
         out.writeByte(this.getTokenType().id());
 
         if (this.value instanceof ByteBuf) {
-            out.writeBytes((ByteBuf)this.value);
+            out.writeBytes((ByteBuf) this.value);
         } else {
             this.ensureValid(this.value);
             this.header.type().codec().write(this.value, out);
@@ -193,7 +194,7 @@ final class RntbdToken {
     // region Privates
 
     private void ensureValid(final Object value) {
-        checkArgument(value != null, "value: null");
+        checkNotNull("expected non-null value");
         checkArgument(this.header.type().codec().isValid(value), "value: %s = %s", value.getClass().getName(), value);
     }
 
