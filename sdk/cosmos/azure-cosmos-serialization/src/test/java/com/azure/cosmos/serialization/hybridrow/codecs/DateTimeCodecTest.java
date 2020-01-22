@@ -9,7 +9,10 @@ import io.netty.buffer.Unpooled;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Iterator;
 
 import static org.testng.Assert.assertEquals;
@@ -31,26 +34,46 @@ public class DateTimeCodecTest {
     @Test(dataProvider = "dateTimeDataProvider")
     public void testDecodeByteArray(byte[] buffer, OffsetDateTime value) {
         OffsetDateTime actual = DateTimeCodec.decode(buffer);
-        assertEquals(actual, value);
+        OffsetDateTime adjusted = OffsetDateTime.of(actual.toLocalDateTime(), value.getOffset());
+        assertEquals(adjusted, value);
     }
 
     @Test(dataProvider = "dateTimeDataProvider")
     public void testDecodeByteBuf(byte[] buffer, OffsetDateTime value) {
         ByteBuf byteBuf = Unpooled.wrappedBuffer(buffer);
         OffsetDateTime actual = DateTimeCodec.decode(byteBuf);
-        assertEquals(actual, value);
+        OffsetDateTime adjusted = OffsetDateTime.of(actual.toLocalDateTime(), value.getOffset());
+        assertEquals(adjusted, value);
     }
 
     @Test(dataProvider = "dateTimeDataProvider")
     public void testEncodeByteArray(byte[] buffer, OffsetDateTime value) {
+
         byte[] actual = DateTimeCodec.encode(value);
+
+        if (value.getOffset().getTotalSeconds() != 0) {
+            if (!value.getOffset().equals(ZoneId.systemDefault().getRules().getOffset(value.toInstant()))) {
+                assertEquals(actual[7] & 0b11000000, 0b11000000);
+                actual[7] = (byte) ((actual[7] & 0b00111111) | 0b10000000);
+            }
+        }
+
         assertEquals(actual, buffer);
     }
 
     @Test(dataProvider = "dateTimeDataProvider")
     public void testEncodeByteBuf(byte[] buffer, OffsetDateTime value) {
+
         ByteBuf actual = Unpooled.wrappedBuffer(new byte[DateTimeCodec.BYTES]).clear();
         DateTimeCodec.encode(value, actual);
+
+        if (value.getOffset().getTotalSeconds() != 0) {
+            if (!value.getOffset().equals(ZoneId.systemDefault().getRules().getOffset(value.toInstant()))) {
+                assertEquals(actual.getByte(7) & 0b11000000, 0b11000000);
+                actual.setByte(7, (actual.getByte(7) & 0b00111111) | 0b10000000);
+            }
+        }
+
         assertEquals(actual.array(), buffer);
     }
 
