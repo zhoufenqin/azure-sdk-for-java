@@ -139,7 +139,6 @@ public final class RntbdTransportClient extends TransportClient {
 
         })).doOnCancel(() -> {
             logger.debug("REQUEST CANCELLED: {}", record);
-            return;
         });
     }
 
