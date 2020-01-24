@@ -3,83 +3,80 @@
 
 package com.azure.cosmos.batch;
 
-public final class BatchExecutor
-{
-	private ContainerCore container;
+public final class BatchExecutor {
+    private RequestOptions batchOptions;
+    private CosmosClientContext clientContext;
+    private ContainerCore container;
+    private CosmosDiagnosticsContext diagnosticsContext;
+    private IReadOnlyList<ItemBatchOperation> inputOperations;
+    private PartitionKey partitionKey;
 
-	private CosmosClientContext clientContext;
+    public BatchExecutor(ContainerCore container, PartitionKey partitionKey,
+                         IReadOnlyList<ItemBatchOperation> operations, RequestOptions batchOptions,
+                         CosmosDiagnosticsContext diagnosticsContext) {
+        this.container = container;
+        this.clientContext = this.container.ClientContext;
+        this.inputOperations = operations;
+        this.partitionKey = partitionKey;
+        this.batchOptions = batchOptions;
+        this.diagnosticsContext = diagnosticsContext;
+    }
 
-	private IReadOnlyList<ItemBatchOperation> inputOperations;
+    //C# TO JAVA CONVERTER TODO TASK: There is no equivalent in Java to the 'async' keyword:
+    //ORIGINAL LINE: public async Task<TransactionalBatchResponse> ExecuteAsync(CancellationToken cancellationToken)
+    public Task<TransactionalBatchResponse> ExecuteAsync(CancellationToken cancellationToken) {
+        try (this.diagnosticsContext.CreateOverallScope("BatchExecuteAsync")) {
+            BatchExecUtils.EnsureValid(this.inputOperations, this.batchOptions);
 
-	private PartitionKey partitionKey;
+            PartitionKey serverRequestPartitionKey = this.partitionKey;
+            if (this.batchOptions != null && this.batchOptions.IsEffectivePartitionKeyRouting) {
+                serverRequestPartitionKey = null;
+            }
 
-	private RequestOptions batchOptions;
+            SinglePartitionKeyServerBatchRequest serverRequest;
+            try (this.diagnosticsContext.CreateScope("CreateBatchRequest")) {
+                //C# TO JAVA CONVERTER TODO TASK: There is no equivalent to 'await' in Java:
+                serverRequest = await
+                SinglePartitionKeyServerBatchRequest.CreateAsync(serverRequestPartitionKey,
+                    new ArraySegment<ItemBatchOperation>(this.inputOperations.ToArray()),
+                    this.clientContext.SerializerCore, cancellationToken);
+            }
 
-	private CosmosDiagnosticsContext diagnosticsContext;
+            //C# TO JAVA CONVERTER TODO TASK: There is no equivalent to 'await' in Java:
+            return await this.ExecuteServerRequestAsync(serverRequest, cancellationToken);
+        }
+    }
 
-	public BatchExecutor(ContainerCore container, PartitionKey partitionKey, IReadOnlyList<ItemBatchOperation> operations, RequestOptions batchOptions, CosmosDiagnosticsContext diagnosticsContext)
-	{
-		this.container = container;
-		this.clientContext = this.container.ClientContext;
-		this.inputOperations = operations;
-		this.partitionKey = partitionKey;
-		this.batchOptions = batchOptions;
-		this.diagnosticsContext = diagnosticsContext;
-	}
+    /**
+     * Makes a single batch request to the server.
+     *
+     * @param serverRequest A server request with a set of operations on items.
+     * @param cancellationToken {@link CancellationToken} representing request cancellation.
+     *
+     * @return Response from the server.
+     */
+    //C# TO JAVA CONVERTER TODO TASK: There is no equivalent in Java to the 'async' keyword:
+    //ORIGINAL LINE: private async Task<TransactionalBatchResponse> ExecuteServerRequestAsync
+    // (SinglePartitionKeyServerBatchRequest serverRequest, CancellationToken cancellationToken)
+    private Task<TransactionalBatchResponse> ExecuteServerRequestAsync(SinglePartitionKeyServerBatchRequest serverRequest, CancellationToken cancellationToken) {
+        try (Stream serverRequestPayload = serverRequest.TransferBodyStream()) {
+            Debug.Assert(serverRequestPayload != null, "Server request payload expected to be non-null");
+            //C# TO JAVA CONVERTER TODO TASK: There is no equivalent to 'await' in Java:
+            ResponseMessage responseMessage = await
+            this.clientContext.ProcessResourceOperationStreamAsync(this.container.LinkUri, ResourceType.Document,
+                OperationType.Batch, this.batchOptions, this.container, serverRequest.getPartitionKey(),
+                serverRequestPayload, requestMessage ->
+            {
+                requestMessage.Headers.Add(HttpConstants.HttpHeaders.IsBatchRequest, Boolean.TRUE.toString());
+                requestMessage.Headers.Add(HttpConstants.HttpHeaders.IsBatchAtomic, Boolean.TRUE.toString());
+                requestMessage.Headers.Add(HttpConstants.HttpHeaders.IsBatchOrdered, Boolean.TRUE.toString());
+            }, diagnosticsScope:this.diagnosticsContext, cancellationToken)
 
-//C# TO JAVA CONVERTER TODO TASK: There is no equivalent in Java to the 'async' keyword:
-//ORIGINAL LINE: public async Task<TransactionalBatchResponse> ExecuteAsync(CancellationToken cancellationToken)
-	public Task<TransactionalBatchResponse> ExecuteAsync(CancellationToken cancellationToken)
-	{
-		try (this.diagnosticsContext.CreateOverallScope("BatchExecuteAsync"))
-		{
-			BatchExecUtils.EnsureValid(this.inputOperations, this.batchOptions);
-
-			PartitionKey serverRequestPartitionKey = this.partitionKey;
-			if (this.batchOptions != null && this.batchOptions.IsEffectivePartitionKeyRouting)
-			{
-				serverRequestPartitionKey = null;
-			}
-
-			SinglePartitionKeyServerBatchRequest serverRequest;
-			try (this.diagnosticsContext.CreateScope("CreateBatchRequest"))
-			{
-//C# TO JAVA CONVERTER TODO TASK: There is no equivalent to 'await' in Java:
-				serverRequest = await SinglePartitionKeyServerBatchRequest.CreateAsync(serverRequestPartitionKey, new ArraySegment<ItemBatchOperation>(this.inputOperations.ToArray()), this.clientContext.SerializerCore, cancellationToken);
-			}
-
-//C# TO JAVA CONVERTER TODO TASK: There is no equivalent to 'await' in Java:
-			return await this.ExecuteServerRequestAsync(serverRequest, cancellationToken);
-		}
-	}
-
-	/** 
-	 Makes a single batch request to the server.
-	 
-	 @param serverRequest A server request with a set of operations on items.
-	 @param cancellationToken {@link CancellationToken} representing request cancellation.
-	 @return Response from the server.
-	*/
-//C# TO JAVA CONVERTER TODO TASK: There is no equivalent in Java to the 'async' keyword:
-//ORIGINAL LINE: private async Task<TransactionalBatchResponse> ExecuteServerRequestAsync(SinglePartitionKeyServerBatchRequest serverRequest, CancellationToken cancellationToken)
-	private Task<TransactionalBatchResponse> ExecuteServerRequestAsync(SinglePartitionKeyServerBatchRequest serverRequest, CancellationToken cancellationToken)
-	{
-		try (Stream serverRequestPayload = serverRequest.TransferBodyStream())
-		{
-			Debug.Assert(serverRequestPayload != null, "Server request payload expected to be non-null");
-//C# TO JAVA CONVERTER TODO TASK: There is no equivalent to 'await' in Java:
-			ResponseMessage responseMessage = await this.clientContext.ProcessResourceOperationStreamAsync(this.container.LinkUri, ResourceType.Document, OperationType.Batch, this.batchOptions, this.container, serverRequest.getPartitionKey(), serverRequestPayload, requestMessage ->
-			{
-						requestMessage.Headers.Add(HttpConstants.HttpHeaders.IsBatchRequest, Boolean.TRUE.toString());
-						requestMessage.Headers.Add(HttpConstants.HttpHeaders.IsBatchAtomic, Boolean.TRUE.toString());
-						requestMessage.Headers.Add(HttpConstants.HttpHeaders.IsBatchOrdered, Boolean.TRUE.toString());
-			}, diagnosticsScope:this.diagnosticsContext, cancellationToken);
-
-			try (this.diagnosticsContext.CreateScope("TransactionalBatchResponse"))
-			{
-//C# TO JAVA CONVERTER TODO TASK: There is no equivalent to 'await' in Java:
-				return await TransactionalBatchResponse.FromResponseMessageAsync(responseMessage, serverRequest, this.clientContext.SerializerCore);
-			}
-		}
-	}
+            try (this.diagnosticsContext.CreateScope("TransactionalBatchResponse")) {
+                //C# TO JAVA CONVERTER TODO TASK: There is no equivalent to 'await' in Java:
+                return await
+                TransactionalBatchResponse.FromResponseMessageAsync(responseMessage, serverRequest, this.clientContext.SerializerCore);
+            }
+        }
+    }
 }

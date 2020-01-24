@@ -30,21 +30,17 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class BatchAsyncBatcher {
 
-    private static Logger logger = LoggerFactory.getLogger(BatchAsyncBatcher.class)
+    private static Logger logger = LoggerFactory.getLogger(BatchAsyncBatcher.class);
 
-    private CosmosSerializerCore serializerCore;
-    private ArrayList<ItemBatchOperation> batchOperations;
-    private BatchAsyncBatcherExecuteDelegate executor;
-    private BatchAsyncBatcherRetryDelegate retrier;
-    private int maxBatchByteSize;
-    private int maxBatchOperationCount;
     private final InterlockIncrementCheck interlockIncrementCheck = new InterlockIncrementCheck();
+    private ArrayList<ItemBatchOperation> batchOperations;
     private long currentSize = 0;
     private boolean dispached = false;
-
-    public final boolean getIsEmpty() {
-        return this.batchOperations.isEmpty();
-    }
+    private BatchAsyncBatcherExecuteDelegate executor;
+    private int maxBatchByteSize;
+    private int maxBatchOperationCount;
+    private BatchAsyncBatcherRetryDelegate retrier;
+    private CosmosSerializerCore serializerCore;
 
     public BatchAsyncBatcher(
         final int maxBatchOperationCount,
@@ -79,41 +75,23 @@ public class BatchAsyncBatcher {
         this.serializerCore = serializerCore;
     }
 
-    public boolean TryAdd(ItemBatchOperation operation) {
-
-        checkNotNull(operation, "expected non-null operation");
-        checkNotNull(operation.getContext(), "expected non-null operation context");
-
-        if (this.dispached) {
-            logger.error("Add operation attempted on dispatched batch.");
-            return false;
-        }
-
-        if (this.batchOperations.size() == this.maxBatchOperationCount) {
-            logger.info("Batch is full - Max operation count {} reached.", this.maxBatchOperationCount);
-            return false;
-        }
-
-        int itemByteSize = operation.GetApproximateSerializedLength();
-
-        if (!this.batchOperations.isEmpty() && itemByteSize + this.currentSize > this.maxBatchByteSize) {
-            logger.info("Batch is full - Max byte size {} reached.", this.maxBatchByteSize);
-            return false;
-        }
-
-        this.currentSize += itemByteSize;
-
-        // Operation index is in the scope of the current batch
-        operation.setOperationIndex(this.batchOperations.size());
-        operation.getContext().setCurrentBatcher(this);
-        this.batchOperations.add(operation);
-
-        return true;
+    public final boolean getIsEmpty() {
+        return this.batchOperations.isEmpty();
     }
 
+    //C# TO JAVA CONVERTER TODO TASK: There is no equivalent in Java to the 'async' keyword:
+    //ORIGINAL LINE: internal virtual async Task<Tuple<PartitionKeyRangeServerBatchRequest,
+    // ArraySegment<ItemBatchOperation>>> CreateServerRequestAsync(CancellationToken cancellationToken)
+    public Task<Tuple<PartitionKeyRangeServerBatchRequest, ArraySegment<ItemBatchOperation>>> CreateServerRequestAsync(CancellationToken cancellationToken) {
+        // All operations should be for the same PKRange
+        String partitionKeyRangeId = this.batchOperations.get(0).getContext().getPartitionKeyRangeId();
 
-    public Task DispatchAsync() {
-        return DispatchAsync(null);
+        ArraySegment<ItemBatchOperation> operationsArraySegment =
+            new ArraySegment<ItemBatchOperation>(this.batchOperations.toArray(new ItemBatchOperation[0]));
+        //C# TO JAVA CONVERTER TODO TASK: There is no equivalent to 'await' in Java:
+        return await
+        PartitionKeyRangeServerBatchRequest.CreateAsync(partitionKeyRangeId, operationsArraySegment,
+            this.maxBatchByteSize, this.maxBatchOperationCount, false, this.serializerCore, cancellationToken).ConfigureAwait(false);
     }
 
     public Task DispatchAsync(CancellationToken cancellationToken) {
@@ -196,15 +174,39 @@ public class BatchAsyncBatcher {
         }
     }
 
-    //C# TO JAVA CONVERTER TODO TASK: There is no equivalent in Java to the 'async' keyword:
-    //ORIGINAL LINE: internal virtual async Task<Tuple<PartitionKeyRangeServerBatchRequest, ArraySegment<ItemBatchOperation>>> CreateServerRequestAsync(CancellationToken cancellationToken)
-    public Task<Tuple<PartitionKeyRangeServerBatchRequest, ArraySegment<ItemBatchOperation>>> CreateServerRequestAsync(CancellationToken cancellationToken) {
-        // All operations should be for the same PKRange
-        String partitionKeyRangeId = this.batchOperations.get(0).getContext().getPartitionKeyRangeId();
+    public Task DispatchAsync() {
+        return DispatchAsync(null);
+    }
 
-        ArraySegment<ItemBatchOperation> operationsArraySegment = new ArraySegment<ItemBatchOperation>(this.batchOperations.toArray(new ItemBatchOperation[0]));
-        //C# TO JAVA CONVERTER TODO TASK: There is no equivalent to 'await' in Java:
-        return await
-        PartitionKeyRangeServerBatchRequest.CreateAsync(partitionKeyRangeId, operationsArraySegment, this.maxBatchByteSize, this.maxBatchOperationCount, false, this.serializerCore, cancellationToken).ConfigureAwait(false);
+    public boolean TryAdd(ItemBatchOperation operation) {
+
+        checkNotNull(operation, "expected non-null operation");
+        checkNotNull(operation.getContext(), "expected non-null operation context");
+
+        if (this.dispached) {
+            logger.error("Add operation attempted on dispatched batch.");
+            return false;
+        }
+
+        if (this.batchOperations.size() == this.maxBatchOperationCount) {
+            logger.info("Batch is full - Max operation count {} reached.", this.maxBatchOperationCount);
+            return false;
+        }
+
+        int itemByteSize = operation.GetApproximateSerializedLength();
+
+        if (!this.batchOperations.isEmpty() && itemByteSize + this.currentSize > this.maxBatchByteSize) {
+            logger.info("Batch is full - Max byte size {} reached.", this.maxBatchByteSize);
+            return false;
+        }
+
+        this.currentSize += itemByteSize;
+
+        // Operation index is in the scope of the current batch
+        operation.setOperationIndex(this.batchOperations.size());
+        operation.getContext().setCurrentBatcher(this);
+        this.batchOperations.add(operation);
+
+        return true;
     }
 }

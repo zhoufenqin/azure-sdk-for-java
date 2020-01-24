@@ -3,52 +3,58 @@
 
 package com.azure.cosmos.batch;
 
-public final class PartitionKeyRangeServerBatchRequest extends ServerBatchRequest
-{
-	/** 
-	 Initializes a new instance of the {@link PartitionKeyRangeServerBatchRequest} class.
-	 
-	 @param partitionKeyRangeId The partition key range id associated with all requests.
-	 @param maxBodyLength Maximum length allowed for the request body.
-	 @param maxOperationCount Maximum number of operations allowed in the request.
-	 @param serializerCore Serializer to serialize user provided objects to JSON.
-	*/
-	public PartitionKeyRangeServerBatchRequest(String partitionKeyRangeId, int maxBodyLength, int maxOperationCount, CosmosSerializerCore serializerCore)
-	{
-		super(maxBodyLength, maxOperationCount, serializerCore);
-		this.PartitionKeyRangeId = partitionKeyRangeId;
-	}
+public final class PartitionKeyRangeServerBatchRequest extends ServerBatchRequest {
+    /**
+     * Gets the PartitionKeyRangeId that applies to all operations in this request.
+     */
+    private String PartitionKeyRangeId;
 
-	/** 
-	  Gets the PartitionKeyRangeId that applies to all operations in this request.
-	*/
-	private String PartitionKeyRangeId;
-	public String getPartitionKeyRangeId()
-	{
-		return PartitionKeyRangeId;
-	}
+    /**
+     * Initializes a new instance of the {@link PartitionKeyRangeServerBatchRequest} class.
+     *
+     * @param partitionKeyRangeId The partition key range id associated with all requests.
+     * @param maxBodyLength Maximum length allowed for the request body.
+     * @param maxOperationCount Maximum number of operations allowed in the request.
+     * @param serializerCore Serializer to serialize user provided objects to JSON.
+     */
+    public PartitionKeyRangeServerBatchRequest(String partitionKeyRangeId, int maxBodyLength, int maxOperationCount,
+                                               CosmosSerializerCore serializerCore) {
+        super(maxBodyLength, maxOperationCount, serializerCore);
+        this.PartitionKeyRangeId = partitionKeyRangeId;
+    }
 
-	/** 
-	 Creates an instance of {@link PartitionKeyRangeServerBatchRequest}.
-	 In case of direct mode requests, all the operations are expected to belong to the same PartitionKeyRange.
-	 The body of the request is populated with operations till it reaches the provided maxBodyLength.
-	 
-	 @param partitionKeyRangeId The partition key range id associated with all requests.
-	 @param operations Operations to be added into this batch request.
-	 @param maxBodyLength Desired maximum length of the request body.
-	 @param maxOperationCount Maximum number of operations allowed in the request.
-	 @param ensureContinuousOperationIndexes Whether to stop adding operations to the request once there is non-continuity in the operation indexes.
-	 @param serializerCore Serializer to serialize user provided objects to JSON.
-	 @param cancellationToken {@link CancellationToken} representing request cancellation.
-	 @return A newly created instance of {@link PartitionKeyRangeServerBatchRequest} and the overflow ItemBatchOperation not being processed.
-	*/
-//C# TO JAVA CONVERTER TODO TASK: There is no equivalent in Java to the 'async' keyword:
-//ORIGINAL LINE: public static async Task<Tuple<PartitionKeyRangeServerBatchRequest, ArraySegment<ItemBatchOperation>>> CreateAsync(string partitionKeyRangeId, ArraySegment<ItemBatchOperation> operations, int maxBodyLength, int maxOperationCount, bool ensureContinuousOperationIndexes, CosmosSerializerCore serializerCore, CancellationToken cancellationToken)
-	public static Task<Tuple<PartitionKeyRangeServerBatchRequest, ArraySegment<ItemBatchOperation>>> CreateAsync(String partitionKeyRangeId, ArraySegment<ItemBatchOperation> operations, int maxBodyLength, int maxOperationCount, boolean ensureContinuousOperationIndexes, CosmosSerializerCore serializerCore, CancellationToken cancellationToken)
-	{
-		PartitionKeyRangeServerBatchRequest request = new PartitionKeyRangeServerBatchRequest(partitionKeyRangeId, maxBodyLength, maxOperationCount, serializerCore);
-//C# TO JAVA CONVERTER TODO TASK: There is no equivalent to 'await' in Java:
-		ArraySegment<ItemBatchOperation> pendingOperations = await request.CreateBodyStreamAsync(operations, cancellationToken, ensureContinuousOperationIndexes);
-		return new Tuple<PartitionKeyRangeServerBatchRequest, ArraySegment<ItemBatchOperation>>(request, pendingOperations);
-	}
+    public String getPartitionKeyRangeId() {
+        return PartitionKeyRangeId;
+    }
+
+    /**
+     * Creates an instance of {@link PartitionKeyRangeServerBatchRequest}. In case of direct mode requests, all the
+     * operations are expected to belong to the same PartitionKeyRange. The body of the request is populated with
+     * operations till it reaches the provided maxBodyLength.
+     *
+     * @param partitionKeyRangeId The partition key range id associated with all requests.
+     * @param operations Operations to be added into this batch request.
+     * @param maxBodyLength Desired maximum length of the request body.
+     * @param maxOperationCount Maximum number of operations allowed in the request.
+     * @param ensureContinuousOperationIndexes Whether to stop adding operations to the request once there is
+     * non-continuity in the operation indexes.
+     * @param serializerCore Serializer to serialize user provided objects to JSON.
+     * @param cancellationToken {@link CancellationToken} representing request cancellation.
+     *
+     * @return A newly created instance of {@link PartitionKeyRangeServerBatchRequest} and the overflow
+     * ItemBatchOperation not being processed.
+     */
+    //C# TO JAVA CONVERTER TODO TASK: There is no equivalent in Java to the 'async' keyword:
+    //ORIGINAL LINE: public static async Task<Tuple<PartitionKeyRangeServerBatchRequest,
+    // ArraySegment<ItemBatchOperation>>> CreateAsync(string partitionKeyRangeId, ArraySegment<ItemBatchOperation>
+    // operations, int maxBodyLength, int maxOperationCount, bool ensureContinuousOperationIndexes,
+    // CosmosSerializerCore serializerCore, CancellationToken cancellationToken)
+    public static Task<Tuple<PartitionKeyRangeServerBatchRequest, ArraySegment<ItemBatchOperation>>> CreateAsync(String partitionKeyRangeId, ArraySegment<ItemBatchOperation> operations, int maxBodyLength, int maxOperationCount, boolean ensureContinuousOperationIndexes, CosmosSerializerCore serializerCore, CancellationToken cancellationToken) {
+        PartitionKeyRangeServerBatchRequest request = new PartitionKeyRangeServerBatchRequest(partitionKeyRangeId,
+            maxBodyLength, maxOperationCount, serializerCore);
+        //C# TO JAVA CONVERTER TODO TASK: There is no equivalent to 'await' in Java:
+        ArraySegment<ItemBatchOperation> pendingOperations = await
+        request.CreateBodyStreamAsync(operations, cancellationToken, ensureContinuousOperationIndexes);
+        return new Tuple<PartitionKeyRangeServerBatchRequest, ArraySegment<ItemBatchOperation>>(request, pendingOperations);
+    }
 }

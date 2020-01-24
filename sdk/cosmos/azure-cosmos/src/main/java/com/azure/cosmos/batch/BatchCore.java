@@ -3,286 +3,280 @@
 
 package com.azure.cosmos.batch;
 
-import java.util.*;
+import java.util.ArrayList;
 
-public class BatchCore extends TransactionalBatch
-{
-	private PartitionKey partitionKey;
+public class BatchCore extends TransactionalBatch {
+    private ContainerCore container;
+    private ArrayList<ItemBatchOperation> operations;
+    private PartitionKey partitionKey;
 
-	private ContainerCore container;
-
-	private ArrayList<ItemBatchOperation> operations;
-
-	/** 
-	 Initializes a new instance of the {@link BatchCore} class.
-	 
-	 @param container Container that has items on which batch operations are to be performed.
-	 @param partitionKey The partition key for all items in the batch. {@link PartitionKey}.
-	*/
-	public BatchCore(ContainerCore container, PartitionKey partitionKey)
-	{
-		this.container = container;
-		this.partitionKey = partitionKey;
-		this.operations = new ArrayList<ItemBatchOperation>();
-	}
+    /**
+     * Initializes a new instance of the {@link BatchCore} class.
+     *
+     * @param container Container that has items on which batch operations are to be performed.
+     * @param partitionKey The partition key for all items in the batch. {@link PartitionKey}.
+     */
+    public BatchCore(ContainerCore container, PartitionKey partitionKey) {
+        this.container = container;
+        this.partitionKey = partitionKey;
+        this.operations = new ArrayList<ItemBatchOperation>();
+    }
 
 
-	@Override
-	public <T> TransactionalBatch CreateItem(T item)
-	{
-		return CreateItem(item, null);
-	}
+    @Override
+    public <T> TransactionalBatch CreateItem(T item) {
+        return CreateItem(item, null);
+    }
 
-//C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
-//ORIGINAL LINE: public override TransactionalBatch CreateItem<T>(T item, TransactionalBatchItemRequestOptions requestOptions = null)
-	@Override
-	public <T> TransactionalBatch CreateItem(T item, TransactionalBatchItemRequestOptions requestOptions)
-	{
-		if (item == null)
-		{
-			throw new NullPointerException("item");
-		}
+    //C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
+    //ORIGINAL LINE: public override TransactionalBatch CreateItem<T>(T item, TransactionalBatchItemRequestOptions
+    // requestOptions = null)
+    @Override
+    public <T> TransactionalBatch CreateItem(T item, TransactionalBatchItemRequestOptions requestOptions) {
+        if (item == null) {
+            throw new NullPointerException("item");
+        }
 
-		this.operations.add(new ItemBatchOperation<T>(OperationType.Create, this.operations.size(), , item, null, requestOptions));
+        this.operations.add(new ItemBatchOperation<T>(OperationType.Create, this.operations.size(), , item, null,
+            requestOptions));
 
-		return this;
-	}
-
-
-	@Override
-	public TransactionalBatch CreateItemStream(Stream streamPayload)
-	{
-		return CreateItemStream(streamPayload, null);
-	}
-
-//C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
-//ORIGINAL LINE: public override TransactionalBatch CreateItemStream(Stream streamPayload, TransactionalBatchItemRequestOptions requestOptions = null)
-//C# TO JAVA CONVERTER TODO TASK: C# to Java Converter cannot determine whether this System.IO.Stream is input or output:
-	@Override
-	public TransactionalBatch CreateItemStream(Stream streamPayload, TransactionalBatchItemRequestOptions requestOptions)
-	{
-		if (streamPayload == null)
-		{
-			throw new NullPointerException("streamPayload");
-		}
-
-//C# TO JAVA CONVERTER TODO TASK: C# to Java Converter could not resolve the named parameters in the following line:
-//ORIGINAL LINE: this.operations.Add(new ItemBatchOperation(operationType: OperationType.Create, operationIndex:this.operations.Count, resourceStream: streamPayload, requestOptions: requestOptions));
-		this.operations.add(new ItemBatchOperation(operationType: OperationType.Create, operationIndex:this.operations.size(), resourceStream: streamPayload, requestOptions: requestOptions));
-
-		return this;
-	}
+        return this;
+    }
 
 
-	@Override
-	public TransactionalBatch ReadItem(String id)
-	{
-		return ReadItem(id, null);
-	}
+    @Override
+    public TransactionalBatch CreateItemStream(Stream streamPayload) {
+        return CreateItemStream(streamPayload, null);
+    }
 
-//C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
-//ORIGINAL LINE: public override TransactionalBatch ReadItem(string id, TransactionalBatchItemRequestOptions requestOptions = null)
-	@Override
-	public TransactionalBatch ReadItem(String id, TransactionalBatchItemRequestOptions requestOptions)
-	{
-		if (id == null)
-		{
-			throw new NullPointerException("id");
-		}
+    //C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
+    //ORIGINAL LINE: public override TransactionalBatch CreateItemStream(Stream streamPayload,
+    // TransactionalBatchItemRequestOptions requestOptions = null)
+    //C# TO JAVA CONVERTER TODO TASK: C# to Java Converter cannot determine whether this System.IO.Stream is input or
+    // output:
+    @Override
+    public TransactionalBatch CreateItemStream(Stream streamPayload,
+                                               TransactionalBatchItemRequestOptions requestOptions) {
+        if (streamPayload == null) {
+            throw new NullPointerException("streamPayload");
+        }
 
-		this.operations.add(new ItemBatchOperation(OperationType.Read, this.operations.size(), , , id, requestOptions));
+        //C# TO JAVA CONVERTER TODO TASK: C# to Java Converter could not resolve the named parameters in the
+        // following line:
+        //ORIGINAL LINE: this.operations.Add(new ItemBatchOperation(operationType: OperationType.Create,
+        // operationIndex:this.operations.Count, resourceStream: streamPayload, requestOptions: requestOptions));
+        this.operations.add(new ItemBatchOperation(operationType:OperationType.Create, operationIndex:
+        this.operations.size(), resourceStream:streamPayload, requestOptions:requestOptions))
 
-		return this;
-	}
+        return this;
+    }
 
+    @Override
+    public TransactionalBatch DeleteItem(String id) {
+        return DeleteItem(id, null);
+    }
 
-	@Override
-	public <T> TransactionalBatch UpsertItem(T item)
-	{
-		return UpsertItem(item, null);
-	}
+    //C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
+    //ORIGINAL LINE: public override TransactionalBatch DeleteItem(string id, TransactionalBatchItemRequestOptions
+    // requestOptions = null)
+    @Override
+    public TransactionalBatch DeleteItem(String id, TransactionalBatchItemRequestOptions requestOptions) {
+        if (id == null) {
+            throw new NullPointerException("id");
+        }
 
-//C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
-//ORIGINAL LINE: public override TransactionalBatch UpsertItem<T>(T item, TransactionalBatchItemRequestOptions requestOptions = null)
-	@Override
-	public <T> TransactionalBatch UpsertItem(T item, TransactionalBatchItemRequestOptions requestOptions)
-	{
-		if (item == null)
-		{
-			throw new NullPointerException("item");
-		}
+        this.operations.add(new ItemBatchOperation(OperationType.Delete, this.operations.size(), , , id,
+            requestOptions));
 
-		this.operations.add(new ItemBatchOperation<T>(OperationType.Upsert, this.operations.size(), , item, null, requestOptions));
+        return this;
+    }
 
-		return this;
-	}
+    @Override
+    public Task<TransactionalBatchResponse> ExecuteAsync() {
+        return ExecuteAsync(null);
+    }
 
+    //C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
+    //ORIGINAL LINE: public override Task<TransactionalBatchResponse> ExecuteAsync(CancellationToken
+    // cancellationToken = default(CancellationToken))
+    @Override
+    public Task<TransactionalBatchResponse> ExecuteAsync(CancellationToken cancellationToken) {
+        return this.ExecuteAsync(null, cancellationToken);
+    }
 
-	@Override
-	public TransactionalBatch UpsertItemStream(Stream streamPayload)
-	{
-		return UpsertItemStream(streamPayload, null);
-	}
+    /**
+     * Executes the batch at the Azure Cosmos service as an asynchronous operation.
+     *
+     * @param requestOptions Options that apply to the batch. Used only for EPK routing.
+     * @param cancellationToken (Optional) {@link CancellationToken} representing request cancellation.
+     *
+     * @return An awaitable {@link TransactionalBatchResponse} which contains the completion status and results of each
+     * operation.
+     */
 
-//C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
-//ORIGINAL LINE: public override TransactionalBatch UpsertItemStream(Stream streamPayload, TransactionalBatchItemRequestOptions requestOptions = null)
-//C# TO JAVA CONVERTER TODO TASK: C# to Java Converter cannot determine whether this System.IO.Stream is input or output:
-	@Override
-	public TransactionalBatch UpsertItemStream(Stream streamPayload, TransactionalBatchItemRequestOptions requestOptions)
-	{
-		if (streamPayload == null)
-		{
-			throw new NullPointerException("streamPayload");
-		}
+    public Task<TransactionalBatchResponse> ExecuteAsync(RequestOptions requestOptions) {
+        return ExecuteAsync(requestOptions, null);
+    }
 
-//C# TO JAVA CONVERTER TODO TASK: C# to Java Converter could not resolve the named parameters in the following line:
-//ORIGINAL LINE: this.operations.Add(new ItemBatchOperation(operationType: OperationType.Upsert, operationIndex:this.operations.Count, resourceStream: streamPayload, requestOptions: requestOptions));
-		this.operations.add(new ItemBatchOperation(operationType: OperationType.Upsert, operationIndex:this.operations.size(), resourceStream: streamPayload, requestOptions: requestOptions));
+    //C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
+    //ORIGINAL LINE: public virtual Task<TransactionalBatchResponse> ExecuteAsync(RequestOptions requestOptions,
+    // CancellationToken cancellationToken = default(CancellationToken))
+    public Task<TransactionalBatchResponse> ExecuteAsync(RequestOptions requestOptions,
+                                                         CancellationToken cancellationToken) {
+        CosmosDiagnosticsContext diagnosticsContext = new CosmosDiagnosticsContext();
+        BatchExecutor executor = new BatchExecutor(this.container, this.partitionKey, this.operations, requestOptions
+            , diagnosticsContext);
 
-		return this;
-	}
+        this.operations = new ArrayList<ItemBatchOperation>();
+        return executor.ExecuteAsync(cancellationToken);
+    }
 
+    /**
+     * Adds an operation to patch an item into the batch.
+     *
+     * @param id The cosmos item id.
+     * @param patchStream A {@link Stream} containing the patch specification.
+     * @param requestOptions (Optional) The options for the item request. {@link TransactionalBatchItemRequestOptions}.
+     *
+     * @return The {@link TransactionalBatch} instance with the operation added.
+     */
 
-	@Override
-	public <T> TransactionalBatch ReplaceItem(String id, T item)
-	{
-		return ReplaceItem(id, item, null);
-	}
+    public TransactionalBatch PatchItemStream(String id, Stream patchStream) {
+        return PatchItemStream(id, patchStream, null);
+    }
 
-//C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
-//ORIGINAL LINE: public override TransactionalBatch ReplaceItem<T>(string id, T item, TransactionalBatchItemRequestOptions requestOptions = null)
-	@Override
-	public <T> TransactionalBatch ReplaceItem(String id, T item, TransactionalBatchItemRequestOptions requestOptions)
-	{
-		if (id == null)
-		{
-			throw new NullPointerException("id");
-		}
+    //C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
+    //ORIGINAL LINE: public virtual TransactionalBatch PatchItemStream(string id, Stream patchStream,
+    // TransactionalBatchItemRequestOptions requestOptions = null)
+    //C# TO JAVA CONVERTER TODO TASK: C# to Java Converter cannot determine whether this System.IO.Stream is input or output:
+    public TransactionalBatch PatchItemStream(String id, Stream patchStream, TransactionalBatchItemRequestOptions requestOptions) {
+        //C# TO JAVA CONVERTER TODO TASK: C# to Java Converter could not resolve the named parameters in the following line:
+        //ORIGINAL LINE: this.operations.Add(new ItemBatchOperation(operationType: OperationType.Patch, operationIndex:this.operations.Count, id: id, resourceStream: patchStream, requestOptions: requestOptions));
+        this.operations.add(new ItemBatchOperation(operationType:OperationType.Patch, operationIndex:
+        this.operations.size(), id:id, resourceStream:patchStream, requestOptions:requestOptions))
 
-		if (item == null)
-		{
-			throw new NullPointerException("item");
-		}
+        return this;
+    }
 
-		this.operations.add(new ItemBatchOperation<T>(OperationType.Replace, this.operations.size(), , item, id, requestOptions));
+    @Override
+    public TransactionalBatch ReadItem(String id) {
+        return ReadItem(id, null);
+    }
 
-		return this;
-	}
+    //C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
+    //ORIGINAL LINE: public override TransactionalBatch ReadItem(string id, TransactionalBatchItemRequestOptions
+    // requestOptions = null)
+    @Override
+    public TransactionalBatch ReadItem(String id, TransactionalBatchItemRequestOptions requestOptions) {
+        if (id == null) {
+            throw new NullPointerException("id");
+        }
 
+        this.operations.add(new ItemBatchOperation(OperationType.Read, this.operations.size(), , , id, requestOptions));
 
-	@Override
-	public TransactionalBatch ReplaceItemStream(String id, Stream streamPayload)
-	{
-		return ReplaceItemStream(id, streamPayload, null);
-	}
+        return this;
+    }
 
-//C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
-//ORIGINAL LINE: public override TransactionalBatch ReplaceItemStream(string id, Stream streamPayload, TransactionalBatchItemRequestOptions requestOptions = null)
-//C# TO JAVA CONVERTER TODO TASK: C# to Java Converter cannot determine whether this System.IO.Stream is input or output:
-	@Override
-	public TransactionalBatch ReplaceItemStream(String id, Stream streamPayload, TransactionalBatchItemRequestOptions requestOptions)
-	{
-		if (id == null)
-		{
-			throw new NullPointerException("id");
-		}
+    @Override
+    public <T> TransactionalBatch ReplaceItem(String id, T item) {
+        return ReplaceItem(id, item, null);
+    }
 
-		if (streamPayload == null)
-		{
-			throw new NullPointerException("streamPayload");
-		}
+    //C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
+    //ORIGINAL LINE: public override TransactionalBatch ReplaceItem<T>(string id, T item,
+    // TransactionalBatchItemRequestOptions requestOptions = null)
+    @Override
+    public <T> TransactionalBatch ReplaceItem(String id, T item, TransactionalBatchItemRequestOptions requestOptions) {
+        if (id == null) {
+            throw new NullPointerException("id");
+        }
 
-//C# TO JAVA CONVERTER TODO TASK: C# to Java Converter could not resolve the named parameters in the following line:
-//ORIGINAL LINE: this.operations.Add(new ItemBatchOperation(operationType: OperationType.Replace, operationIndex:this.operations.Count, id: id, resourceStream: streamPayload, requestOptions: requestOptions));
-		this.operations.add(new ItemBatchOperation(operationType: OperationType.Replace, operationIndex:this.operations.size(), id: id, resourceStream: streamPayload, requestOptions: requestOptions));
+        if (item == null) {
+            throw new NullPointerException("item");
+        }
 
-		return this;
-	}
+        this.operations.add(new ItemBatchOperation<T>(OperationType.Replace, this.operations.size(), , item, id,
+            requestOptions));
 
+        return this;
+    }
 
-	@Override
-	public TransactionalBatch DeleteItem(String id)
-	{
-		return DeleteItem(id, null);
-	}
+    @Override
+    public TransactionalBatch ReplaceItemStream(String id, Stream streamPayload) {
+        return ReplaceItemStream(id, streamPayload, null);
+    }
 
-//C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
-//ORIGINAL LINE: public override TransactionalBatch DeleteItem(string id, TransactionalBatchItemRequestOptions requestOptions = null)
-	@Override
-	public TransactionalBatch DeleteItem(String id, TransactionalBatchItemRequestOptions requestOptions)
-	{
-		if (id == null)
-		{
-			throw new NullPointerException("id");
-		}
+    //C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
+    //ORIGINAL LINE: public override TransactionalBatch ReplaceItemStream(string id, Stream streamPayload,
+    // TransactionalBatchItemRequestOptions requestOptions = null)
+    //C# TO JAVA CONVERTER TODO TASK: C# to Java Converter cannot determine whether this System.IO.Stream is input or
+    // output:
+    @Override
+    public TransactionalBatch ReplaceItemStream(String id, Stream streamPayload,
+                                                TransactionalBatchItemRequestOptions requestOptions) {
+        if (id == null) {
+            throw new NullPointerException("id");
+        }
 
-		this.operations.add(new ItemBatchOperation(OperationType.Delete, this.operations.size(), , , id, requestOptions));
+        if (streamPayload == null) {
+            throw new NullPointerException("streamPayload");
+        }
 
-		return this;
-	}
+        //C# TO JAVA CONVERTER TODO TASK: C# to Java Converter could not resolve the named parameters in the
+        // following line:
+        //ORIGINAL LINE: this.operations.Add(new ItemBatchOperation(operationType: OperationType.Replace,
+        // operationIndex:this.operations.Count, id: id, resourceStream: streamPayload, requestOptions:
+        // requestOptions));
+        this.operations.add(new ItemBatchOperation(operationType:OperationType.Replace, operationIndex:
+        this.operations.size(), id:id, resourceStream:streamPayload, requestOptions:requestOptions))
 
+        return this;
+    }
 
-	@Override
-	public Task<TransactionalBatchResponse> ExecuteAsync()
-	{
-		return ExecuteAsync(null);
-	}
+    @Override
+    public <T> TransactionalBatch UpsertItem(T item) {
+        return UpsertItem(item, null);
+    }
 
-//C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
-//ORIGINAL LINE: public override Task<TransactionalBatchResponse> ExecuteAsync(CancellationToken cancellationToken = default(CancellationToken))
-	@Override
-	public Task<TransactionalBatchResponse> ExecuteAsync(CancellationToken cancellationToken)
-	{
-		return this.ExecuteAsync(null, cancellationToken);
-	}
+    //C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
+    //ORIGINAL LINE: public override TransactionalBatch UpsertItem<T>(T item, TransactionalBatchItemRequestOptions
+    // requestOptions = null)
+    @Override
+    public <T> TransactionalBatch UpsertItem(T item, TransactionalBatchItemRequestOptions requestOptions) {
+        if (item == null) {
+            throw new NullPointerException("item");
+        }
 
-	/** 
-	 Executes the batch at the Azure Cosmos service as an asynchronous operation.
-	 
-	 @param requestOptions Options that apply to the batch. Used only for EPK routing.
-	 @param cancellationToken (Optional) {@link CancellationToken} representing request cancellation.
-	 @return An awaitable {@link TransactionalBatchResponse} which contains the completion status and results of each operation.
-	*/
+        this.operations.add(new ItemBatchOperation<T>(OperationType.Upsert, this.operations.size(), , item, null,
+            requestOptions));
 
-	public Task<TransactionalBatchResponse> ExecuteAsync(RequestOptions requestOptions)
-	{
-		return ExecuteAsync(requestOptions, null);
-	}
+        return this;
+    }
 
-//C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
-//ORIGINAL LINE: public virtual Task<TransactionalBatchResponse> ExecuteAsync(RequestOptions requestOptions, CancellationToken cancellationToken = default(CancellationToken))
-	public Task<TransactionalBatchResponse> ExecuteAsync(RequestOptions requestOptions, CancellationToken cancellationToken)
-	{
-		CosmosDiagnosticsContext diagnosticsContext = new CosmosDiagnosticsContext();
-		BatchExecutor executor = new BatchExecutor(this.container, this.partitionKey, this.operations, requestOptions, diagnosticsContext);
+    @Override
+    public TransactionalBatch UpsertItemStream(Stream streamPayload) {
+        return UpsertItemStream(streamPayload, null);
+    }
 
-		this.operations = new ArrayList<ItemBatchOperation>();
-		return executor.ExecuteAsync(cancellationToken);
-	}
+    //C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
+    //ORIGINAL LINE: public override TransactionalBatch UpsertItemStream(Stream streamPayload,
+    // TransactionalBatchItemRequestOptions requestOptions = null)
+    //C# TO JAVA CONVERTER TODO TASK: C# to Java Converter cannot determine whether this System.IO.Stream is input or
+    // output:
+    @Override
+    public TransactionalBatch UpsertItemStream(Stream streamPayload,
+                                               TransactionalBatchItemRequestOptions requestOptions) {
+        if (streamPayload == null) {
+            throw new NullPointerException("streamPayload");
+        }
 
-	/** 
-	 Adds an operation to patch an item into the batch.
-	 
-	 @param id The cosmos item id.
-	 @param patchStream A {@link Stream} containing the patch specification.
-	 @param requestOptions (Optional) The options for the item request. {@link TransactionalBatchItemRequestOptions}.
-	 @return The {@link TransactionalBatch} instance with the operation added.
-	*/
+        //C# TO JAVA CONVERTER TODO TASK: C# to Java Converter could not resolve the named parameters in the
+        // following line:
+        //ORIGINAL LINE: this.operations.Add(new ItemBatchOperation(operationType: OperationType.Upsert,
+        // operationIndex:this.operations.Count, resourceStream: streamPayload, requestOptions: requestOptions));
+        this.operations.add(new ItemBatchOperation(operationType:OperationType.Upsert, operationIndex:
+        this.operations.size(), resourceStream:streamPayload, requestOptions:requestOptions))
 
-	public TransactionalBatch PatchItemStream(String id, Stream patchStream)
-	{
-		return PatchItemStream(id, patchStream, null);
-	}
-
-//C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
-//ORIGINAL LINE: public virtual TransactionalBatch PatchItemStream(string id, Stream patchStream, TransactionalBatchItemRequestOptions requestOptions = null)
-//C# TO JAVA CONVERTER TODO TASK: C# to Java Converter cannot determine whether this System.IO.Stream is input or output:
-	public TransactionalBatch PatchItemStream(String id, Stream patchStream, TransactionalBatchItemRequestOptions requestOptions)
-	{
-//C# TO JAVA CONVERTER TODO TASK: C# to Java Converter could not resolve the named parameters in the following line:
-//ORIGINAL LINE: this.operations.Add(new ItemBatchOperation(operationType: OperationType.Patch, operationIndex:this.operations.Count, id: id, resourceStream: patchStream, requestOptions: requestOptions));
-		this.operations.add(new ItemBatchOperation(operationType: OperationType.Patch, operationIndex:this.operations.size(), id: id, resourceStream: patchStream, requestOptions: requestOptions));
-
-		return this;
-	}
+        return this;
+    }
 }

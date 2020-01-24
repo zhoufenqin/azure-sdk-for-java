@@ -6,14 +6,13 @@ package com.azure.cosmos.batch;
 import com.azure.cosmos.PartitionKey;
 import com.azure.cosmos.implementation.OperationType;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.util.stream.Stream;
 
 /**
  * Represents an operation on an item which will be executed as part of a batch request on a container.
  */
-public class ItemBatchOperation implements Closeable {
+public class ItemBatchOperation implements AutoCloseable {
     /**
      * Operational context used in stream operations.
      * <p>
@@ -23,7 +22,7 @@ public class ItemBatchOperation implements Closeable {
     private CosmosDiagnosticsContext DiagnosticsContext;
     private String Id;
     private int OperationIndex;
-    private com.azure.cosmos.implementation.OperationType OperationType;
+    private OperationType OperationType;
     private Documents.PartitionKey ParsedPartitionKey;
     private PartitionKey PartitionKey = null;
     private String PartitionKeyJson;
@@ -41,12 +40,17 @@ public class ItemBatchOperation implements Closeable {
         String id,
         Stream resourceStream,
         TransactionalBatchItemRequestOptions requestOptions) {
+
         this(operationType, operationIndex, partitionKey, id, resourceStream, requestOptions, null);
     }
 
     public ItemBatchOperation(
-        OperationType operationType, int operationIndex, PartitionKey partitionKey, String id,
-                              Stream resourceStream) {
+        OperationType operationType,
+        int operationIndex,
+        PartitionKey partitionKey,
+        String id,
+        Stream resourceStream) {
+
         this(operationType, operationIndex, partitionKey, id, resourceStream, null, null);
     }
 
@@ -64,9 +68,15 @@ public class ItemBatchOperation implements Closeable {
     // requestOptions = null, CosmosDiagnosticsContext diagnosticsContext = null)
     //C# TO JAVA CONVERTER TODO TASK: C# to Java Converter cannot determine whether this System.IO.Stream is input or
     // output:
-    public ItemBatchOperation(OperationType operationType, int operationIndex, PartitionKey partitionKey, String id,
-                              Stream resourceStream, TransactionalBatchItemRequestOptions requestOptions,
-                              CosmosDiagnosticsContext diagnosticsContext) {
+    public ItemBatchOperation(
+        OperationType operationType,
+        int operationIndex,
+        PartitionKey partitionKey,
+        String id,
+        Stream resourceStream,
+        TransactionalBatchItemRequestOptions requestOptions,
+        CosmosDiagnosticsContext diagnosticsContext) {
+
         this.OperationType = operationType;
         this.setOperationIndex(operationIndex);
         this.setPartitionKey(partitionKey);
@@ -93,8 +103,13 @@ public class ItemBatchOperation implements Closeable {
     // Stream resourceStream = null, TransactionalBatchItemRequestOptions requestOptions = null)
     //C# TO JAVA CONVERTER TODO TASK: C# to Java Converter cannot determine whether this System.IO.Stream is input or
     // output:
-    public ItemBatchOperation(OperationType operationType, int operationIndex, String id, Stream resourceStream,
-                              TransactionalBatchItemRequestOptions requestOptions) {
+    public ItemBatchOperation(
+        OperationType operationType,
+        int operationIndex,
+        String id,
+        Stream resourceStream,
+        TransactionalBatchItemRequestOptions requestOptions) {
+
         this.OperationType = operationType;
         this.setOperationIndex(operationIndex);
         this.Id = id;

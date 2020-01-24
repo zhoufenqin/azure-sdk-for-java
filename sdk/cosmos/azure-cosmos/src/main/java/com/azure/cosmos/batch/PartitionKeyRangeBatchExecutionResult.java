@@ -3,35 +3,41 @@
 
 package com.azure.cosmos.batch;
 
-public class PartitionKeyRangeBatchExecutionResult
-{
-	private String PartitionKeyRangeId;
-	public final String getPartitionKeyRangeId()
-	{
-		return PartitionKeyRangeId;
-	}
+import com.azure.cosmos.implementation.HttpConstants.StatusCodes;
+import com.azure.cosmos.implementation.HttpConstants.SubStatusCodes;
 
-	private TransactionalBatchResponse ServerResponse;
-	public final TransactionalBatchResponse getServerResponse()
-	{
-		return ServerResponse;
-	}
+public final class PartitionKeyRangeBatchExecutionResult {
 
-	private java.lang.Iterable<ItemBatchOperation> Operations;
-	public final java.lang.Iterable<ItemBatchOperation> getOperations()
-	{
-		return Operations;
-	}
+    private final Iterable<ItemBatchOperation> operations;
+    private final String partitionKeyRangeId;
+    private final TransactionalBatchResponse serverResponse;
 
-	public PartitionKeyRangeBatchExecutionResult(String pkRangeId, java.lang.Iterable<ItemBatchOperation> operations, TransactionalBatchResponse serverResponse)
-	{
-		this.PartitionKeyRangeId = pkRangeId;
-		this.ServerResponse = serverResponse;
-		this.Operations = operations;
-	}
+    public PartitionKeyRangeBatchExecutionResult(
+        final String pkRangeId,
+        final Iterable<ItemBatchOperation> operations,
+        final TransactionalBatchResponse serverResponse) {
 
-	public final boolean IsSplit()
-	{
-		return this.getServerResponse() != null && this.getServerResponse().getStatusCode() == HttpStatusCode.Gone && (this.getServerResponse().getSubStatusCode() == Documents.SubStatusCodes.CompletingSplit || this.getServerResponse().getSubStatusCode() == Documents.SubStatusCodes.CompletingPartitionMigration || this.getServerResponse().getSubStatusCode() == Documents.SubStatusCodes.PartitionKeyRangeGone);
-	}
+        this.partitionKeyRangeId = pkRangeId;
+        this.serverResponse = serverResponse;
+        this.operations = operations;
+    }
+
+    public Iterable<ItemBatchOperation> getOperations() {
+        return operations;
+    }
+
+    public String getPartitionKeyRangeId() {
+        return partitionKeyRangeId;
+    }
+
+    public TransactionalBatchResponse getServerResponse() {
+        return serverResponse;
+    }
+
+    public boolean isSplit() {
+        return this.getServerResponse() != null && this.getServerResponse().getStatusCode() == StatusCodes.GONE && (
+            this.getServerResponse().getSubStatusCode() == SubStatusCodes.COMPLETING_SPLIT
+                || this.getServerResponse().getSubStatusCode() == SubStatusCodes.COMPLETING_PARTITION_MIGRATION
+                || this.getServerResponse().getSubStatusCode() == SubStatusCodes.PARTITION_KEY_RANGE_GONE);
+    }
 }
