@@ -3,6 +3,12 @@
 
 package com.azure.cosmos.batch;
 
+import javax.annotation.Nonnull;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+
 public final class PartitionKeyRangeServerBatchRequest extends ServerBatchRequest {
     /**
      * Gets the PartitionKeyRangeId that applies to all operations in this request.
@@ -17,9 +23,14 @@ public final class PartitionKeyRangeServerBatchRequest extends ServerBatchReques
      * @param maxOperationCount Maximum number of operations allowed in the request.
      * @param serializerCore Serializer to serialize user provided objects to JSON.
      */
-    public PartitionKeyRangeServerBatchRequest(String partitionKeyRangeId, int maxBodyLength, int maxOperationCount,
-                                               CosmosSerializerCore serializerCore) {
+    public PartitionKeyRangeServerBatchRequest(
+        @Nonnull final String partitionKeyRangeId,
+        int maxBodyLength,
+        int maxOperationCount,
+        CosmosSerializerCore serializerCore) {
+
         super(maxBodyLength, maxOperationCount, serializerCore);
+        checkNotNull(partitionKeyRangeId, "expected non-null partitionKeyRangeId");
         this.PartitionKeyRangeId = partitionKeyRangeId;
     }
 
@@ -39,7 +50,6 @@ public final class PartitionKeyRangeServerBatchRequest extends ServerBatchReques
      * @param ensureContinuousOperationIndexes Whether to stop adding operations to the request once there is
      * non-continuity in the operation indexes.
      * @param serializerCore Serializer to serialize user provided objects to JSON.
-     * @param cancellationToken {@link CancellationToken} representing request cancellation.
      *
      * @return A newly created instance of {@link PartitionKeyRangeServerBatchRequest} and the overflow
      * ItemBatchOperation not being processed.
@@ -49,7 +59,14 @@ public final class PartitionKeyRangeServerBatchRequest extends ServerBatchReques
     // ArraySegment<ItemBatchOperation>>> CreateAsync(string partitionKeyRangeId, ArraySegment<ItemBatchOperation>
     // operations, int maxBodyLength, int maxOperationCount, bool ensureContinuousOperationIndexes,
     // CosmosSerializerCore serializerCore, CancellationToken cancellationToken)
-    public static Task<Tuple<PartitionKeyRangeServerBatchRequest, ArraySegment<ItemBatchOperation>>> CreateAsync(String partitionKeyRangeId, ArraySegment<ItemBatchOperation> operations, int maxBodyLength, int maxOperationCount, boolean ensureContinuousOperationIndexes, CosmosSerializerCore serializerCore, CancellationToken cancellationToken) {
+    public static CompletableFuture<Tuple<PartitionKeyRangeServerBatchRequest, List<ItemBatchOperation>>> CreateAsync(
+        final String partitionKeyRangeId,
+        final List<ItemBatchOperation> operations,
+        final int maxBodyLength,
+        final int maxOperationCount,
+        final boolean ensureContinuousOperationIndexes,
+        CosmosSerializerCore serializerCore) {
+
         PartitionKeyRangeServerBatchRequest request = new PartitionKeyRangeServerBatchRequest(partitionKeyRangeId,
             maxBodyLength, maxOperationCount, serializerCore);
         //C# TO JAVA CONVERTER TODO TASK: There is no equivalent to 'await' in Java:

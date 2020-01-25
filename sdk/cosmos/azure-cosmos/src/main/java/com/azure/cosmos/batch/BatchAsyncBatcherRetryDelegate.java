@@ -8,5 +8,5 @@ package com.azure.cosmos.batch;
  */
 @FunctionalInterface
 public interface BatchAsyncBatcherRetryDelegate {
-    Task invoke(ItemBatchOperation operation, CancellationToken cancellationToken);
+    Task invoke(ItemBatchOperation operation);
 }

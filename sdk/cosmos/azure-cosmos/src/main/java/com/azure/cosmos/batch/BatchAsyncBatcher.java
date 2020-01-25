@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -82,37 +84,44 @@ public class BatchAsyncBatcher {
     //C# TO JAVA CONVERTER TODO TASK: There is no equivalent in Java to the 'async' keyword:
     //ORIGINAL LINE: internal virtual async Task<Tuple<PartitionKeyRangeServerBatchRequest,
     // ArraySegment<ItemBatchOperation>>> CreateServerRequestAsync(CancellationToken cancellationToken)
-    public Task<Tuple<PartitionKeyRangeServerBatchRequest, ArraySegment<ItemBatchOperation>>> CreateServerRequestAsync(CancellationToken cancellationToken) {
-        // All operations should be for the same PKRange
-        String partitionKeyRangeId = this.batchOperations.get(0).getContext().getPartitionKeyRangeId();
+    public Task<Tuple<PartitionKeyRangeServerBatchRequest, List<ItemBatchOperation>>> CreateServerRequestAsync() {
 
-        ArraySegment<ItemBatchOperation> operationsArraySegment =
-            new ArraySegment<ItemBatchOperation>(this.batchOperations.toArray(new ItemBatchOperation[0]));
+        // All operations must be for the same partition key range
+
+        @SuppressWarnings("unchecked") final List<ItemBatchOperation> operationsArraySegment = Collections.unmodifiableList((List<ItemBatchOperation>) this.batchOperations.clone());
+        final String partitionKeyRangeId = this.batchOperations.get(0).getContext().getPartitionKeyRangeId();
+
         //C# TO JAVA CONVERTER TODO TASK: There is no equivalent to 'await' in Java:
-        return await
-        PartitionKeyRangeServerBatchRequest.CreateAsync(partitionKeyRangeId, operationsArraySegment,
-            this.maxBatchByteSize, this.maxBatchOperationCount, false, this.serializerCore, cancellationToken).ConfigureAwait(false);
+
+        PartitionKeyRangeServerBatchRequest.CreateAsync(
+            partitionKeyRangeId,
+            operationsArraySegment,
+            this.maxBatchByteSize,
+            this.maxBatchOperationCount,
+            false,
+            this.serializerCore);
     }
 
-    public Task DispatchAsync(CancellationToken cancellationToken) {
+    public Task DispatchAsync() {
+
         this.interlockIncrementCheck.EnterLockCheck();
 
+        ArrayList<ItemBatchOperation> pendingOperations = new ArrayList<>();
         PartitionKeyRangeServerBatchRequest serverRequest = null;
-        ArraySegment<ItemBatchOperation> pendingOperations = new ArraySegment<ItemBatchOperation>();
 
         try {
             try {
                 // HybridRow serialization might leave some pending operations out of the batch
                 //C# TO JAVA CONVERTER TODO TASK: There is no equivalent to 'await' in Java:
-                Tuple<PartitionKeyRangeServerBatchRequest, ArraySegment<ItemBatchOperation>> createRequestResponse =
+                Tuple<PartitionKeyRangeServerBatchRequest, List<ItemBatchOperation>> createRequestResponse =
                     await
-                this.CreateServerRequestAsync(cancellationToken);
+                this.CreateServerRequestAsync();
                 serverRequest = createRequestResponse.Item1;
                 pendingOperations = createRequestResponse.Item2;
                 // Any overflow goes to a new batch
                 for (ItemBatchOperation operation : pendingOperations) {
                     //C# TO JAVA CONVERTER TODO TASK: There is no equivalent to 'await' in Java:
-                    await this.retrier.invoke(operation, cancellationToken);
+                    await this.retrier.invoke(operation);
                 }
             } catch (RuntimeException ex) {
                 // Exceptions happening during request creation, fail the entire list
@@ -126,7 +135,7 @@ public class BatchAsyncBatcher {
             try {
                 //C# TO JAVA CONVERTER TODO TASK: There is no equivalent to 'await' in Java:
                 PartitionKeyRangeBatchExecutionResult result = await
-                this.executor.invoke(serverRequest, cancellationToken);
+                this.executor.invoke(serverRequest);
                 try (PartitionKeyRangeBatchResponse batchResponse =
                          new PartitionKeyRangeBatchResponse(serverRequest.getOperations().Count,
                              result.getServerResponse(), this.serializerCore)) {
@@ -146,10 +155,10 @@ public class BatchAsyncBatcher {
                         if (!response.getIsSuccessStatusCode()) {
                             //C# TO JAVA CONVERTER TODO TASK: There is no equivalent to 'await' in Java:
                             Documents.ShouldRetryResult shouldRetry = await
-                            itemBatchOperation.getContext().ShouldRetryAsync(response, cancellationToken);
+                            itemBatchOperation.getContext().ShouldRetryAsync(response);
                             if (shouldRetry.ShouldRetry) {
                                 //C# TO JAVA CONVERTER TODO TASK: There is no equivalent to 'await' in Java:
-                                await this.retrier.invoke(itemBatchOperation, cancellationToken);
+                                await this.retrier.invoke(itemBatchOperation);
                                 continue;
                             }
                         }
@@ -172,10 +181,6 @@ public class BatchAsyncBatcher {
             this.batchOperations.clear();
             this.dispached = true;
         }
-    }
-
-    public Task DispatchAsync() {
-        return DispatchAsync(null);
     }
 
     public boolean TryAdd(ItemBatchOperation operation) {

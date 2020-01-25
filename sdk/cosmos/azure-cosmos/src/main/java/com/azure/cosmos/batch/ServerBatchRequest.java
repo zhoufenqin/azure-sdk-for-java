@@ -3,6 +3,10 @@
 
 package com.azure.cosmos.batch;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 //C# TO JAVA CONVERTER TODO TASK: There is no preprocessor in Java:
 ///#pragma warning disable CA1001 // Types that own disposable fields should be disposable
 public abstract class ServerBatchRequest
@@ -19,7 +23,7 @@ public abstract class ServerBatchRequest
     //C# TO JAVA CONVERTER WARNING: Unsigned integer types have no direct equivalent in Java:
     //ORIGINAL LINE: private MemorySpanResizer<byte> operationResizableWriteBuffer;
     private MemorySpanResizer<Byte> operationResizableWriteBuffer;
-    private ArraySegment<ItemBatchOperation> operations = new ArraySegment<ItemBatchOperation>();
+    private ArrayList<ItemBatchOperation> operations = new ArrayList<ItemBatchOperation>();
     private CosmosSerializerCore serializerCore;
     private boolean shouldDeleteLastWrittenRecord;
 
@@ -36,7 +40,7 @@ public abstract class ServerBatchRequest
         this.serializerCore = serializerCore;
     }
 
-    public final IReadOnlyList<ItemBatchOperation> getOperations() {
+    public final List<ItemBatchOperation> getOperations() {
         return this.operations;
     }
 
@@ -60,35 +64,34 @@ public abstract class ServerBatchRequest
      * stream not exceed maxBodySize.
      *
      * @param operations Operations to be added; read-only.
-     * @param cancellationToken {@link CancellationToken} representing request cancellation.
      * @param ensureContinuousOperationIndexes Whether to stop adding operations to the request once there is
      * non-continuity in the operation indexes.
      *
      * @return Any pending operations that were not included in the request.
      */
 
-    protected final Task<ArraySegment<ItemBatchOperation>> CreateBodyStreamAsync(ArraySegment<ItemBatchOperation> operations, CancellationToken cancellationToken) {
-        return CreateBodyStreamAsync(operations, cancellationToken, false);
+    protected final Task<List<ItemBatchOperation>> CreateBodyStreamAsync(List<ItemBatchOperation> operations) {
+        return CreateBodyStreamAsync(operations, false);
     }
 
-    //C# TO JAVA CONVERTER TODO TASK: There is no equivalent in Java to the 'async' keyword:
-    //ORIGINAL LINE: protected async Task<ArraySegment<ItemBatchOperation>> CreateBodyStreamAsync
-    // (ArraySegment<ItemBatchOperation> operations, CancellationToken cancellationToken, bool
-    // ensureContinuousOperationIndexes = false)
-    //C# TO JAVA CONVERTER NOTE: Java does not support optional parameters. Overloaded method(s) are created above:
-    protected final Task<ArraySegment<ItemBatchOperation>> CreateBodyStreamAsync(ArraySegment<ItemBatchOperation> operations, CancellationToken cancellationToken, boolean ensureContinuousOperationIndexes) {
+    protected final Task<List<ItemBatchOperation>> CreateBodyStreamAsync(
+        final List<ItemBatchOperation> operations,
+        final boolean ensureContinuousOperationIndexes) {
+
         int estimatedMaxOperationLength = 0;
         int approximateTotalLength = 0;
 
         int previousOperationIndex = -1;
         int materializedCount = 0;
+
         for (ItemBatchOperation operation : operations) {
+
             if (ensureContinuousOperationIndexes && previousOperationIndex != -1 && operation.getOperationIndex() != previousOperationIndex + 1) {
                 break;
             }
 
             //C# TO JAVA CONVERTER TODO TASK: There is no equivalent to 'await' in Java:
-            await operation.MaterializeResourceAsync(this.serializerCore, cancellationToken);
+            await operation.MaterializeResourceAsync(this.serializerCore);
             materializedCount++;
 
             previousOperationIndex = operation.getOperationIndex();
@@ -106,7 +109,7 @@ public abstract class ServerBatchRequest
             }
         }
 
-        this.operations = new ArraySegment<ItemBatchOperation>(operations.Array, operations.Offset, materializedCount);
+        this.operations = new List<ItemBatchOperation>(operations.Array, operations.Offset, materializedCount);
 
         final int operationSerializationOverheadOverEstimateInBytes = 200;
         //C# TO JAVA CONVERTER TODO TASK: C# to Java Converter cannot determine whether this System.IO.MemoryStream
@@ -135,7 +138,7 @@ public abstract class ServerBatchRequest
         }
 
         int overflowOperations = operations.Count - this.operations.Count;
-        return new ArraySegment<ItemBatchOperation>(operations.Array, this.operations.Count + operations.Offset,
+        return new ArrayList<ItemBatchOperation>(operations.Array, this.operations.Count + operations.Offset,
             overflowOperations);
     }
 

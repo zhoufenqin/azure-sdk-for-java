@@ -8,5 +8,5 @@ package com.azure.cosmos.batch;
  */
 @FunctionalInterface
 public interface BatchAsyncBatcherExecuteDelegate {
-    Task<PartitionKeyRangeBatchExecutionResult> invoke(PartitionKeyRangeServerBatchRequest request, CancellationToken cancellationToken);
+    Task<PartitionKeyRangeBatchExecutionResult> invoke(PartitionKeyRangeServerBatchRequest request);
 }
