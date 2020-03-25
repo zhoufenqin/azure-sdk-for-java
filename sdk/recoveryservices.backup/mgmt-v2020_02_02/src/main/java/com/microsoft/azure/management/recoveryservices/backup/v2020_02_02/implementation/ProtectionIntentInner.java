@@ -8,6 +8,8 @@
 
 package com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.implementation;
 
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.AzureRecoveryServiceVaultProtectionIntent;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.AzureResourceProtectionIntent;
 import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.BackupManagementType;
 import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.ProtectionStatus;
 import com.fasterxml.jackson.annotation.JsonProperty;

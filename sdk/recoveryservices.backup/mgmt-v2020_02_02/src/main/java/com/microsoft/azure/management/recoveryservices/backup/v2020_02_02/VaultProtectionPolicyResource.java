@@ -9,6 +9,7 @@
 package com.microsoft.azure.management.recoveryservices.backup.v2020_02_02;
 
 import com.microsoft.azure.arm.model.HasInner;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.implementation.ProtectionPolicyInner;
 import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.implementation.ProtectionPolicyResourceInner;
 import com.microsoft.azure.arm.resources.models.HasManager;
 import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.implementation.RecoveryServicesManager;

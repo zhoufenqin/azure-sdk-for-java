@@ -9,6 +9,7 @@
 package com.microsoft.azure.management.recoveryservices.backup.v2020_02_02;
 
 import com.microsoft.azure.arm.model.HasInner;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.implementation.RecoveryPointInner;
 import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.implementation.RecoveryPointResourceInner;
 import com.microsoft.azure.arm.model.Indexable;
 import com.microsoft.azure.arm.model.Refreshable;

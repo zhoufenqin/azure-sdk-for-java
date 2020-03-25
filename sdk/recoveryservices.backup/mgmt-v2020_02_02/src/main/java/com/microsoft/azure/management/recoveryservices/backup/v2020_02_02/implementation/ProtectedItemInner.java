@@ -8,8 +8,15 @@
 
 package com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.implementation;
 
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.AzureFileshareProtectedItem;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.AzureIaaSVMProtectedItem;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.AzureSqlProtectedItem;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.AzureVmWorkloadProtectedItem;
 import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.BackupManagementType;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.DPMProtectedItem;
 import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.DataSourceType;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.GenericProtectedItem;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.MabFileFolderProtectedItem;
 import org.joda.time.DateTime;
 import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.CreateMode;
 import com.fasterxml.jackson.annotation.JsonProperty;

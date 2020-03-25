@@ -8,11 +8,18 @@
 
 package com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.implementation;
 
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.AzureSqlContainer;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.AzureStorageContainer;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.AzureWorkloadContainer;
 import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.BackupManagementType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.DpmContainer;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.GenericContainer;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.IaaSVMContainer;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.MabContainer;
 
 /**
  * Base class for container with backup items. Containers with specific

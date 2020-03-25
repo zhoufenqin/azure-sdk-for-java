@@ -8,7 +8,12 @@
 
 package com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.implementation;
 
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.AzureIaaSVMJob;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.AzureStorageJob;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.AzureWorkloadJob;
 import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.BackupManagementType;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.DpmJob;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.MabJob;
 import org.joda.time.DateTime;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

@@ -8,6 +8,8 @@
 
 package com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.implementation;
 
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.AzureStorageProtectableContainer;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.AzureVMAppContainerProtectableContainer;
 import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.BackupManagementType;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

@@ -11,6 +11,10 @@ package com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.imple
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.AzureFileShareRecoveryPoint;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.AzureWorkloadRecoveryPoint;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.GenericRecoveryPoint;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.IaasVMRecoveryPoint;
 
 /**
  * Base class for backup copies. Workload-specific backup copies are derived

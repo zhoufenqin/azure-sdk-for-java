@@ -12,6 +12,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.AzureFileShareProtectionPolicy;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.AzureIaaSVMProtectionPolicy;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.AzureSqlProtectionPolicy;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.AzureVmWorkloadProtectionPolicy;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.GenericProtectionPolicy;
+import com.microsoft.azure.management.recoveryservices.backup.v2020_02_02.MabProtectionPolicy;
 
 /**
  * Base class for backup policy. Workload-specific backup policies are derived
