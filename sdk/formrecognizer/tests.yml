@@ -12,6 +12,6 @@ jobs:
         AZURE_TEST_MODE: RECORD
       PreRunSteps:
         - bash: |
-            echo "ping -c 5 `echo $AZURE_FORM_RECOGNIZER_ENDPOINT | awk -F/ '{print $3}'`"
-            ping -c 5 `echo $AZURE_FORM_RECOGNIZER_ENDPOINT | awk -F/ '{print $3}'`
+            echo "ping -c 5 -4 `echo $AZURE_FORM_RECOGNIZER_ENDPOINT | awk -F/ '{print $3}'`"
+            ping -c 5 -4 `echo $AZURE_FORM_RECOGNIZER_ENDPOINT | awk -F/ '{print $3}'`
           displayName: attempt ping
