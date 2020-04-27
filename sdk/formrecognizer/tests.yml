@@ -18,14 +18,14 @@ jobs:
       Matrix:
         Linux - Java 11 (AzureCloud):
           OSName: 'Linux'
-          OSVmImage: 'ubuntu-16.04'
+          OSVmImage: 'ubuntu-18.04'
           JavaVersion: '1.11'
           DisplayName: 'Linux - Java 11'
           CloudType: AzureCloud
           AZURE_TEST_HTTP_CLIENTS: okhttp
         Linux - Java 8 (AzureCloud):
           OSName: 'Linux'
-          OSVmImage: 'ubuntu-16.04'
+          OSVmImage: 'ubuntu-18.04'
           JavaVersion: '1.8'
           DisplayName: 'Linux - Java 8'
           CloudType: AzureCloud
