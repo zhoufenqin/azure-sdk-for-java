@@ -15,3 +15,32 @@ jobs:
             echo "ping -c 5 -4 `echo $AZURE_FORM_RECOGNIZER_ENDPOINT | awk -F/ '{print $3}'`"
             ping -c 5 -4 `echo $AZURE_FORM_RECOGNIZER_ENDPOINT | awk -F/ '{print $3}'`
           displayName: attempt ping
+      Matrix:
+        Linux - Java 8 (AzureCloud):
+          OSName: 'Linux'
+          OSVmImage: 'ubuntu-18.04'
+          JavaVersion: '1.8'
+          DisplayName: 'Linux - Java 8'
+          CloudType: AzureCloud
+          AZURE_TEST_HTTP_CLIENTS: netty
+        macOS - Java 8 (AzureCloud):
+          OSName: 'macOS'
+          OSVmImage: 'macOS-10.15'
+          JavaVersion: '1.8'
+          DisplayName: 'macOS - Java 8'
+          CloudType: AzureCloud
+          AZURE_TEST_HTTP_CLIENTS: okhttp
+        Linux - Java 11 (AzureCloud):
+          OSName: 'Linux'
+          OSVmImage: 'ubuntu-18.04'
+          JavaVersion: '1.11'
+          DisplayName: 'Linux - Java 11'
+          CloudType: AzureCloud
+          AZURE_TEST_HTTP_CLIENTS: okhttp
+        macOS - Java 11 (AzureCloud):
+          OSName: 'macOS'
+          OSVmImage: 'macOS-10.15'
+          JavaVersion: '1.11'
+          DisplayName: 'macOS - Java 11'
+          CloudType: AzureCloud
+          AZURE_TEST_HTTP_CLIENTS: netty
