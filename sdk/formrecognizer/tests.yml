@@ -15,18 +15,3 @@ jobs:
             echo "nslookup `echo $AZURE_FORM_RECOGNIZER_ENDPOINT | awk -F/ '{print $3}'`"
             nslookup `echo $AZURE_FORM_RECOGNIZER_ENDPOINT | awk -F/ '{print $3}'`
           displayName: attempt nslookup
-      Matrix:
-        Linux - Java 11 (AzureCloud):
-          OSName: 'Linux'
-          OSVmImage: 'ubuntu-18.04'
-          JavaVersion: '1.11'
-          DisplayName: 'Linux - Java 11'
-          CloudType: AzureCloud
-          AZURE_TEST_HTTP_CLIENTS: okhttp
-        Linux - Java 8 (AzureCloud):
-          OSName: 'Linux'
-          OSVmImage: 'ubuntu-18.04'
-          JavaVersion: '1.8'
-          DisplayName: 'Linux - Java 8'
-          CloudType: AzureCloud
-          AZURE_TEST_HTTP_CLIENTS: netty
