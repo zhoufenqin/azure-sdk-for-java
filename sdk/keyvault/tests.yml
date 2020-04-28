@@ -6,6 +6,7 @@ jobs:
       TimeoutInMinutes: 240
       MaxParallel: 2
       ServiceDirectory: keyvault
+      TestName: AzureUSGovernment
       ArmTemplateParameters: "@{ endpointSuffix = 'vault.usgovcloudapi.net' }"
       CloudType: AzureUSGovernment
       Artifacts:
@@ -30,6 +31,7 @@ jobs:
       TimeoutInMinutes: 240
       MaxParallel: 2
       ServiceDirectory: keyvault
+      TestName: AzureChinaCloud
       ArmTemplateParameters: "@{ endpointSuffix = 'vault.azure.cn'; }"
       CloudType: AzureChinaCloud
       Artifacts:
