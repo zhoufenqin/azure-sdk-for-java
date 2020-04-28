@@ -14,8 +14,8 @@ jobs:
         # - bash: sleep 300
         #   displayName: sleep 5 minutes
         - bash: |
-            sudo rm /etc/resolv.conf
-            sudo ln -s /run/resolvconf/resolv.conf /etc/resolv.conf
+            rm /etc/resolv.conf
+            ln -s /run/resolvconf/resolv.conf /etc/resolv.conf
             systemctl restart resolvconf
           displayName:
         - bash: |
@@ -23,8 +23,8 @@ jobs:
             ping -c 5 -4 `echo $AZURE_FORM_RECOGNIZER_ENDPOINT | awk -F/ '{print $3}'`
           displayName: ping
         - bash: |
-            echo "ping -c 5 -4 `echo $AZURE_FORM_RECOGNIZER_ENDPOINT | awk -F/ '{print $3}'`"
-            ping -c 5 -4 `echo $AZURE_FORM_RECOGNIZER_ENDPOINT | awk -F/ '{print $3}'`
+            echo "nslookup `echo $AZURE_FORM_RECOGNIZER_ENDPOINT | awk -F/ '{print $3}'`"
+            nslookup `echo $AZURE_FORM_RECOGNIZER_ENDPOINT | awk -F/ '{print $3}'`
           displayName: nslookup
 
       Matrix:
