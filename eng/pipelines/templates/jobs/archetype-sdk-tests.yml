@@ -4,154 +4,46 @@ parameters:
   AdditionalModules: []
   EnvVars: {}
   MaxParallel: 0
+  CloudType: AzureCloud
+  ArmTemplateParameters: '@{}'
   Matrix:
-    # US Gov
     Linux - Java 8 (AzureUSGovernment):
       OSName: 'Linux'
       OSVmImage: 'ubuntu-18.04'
       JavaVersion: '1.8'
       DisplayName: 'Linux - Java 8'
-      CloudType: AzureUSGovernment
       AZURE_TEST_HTTP_CLIENTS: netty
-      AZURE_AUTHORITY_HOST: $(aad-azure-sdk-test-authority-host-gov)
-      ArmTemplateParameters: $(azureUSGovernmentArmParameters)
-      ARM_CLIENTID: $(aad-azure-sdk-test-client-id-gov)
-      ARM_CLIENTKEY: $(aad-azure-sdk-test-client-secret-gov)
-      AZURE_TENANT_ID: $(aad-azure-sdk-test-tenant-id-gov)
     # macOS - Java 8 (AzureUSGovernment):
     #   OSName: 'macOS'
     #   OSVmImage: 'macOS-10.15'
     #   JavaVersion: '1.8'
     #   DisplayName: 'macOS - Java 8'
-    #   CloudType: AzureUSGovernment
     #   AZURE_TEST_HTTP_CLIENTS: okhttp
-    # AZURE_AUTHORITY_HOST: $(aad-azure-sdk-test-authority-host-gov)
-    # ArmTemplateParameters: $(azureUSGovernmentArmParameters)
-    # ARM_CLIENTID: $(aad-azure-sdk-test-client-id-gov)
-    #   ARM_CLIENTKEY: $(aad-azure-sdk-test-client-secret-gov)
-    #   AZURE_TENANT_ID: $(aad-azure-sdk-test-tenant-id-gov)
     Windows - Java 8 (AzureUSGovernment):
       OSName: 'Windows'
       OSVmImage: 'windows-2019'
       JavaVersion: '1.8'
       DisplayName: 'Windows - Java 8'
-      CloudType: AzureUSGovernment
       AZURE_TEST_HTTP_CLIENTS: netty
-      AZURE_AUTHORITY_HOST: $(aad-azure-sdk-test-authority-host-gov)
-      ArmTemplateParameters: $(azureUSGovernmentArmParameters)
-      ARM_CLIENTID: $(aad-azure-sdk-test-client-id-gov)
-      ARM_CLIENTKEY: $(aad-azure-sdk-test-client-secret-gov)
-      AZURE_TENANT_ID: $(aad-azure-sdk-test-tenant-id-gov)
     # Linux - Java 11 (AzureUSGovernment):
     #   OSName: 'Linux'
     #   OSVmImage: 'ubuntu-18.04'
     #   JavaVersion: '1.11'
     #   DisplayName: 'Linux - Java 11'
-    #   CloudType: AzureUSGovernment
     #   AZURE_TEST_HTTP_CLIENTS: okhttp
-    # AZURE_AUTHORITY_HOST: $(aad-azure-sdk-test-authority-host-gov)
-    # ArmTemplateParameters: $(azureUSGovernmentArmParameters)
-    # ARM_CLIENTID: $(aad-azure-sdk-test-client-id-gov)
-    #   ARM_CLIENTKEY: $(aad-azure-sdk-test-client-secret-gov)
-    #   AZURE_TENANT_ID: $(aad-azure-sdk-test-tenant-id-gov)
     # macOS - Java 11 (AzureUSGovernment):
     #   OSName: 'macOS'
     #   OSVmImage: 'macOS-10.15'
     #   JavaVersion: '1.11'
     #   DisplayName: 'macOS - Java 11'
-    #   CloudType: AzureUSGovernment
     #   AZURE_TEST_HTTP_CLIENTS: netty
-    # AZURE_AUTHORITY_HOST: $(aad-azure-sdk-test-authority-host-gov)
-    # ArmTemplateParameters: $(azureUSGovernmentArmParameters)
-    # ARM_CLIENTID: $(aad-azure-sdk-test-client-id-gov)
-    #   ARM_CLIENTKEY: $(aad-azure-sdk-test-client-secret-gov)
-    #   AZURE_TENANT_ID: $(aad-azure-sdk-test-tenant-id-gov)
     Windows - Java 11 (AzureUSGovernment):
       OSName: 'Windows'
       OSVmImage: 'windows-2019'
       JavaVersion: '1.11'
       DisplayName: 'Windows - Java 11'
-      CloudType: AzureUSGovernment
       AZURE_TEST_HTTP_CLIENTS: okhttp
-      AZURE_AUTHORITY_HOST: $(aad-azure-sdk-test-authority-host-gov)
-      ArmTemplateParameters: $(azureUSGovernmentArmParameters)
-      ARM_CLIENTID: $(aad-azure-sdk-test-client-id-gov)
-      ARM_CLIENTKEY: $(aad-azure-sdk-test-client-secret-gov)
-      AZURE_TENANT_ID: $(aad-azure-sdk-test-tenant-id-gov)
 
-    # China
-    Linux - Java 8 (AzureChinaCloud):
-      OSName: 'Linux'
-      OSVmImage: 'ubuntu-18.04'
-      JavaVersion: '1.8'
-      DisplayName: 'Linux - Java 8'
-      CloudType: AzureChinaCloud
-      AZURE_TEST_HTTP_CLIENTS: netty
-      AZURE_AUTHORITY_HOST: $(aad-azure-sdk-test-authority-host-cn)
-      ArmTemplateParameters: $(azureChinaCloudArmParameters)
-      ARM_CLIENTID: $(aad-azure-sdk-test-client-id-cn)
-      ARM_CLIENTKEY: $(aad-azure-sdk-test-client-secret-cn)
-      AZURE_TENANT_ID: $(aad-azure-sdk-test-tenant-id-cn)
-    # macOS - Java 8 (AzureChinaCloud):
-    #   OSName: 'macOS'
-    #   OSVmImage: 'macOS-10.15'
-    #   JavaVersion: '1.8'
-    #   DisplayName: 'macOS - Java 8'
-    #   CloudType: AzureChinaCloud
-    #   AZURE_TEST_HTTP_CLIENTS: okhttp
-    # AZURE_AUTHORITY_HOST: $(aad-azure-sdk-test-authority-host-cn)
-    # ArmTemplateParameters: $(azureChinaCloudArmParameters)
-    # ARM_CLIENTID: $(aad-azure-sdk-test-client-id-cn)
-    #   ARM_CLIENTKEY: $(aad-azure-sdk-test-client-secret-cn)
-    #   AZURE_TENANT_ID: $(aad-azure-sdk-test-tenant-id-cn)
-    Windows - Java 8 (AzureChinaCloud):
-      OSName: 'Windows'
-      OSVmImage: 'windows-2019'
-      JavaVersion: '1.8'
-      DisplayName: 'Windows - Java 8'
-      CloudType: AzureChinaCloud
-      AZURE_TEST_HTTP_CLIENTS: netty
-      AZURE_AUTHORITY_HOST: $(aad-azure-sdk-test-authority-host-cn)
-      ArmTemplateParameters: $(azureChinaCloudArmParameters)
-      ARM_CLIENTID: $(aad-azure-sdk-test-client-id-cn)
-      ARM_CLIENTKEY: $(aad-azure-sdk-test-client-secret-cn)
-      AZURE_TENANT_ID: $(aad-azure-sdk-test-tenant-id-cn)
-    # Linux - Java 11 (AzureChinaCloud):
-    #   OSName: 'Linux'
-    #   OSVmImage: 'ubuntu-18.04'
-    #   JavaVersion: '1.11'
-    #   DisplayName: 'Linux - Java 11'
-    #   CloudType: AzureChinaCloud
-    #   AZURE_TEST_HTTP_CLIENTS: okhttp
-    # AZURE_AUTHORITY_HOST: $(aad-azure-sdk-test-authority-host-cn)
-    # ArmTemplateParameters: $(azureChinaCloudArmParameters)
-    # ARM_CLIENTID: $(aad-azure-sdk-test-client-id-cn)
-    #   ARM_CLIENTKEY: $(aad-azure-sdk-test-client-secret-cn)
-    #   AZURE_TENANT_ID: $(aad-azure-sdk-test-tenant-id-cn)
-    # macOS - Java 11 (AzureChinaCloud):
-    #   OSName: 'macOS'
-    #   OSVmImage: 'macOS-10.15'
-    #   JavaVersion: '1.11'
-    #   DisplayName: 'macOS - Java 11'
-    #   CloudType: AzureChinaCloud
-    #   AZURE_TEST_HTTP_CLIENTS: netty
-    # AZURE_AUTHORITY_HOST: $(aad-azure-sdk-test-authority-host-cn)
-    # ArmTemplateParameters: $(azureChinaCloudArmParameters)
-    # ARM_CLIENTID: $(aad-azure-sdk-test-client-id-cn)
-    #   ARM_CLIENTKEY: $(aad-azure-sdk-test-client-secret-cn)
-    #   AZURE_TENANT_ID: $(aad-azure-sdk-test-tenant-id-cn)
-    Windows - Java 11 (AzureChinaCloud):
-      OSName: 'Windows'
-      OSVmImage: 'windows-2019'
-      JavaVersion: '1.11'
-      DisplayName: 'Windows - Java 11'
-      CloudType: AzureChinaCloud
-      AZURE_TEST_HTTP_CLIENTS: okhttp
-      AZURE_AUTHORITY_HOST: $(aad-azure-sdk-test-authority-host-cn)
-      ArmTemplateParameters: $(azureChinaCloudArmParameters)
-      ARM_CLIENTID: $(aad-azure-sdk-test-client-id-cn)
-      ARM_CLIENTKEY: $(aad-azure-sdk-test-client-secret-cn)
-      AZURE_TENANT_ID: $(aad-azure-sdk-test-tenant-id-cn)
   PreRunSteps: []
   PostRunSteps: []
   TestName: LiveTest
@@ -172,10 +64,6 @@ jobs:
 
     variables:
       - template: ../variables/globals.yml
-      - name: azureUSGovernmentArmParameters
-        value: "@{ endpointSuffix = '.vault.usgovcloudapi.net' }"
-      - name: azureChinaCloudArmParameters
-        value: "@{ endpointSuffix = '.vault.azure.cn'; }"
 
     strategy:
       matrix: ${{ parameters.Matrix }}
@@ -189,6 +77,7 @@ jobs:
         - template: /eng/common/TestResources/deploy-test-resources.yml
           parameters:
             ServiceDirectory: '${{ parameters.ServiceDirectory }}'
+            ArmTemplateParameters: ${{ parameters.ArmTemplateParameters }}
 
       - ${{ parameters.PreRunSteps }}
 
