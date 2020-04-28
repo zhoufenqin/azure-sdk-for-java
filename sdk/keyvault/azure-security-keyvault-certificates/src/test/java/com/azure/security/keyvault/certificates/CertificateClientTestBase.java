@@ -77,6 +77,7 @@ public abstract class CertificateClientTestBase extends TestBase {
             String clientId = System.getenv("ARM_CLIENTID");
             String clientKey = System.getenv("ARM_CLIENTKEY");
             String tenantId = System.getenv("AZURE_TENANT_ID");
+            String authorityHost = System.getenv("AZURE_AUTHORITY_HOST");
             Objects.requireNonNull(clientId, "The client id cannot be null");
             Objects.requireNonNull(clientKey, "The client key cannot be null");
             Objects.requireNonNull(tenantId, "The tenant id cannot be null");
@@ -84,6 +85,7 @@ public abstract class CertificateClientTestBase extends TestBase {
                 .clientSecret(clientKey)
                 .clientId(clientId)
                 .tenantId(tenantId)
+                .authorityHost(authorityHost)
                 .build();
         }
 
