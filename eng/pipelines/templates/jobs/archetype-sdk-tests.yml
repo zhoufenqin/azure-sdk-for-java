@@ -13,7 +13,6 @@ parameters:
       JavaVersion: '1.8'
       DisplayName: 'Linux - Java 8'
       AZURE_TEST_HTTP_CLIENTS: netty
-      CloudType: ${{ parameters.CloudType }}
     # macOS - Java 8 (AzureUSGovernment):
     #   OSName: 'macOS'
     #   OSVmImage: 'macOS-10.15'
@@ -26,7 +25,6 @@ parameters:
       JavaVersion: '1.8'
       DisplayName: 'Windows - Java 8'
       AZURE_TEST_HTTP_CLIENTS: netty
-      CloudType: ${{ parameters.CloudType }}
     # Linux - Java 11 (AzureUSGovernment):
     #   OSName: 'Linux'
     #   OSVmImage: 'ubuntu-18.04'
@@ -44,8 +42,7 @@ parameters:
       OSVmImage: 'windows-2019'
       JavaVersion: '1.11'
       DisplayName: 'Windows - Java 11'
-      AZURE_TEST_HTTP_CLIENTS: okhttp    
-      CloudType: ${{ parameters.CloudType }}
+      AZURE_TEST_HTTP_CLIENTS: okhttp
 
   PreRunSteps: []
   PostRunSteps: []
@@ -67,6 +64,8 @@ jobs:
 
     variables:
       - template: ../variables/globals.yml
+      - name: CloudType
+        value: ${{ parameters.CloudType }}
 
     strategy:
       matrix: ${{ parameters.Matrix }}
