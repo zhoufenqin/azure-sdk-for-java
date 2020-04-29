@@ -95,9 +95,9 @@ public abstract class CertificateClientTestBase extends TestBase {
             Configuration.getGlobalConfiguration().clone(), serviceVersion));
         HttpPolicyProviders.addBeforeRetryPolicies(policies);
         policies.add(new RetryPolicy());
-        if (credential != null) {
-            policies.add(new BearerTokenAuthenticationPolicy(credential, CertificateAsyncClient.KEY_VAULT_SCOPE));
-        }
+        // if (credential != null) {
+        //     policies.add(new BearerTokenAuthenticationPolicy(credential, CertificateAsyncClient.KEY_VAULT_SCOPE));
+        // }
         HttpPolicyProviders.addAfterRetryPolicies(policies);
         policies.add(new HttpLoggingPolicy(new HttpLogOptions().setLogLevel(HttpLogDetailLevel.BODY_AND_HEADERS)));
 
