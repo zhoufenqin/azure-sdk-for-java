@@ -24,7 +24,7 @@ jobs:
         ARM_CLIENTID: $(aad-azure-sdk-test-client-id-gov)
         ARM_CLIENTKEY: $(aad-azure-sdk-test-client-secret-gov)
         AZURE_TENANT_ID: $(aad-azure-sdk-test-tenant-id-gov)
-        AZURE_AUTHORITY_HOST: $(aad-azure-sdk-test-authority-host-gov)
+        AZURE_AUTHORITY_HOST: $(aad-azure-sdk-test-authority-uri-gov)
 
   - template: ../../eng/pipelines/templates/jobs/archetype-sdk-tests.yml
     parameters:
@@ -49,4 +49,4 @@ jobs:
         ARM_CLIENTID: $(aad-azure-sdk-test-client-id-cn)
         ARM_CLIENTKEY: $(aad-azure-sdk-test-client-secret-cn)
         AZURE_TENANT_ID: $(aad-azure-sdk-test-tenant-id-cn)
-        AZURE_AUTHORITY_HOST: $(aad-azure-sdk-test-authority-host-cn)
+        AZURE_AUTHORITY_HOST: $(aad-azure-sdk-test-authority-uri-cn)
