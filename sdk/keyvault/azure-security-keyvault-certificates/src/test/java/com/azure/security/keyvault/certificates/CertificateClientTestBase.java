@@ -62,6 +62,7 @@ public abstract class CertificateClientTestBase extends TestBase {
         Configuration.getGlobalConfiguration().get(AZURE_KEYVAULT_TEST_CERTIFICATE_SERVICE_VERSIONS);
     private static final String AZURE_TEST_SERVICE_VERSIONS_VALUE_ALL = "ALL";
 
+
     @Override
     protected String getTestName() {
         return "";
@@ -95,9 +96,9 @@ public abstract class CertificateClientTestBase extends TestBase {
             Configuration.getGlobalConfiguration().clone(), serviceVersion));
         HttpPolicyProviders.addBeforeRetryPolicies(policies);
         policies.add(new RetryPolicy());
-        // if (credential != null) {
-        //     policies.add(new BearerTokenAuthenticationPolicy(credential, CertificateAsyncClient.KEY_VAULT_SCOPE));
-        // }
+        if (credential != null) {
+            policies.add(new BearerTokenAuthenticationPolicy(credential, CertificateAsyncClient.getKeyVaultScope(authorityHost)));
+        }
         HttpPolicyProviders.addAfterRetryPolicies(policies);
         policies.add(new HttpLoggingPolicy(new HttpLogOptions().setLogLevel(HttpLogDetailLevel.BODY_AND_HEADERS)));
 

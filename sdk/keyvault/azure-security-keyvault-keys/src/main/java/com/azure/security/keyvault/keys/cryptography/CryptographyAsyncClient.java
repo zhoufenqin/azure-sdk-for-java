@@ -32,6 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 import java.util.Objects;
+import java.util.HashMap;
 
 import static com.azure.core.util.FluxUtil.monoError;
 import static com.azure.core.util.FluxUtil.withContext;
@@ -53,7 +54,18 @@ import static com.azure.security.keyvault.keys.models.KeyType.OCT;
  */
 @ServiceClient(builder = CryptographyClientBuilder.class, isAsync = true, serviceInterfaces = CryptographyService.class)
 public class CryptographyAsyncClient {
-    static final String KEY_VAULT_SCOPE = "https://vault.azure.net/.default";
+    static final String DEFAULT_KEY_VAULT_SCOPE = "https://vault.azure.net/.default";
+    private static HashMap<String, String> KEY_VAULT_SCOPE_MAP = new HashMap<String, String>() {{
+        put("https://login.microsoftonline.com", "https://vault.azure.net/.default");
+        put("https://login.microsoftonline.us/", "https://vault.usgovcloudapi.net/.default");
+        put("https://login.chinacloudapi.cn", "https://vault.azure.cn/.default");
+    }};
+
+    public static String getKeyVaultScope(String authorityHost) {
+        return KEY_VAULT_SCOPE_MAP.getOrDefault(
+            authorityHost, DEFAULT_KEY_VAULT_SCOPE
+        );
+    }
     static final String SECRETS_COLLECTION = "secrets";
 
     // Please see <a href=https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/azure-services-resource-providers>here</a>

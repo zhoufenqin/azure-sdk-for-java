@@ -47,6 +47,7 @@ import java.time.Duration;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -76,7 +77,19 @@ public final class CertificateAsyncClient {
     static final String ACCEPT_LANGUAGE = "en-US";
     static final int DEFAULT_MAX_PAGE_RESULTS = 25;
     static final String CONTENT_TYPE_HEADER_VALUE = "application/json";
-    static final String KEY_VAULT_SCOPE = "https://vault.azure.net/.default";
+    static final String DEFAULT_KEY_VAULT_SCOPE = "https://vault.azure.net/.default";
+    private static HashMap<String, String> KEY_VAULT_SCOPE_MAP = new HashMap<String, String>() {{
+        put("https://login.microsoftonline.com", "https://vault.azure.net/.default");
+        put("https://login.microsoftonline.us/", "https://vault.usgovcloudapi.net/.default");
+        put("https://login.chinacloudapi.cn", "https://vault.azure.cn/.default");
+    }};
+
+    public static String getKeyVaultScope(String authorityHost) {
+        return KEY_VAULT_SCOPE_MAP.getOrDefault(
+            authorityHost, DEFAULT_KEY_VAULT_SCOPE
+        );
+    }
+
     // Please see <a href=https://docs.microsoft.com/en-us/azure/azure-resource-manager/management/azure-services-resource-providers>here</a>
     // for more information on Azure resource provider namespaces.
     private static final String KEYVAULT_TRACING_NAMESPACE_VALUE = "Microsoft.KeyVault";

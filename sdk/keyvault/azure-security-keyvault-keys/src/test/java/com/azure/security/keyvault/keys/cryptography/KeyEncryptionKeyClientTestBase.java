@@ -64,9 +64,9 @@ public abstract class KeyEncryptionKeyClientTestBase extends TestBase {
         policies.add(new UserAgentPolicy(SDK_NAME, SDK_VERSION,  Configuration.getGlobalConfiguration().clone(), serviceVersion));
         HttpPolicyProviders.addBeforeRetryPolicies(policies);
         policies.add(new RetryPolicy());
-        // if (credential != null) {
-        //     policies.add(new BearerTokenAuthenticationPolicy(credential, CryptographyAsyncClient.KEY_VAULT_SCOPE));
-        // }
+        if (credential != null) {
+            policies.add(new BearerTokenAuthenticationPolicy(credential, CryptographyAsyncClient.getKeyVaultScope(authorityHost)));
+        }
         HttpPolicyProviders.addAfterRetryPolicies(policies);
         policies.add(new HttpLoggingPolicy(new HttpLogOptions().setLogLevel(HttpLogDetailLevel.BODY_AND_HEADERS)));
         policies.add(interceptorManager.getRecordPolicy());
