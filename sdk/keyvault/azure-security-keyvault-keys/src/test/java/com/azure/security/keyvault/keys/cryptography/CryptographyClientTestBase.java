@@ -51,11 +51,12 @@ public abstract class CryptographyClientTestBase extends TestBase {
     HttpPipeline getHttpPipeline(HttpClient httpClient, ServiceVersion serviceVersion) {
         TokenCredential credential = null;
 
+
+        String authorityHost = System.getenv("AZURE_AUTHORITY_HOST");
         if (!interceptorManager.isPlaybackMode()) {
             String clientId = System.getenv("ARM_CLIENTID");
             String clientKey = System.getenv("ARM_CLIENTKEY");
             String tenantId = System.getenv("AZURE_TENANT_ID");
-            String authorityHost = System.getenv("AZURE_AUTHORITY_HOST");
             Objects.requireNonNull(clientId, "The client id cannot be null");
             Objects.requireNonNull(clientKey, "The client key cannot be null");
             Objects.requireNonNull(tenantId, "The tenant id cannot be null");
