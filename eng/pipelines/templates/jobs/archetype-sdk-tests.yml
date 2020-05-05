@@ -59,7 +59,8 @@ parameters:
   TestResultsFiles: ''
 
 jobs:
-  - job: ${{ parameters.TestName }} (${{ parameters.CloudType }})
+  - job: ${{ parameters.TestName }}
+    displayName: Live Test (${{ parameters.CloudType }})
     timeoutInMinutes: ${{ parameters.TimeoutInMinutes }}
 
     variables:
