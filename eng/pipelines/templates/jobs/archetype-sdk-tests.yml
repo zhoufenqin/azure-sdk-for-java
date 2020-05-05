@@ -7,37 +7,37 @@ parameters:
   CloudType: AzureCloud
   ArmTemplateParameters: '@{}'
   Matrix:
-    Linux - Java 8 (AzureUSGovernment):
+    Linux - Java 8:
       OSName: 'Linux'
       OSVmImage: 'ubuntu-18.04'
       JavaVersion: '1.8'
       DisplayName: 'Linux - Java 8'
       AZURE_TEST_HTTP_CLIENTS: netty
-    # macOS - Java 8 (AzureUSGovernment):
+    # macOS - Java 8:
     #   OSName: 'macOS'
     #   OSVmImage: 'macOS-10.15'
     #   JavaVersion: '1.8'
     #   DisplayName: 'macOS - Java 8'
     #   AZURE_TEST_HTTP_CLIENTS: okhttp
-    Windows - Java 8 (AzureUSGovernment):
+    Windows - Java 8:
       OSName: 'Windows'
       OSVmImage: 'windows-2019'
       JavaVersion: '1.8'
       DisplayName: 'Windows - Java 8'
       AZURE_TEST_HTTP_CLIENTS: netty
-    # Linux - Java 11 (AzureUSGovernment):
+    # Linux - Java 11:
     #   OSName: 'Linux'
     #   OSVmImage: 'ubuntu-18.04'
     #   JavaVersion: '1.11'
     #   DisplayName: 'Linux - Java 11'
     #   AZURE_TEST_HTTP_CLIENTS: okhttp
-    # macOS - Java 11 (AzureUSGovernment):
+    # macOS - Java 11:
     #   OSName: 'macOS'
     #   OSVmImage: 'macOS-10.15'
     #   JavaVersion: '1.11'
     #   DisplayName: 'macOS - Java 11'
     #   AZURE_TEST_HTTP_CLIENTS: netty
-    Windows - Java 11 (AzureUSGovernment):
+    Windows - Java 11:
       OSName: 'Windows'
       OSVmImage: 'windows-2019'
       JavaVersion: '1.11'
@@ -59,7 +59,7 @@ parameters:
   TestResultsFiles: ''
 
 jobs:
-  - job: ${{ parameters.TestName }}
+  - job: ${{ parameters.TestName }} (${{ parameters.CloudType }})
     timeoutInMinutes: ${{ parameters.TimeoutInMinutes }}
 
     variables:
