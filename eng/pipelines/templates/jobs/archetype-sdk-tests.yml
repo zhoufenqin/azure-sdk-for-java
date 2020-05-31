@@ -5,41 +5,78 @@ parameters:
   EnvVars: {}
   MaxParallel: 0
   Matrix:
-    Linux - Java 8 (AzureCloud):
+    Linux - Java 8 (AzureUSGovernment):
       OSVmImage: 'ubuntu-18.04'
       JavaVersion: '1.8'
       DisplayName: 'Linux - Java 8'
-      SubscriptionConfiguration: $(sub-config-azure-cloud-test-resources)
+      SubscriptionConfiguration: $(sub-config-gov-test-resources)
       AZURE_TEST_HTTP_CLIENTS: netty
-    macOS - Java 8 (AzureCloud):
+    macOS - Java 8 (AzureUSGovernment):
       OSVmImage: 'macOS-10.15'
       JavaVersion: '1.8'
       DisplayName: 'macOS - Java 8'
-      SubscriptionConfiguration: $(sub-config-azure-cloud-test-resources)
+      SubscriptionConfiguration: $(sub-config-gov-test-resources)
       AZURE_TEST_HTTP_CLIENTS: okhttp
-    Windows - Java 8 (AzureCloud):
+    Windows - Java 8 (AzureUSGovernment):
       OSVmImage: 'windows-2019'
       JavaVersion: '1.8'
       DisplayName: 'Windows - Java 8'
-      SubscriptionConfiguration: $(sub-config-azure-cloud-test-resources)
+      SubscriptionConfiguration: $(sub-config-gov-test-resources)
       AZURE_TEST_HTTP_CLIENTS: netty
-    Linux - Java 11 (AzureCloud):
+    Linux - Java 11 (AzureUSGovernment):
       OSVmImage: 'ubuntu-18.04'
       JavaVersion: '1.11'
       DisplayName: 'Linux - Java 11'
-      SubscriptionConfiguration: $(sub-config-azure-cloud-test-resources)
+      SubscriptionConfiguration: $(sub-config-gov-test-resources)
       AZURE_TEST_HTTP_CLIENTS: okhttp
-    macOS - Java 11 (AzureCloud):
+    macOS - Java 11 (AzureUSGovernment):
       OSVmImage: 'macOS-10.15'
       JavaVersion: '1.11'
       DisplayName: 'macOS - Java 11'
-      SubscriptionConfiguration: $(sub-config-azure-cloud-test-resources)
+      SubscriptionConfiguration: $(sub-config-gov-test-resources)
       AZURE_TEST_HTTP_CLIENTS: netty
-    Windows - Java 11 (AzureCloud):
+    Windows - Java 11 (AzureUSGovernment):
       OSVmImage: 'windows-2019'
       JavaVersion: '1.11'
       DisplayName: 'Windows - Java 11'
-      SubscriptionConfiguration: $(sub-config-azure-cloud-test-resources)
+      SubscriptionConfiguration: $(sub-config-gov-test-resources)
+      AZURE_TEST_HTTP_CLIENTS: okhttp
+
+    Linux - Java 8 (AzureChinaCloud):
+      OSVmImage: 'ubuntu-18.04'
+      JavaVersion: '1.8'
+      DisplayName: 'Linux - Java 8'
+      SubscriptionConfiguration: $(sub-config-cn-test-resources)
+      AZURE_TEST_HTTP_CLIENTS: netty
+    macOS - Java 8 (AzureChinaCloud):
+      OSVmImage: 'macOS-10.15'
+      JavaVersion: '1.8'
+      DisplayName: 'macOS - Java 8'
+      SubscriptionConfiguration: $(sub-config-cn-test-resources)
+      AZURE_TEST_HTTP_CLIENTS: okhttp
+    Windows - Java 8 (AzureChinaCloud):
+      OSVmImage: 'windows-2019'
+      JavaVersion: '1.8'
+      DisplayName: 'Windows - Java 8'
+      SubscriptionConfiguration: $(sub-config-cn-test-resources)
+      AZURE_TEST_HTTP_CLIENTS: netty
+    Linux - Java 11 (AzureChinaCloud):
+      OSVmImage: 'ubuntu-18.04'
+      JavaVersion: '1.11'
+      DisplayName: 'Linux - Java 11'
+      SubscriptionConfiguration: $(sub-config-cn-test-resources)
+      AZURE_TEST_HTTP_CLIENTS: okhttp
+    macOS - Java 11 (AzureChinaCloud):
+      OSVmImage: 'macOS-10.15'
+      JavaVersion: '1.11'
+      DisplayName: 'macOS - Java 11'
+      SubscriptionConfiguration: $(sub-config-cn-test-resources)
+      AZURE_TEST_HTTP_CLIENTS: netty
+    Windows - Java 11 (AzureChinaCloud):
+      OSVmImage: 'windows-2019'
+      JavaVersion: '1.11'
+      DisplayName: 'Windows - Java 11'
+      SubscriptionConfiguration: $(sub-config-cn-test-resources)
       AZURE_TEST_HTTP_CLIENTS: okhttp
   PreRunSteps: []
   PostRunSteps: []
