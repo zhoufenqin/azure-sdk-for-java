@@ -6,6 +6,23 @@ that is optimized for ease of use, succinctness and consistency.
 - [API reference documentation][docs]
 - [Code snippets and samples][sample]
 
+### Package List
+- [azure-resourcemanager](./azure)
+  - [azure-resourcemanager-resources](../resources/mgmt)
+  - [azure-resourcemanager-storage](../storage/mgmt)
+  - [azure-resourcemanager-keyvault](../keyvault/mgmt)
+  - [azure-resourcemanager-authorization](../authorization/mgmt)
+  - [azure-resourcemanager-msi](../managedserviceidentity/mgmt)
+  - [azure-resourcemanager-network](../network/mgmt)
+  - [azure-resourcemanager-compute](../compute/mgmt)
+  - [azure-resourcemanager-sql](../sql/mgmt)
+  - [azure-resourcemanager-cosmos](../cosmos/mgmt)
+  - [azure-resourcemanager-dns](../dns/mgmt)
+  - [azure-resourcemanager-appservice](../appservice/mgmt)
+  - [azure-resourcemanager-containerservice](../containerservice/mgmt)
+  - [azure-resourcemanager-containerregistry](../containerregistry/mgmt)
+  - [azure-resourcemanager-monitor](../monitor/mgmt)
+
 ## Getting started
 
 ### Prerequisites
@@ -13,10 +30,19 @@ that is optimized for ease of use, succinctness and consistency.
 - [Java Development Kit (JDK)][jdk] with version 8 or above
 - [Azure Subscription][azure_subscription]
 
-### Include the package
+### Include the SNAPSHOT package
 
 [//]: # ({x-version-update-start;com.azure:azure-management;current})
 ```xml
+<repositories>
+  <repository>
+    <id>snapshots-repo</id>
+    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    <releases><enabled>false</enabled></releases>
+    <snapshots><enabled>true</enabled></snapshots>
+  </repository>
+</repositories>
+
 <dependency>
   <groupId>com.azure.resourcemanager</groupId>
   <artifactId>azure-resourcemanager</artifactId>
