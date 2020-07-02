@@ -24,7 +24,7 @@ The latest dependencies for resource management libraries are [available here](h
 
 ## General Changes
 
-The latest Azure Java SDK for management libraries is a result of our efforts to create a client library that is user-friendly and idiomatic to the Java ecosystem.
+The latest Azure Java SDK for management libraries is a result of our efforts to create a resource management client library that is user-friendly and idiomatic to the Java ecosystem.
 
 Apart from redesigns resulting from the [new Azure SDK Design Guidelines for Java](https://github.com/Azure/azure-sdk-for-java/blob/master/sdk/management/docs/DESIGN.md), the latest version improves on several areas from old version.
 
