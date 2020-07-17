@@ -1,9 +1,9 @@
-resources:
-  repositories:
-    - repository: azure-sdk-build-tools
-      type: git
-      name: internal/azure-sdk-build-tools
-      ref: refs/tags/azure-sdk-build-tools_20200618.4
+#resources:
+#  repositories:
+#    - repository: azure-sdk-build-tools
+#      type: git
+#      name: internal/azure-sdk-build-tools
+#      ref: refs/tags/azure-sdk-build-tools_20200618.4
 
 parameters:
 - name: Artifacts
@@ -28,51 +28,51 @@ parameters:
 stages:
   - stage: Build
     jobs:
-    - template: ../jobs/archetype-sdk-client.yml
-      parameters:
-        ServiceDirectory: ${{parameters.ServiceDirectory}}
-        Artifacts: ${{ parameters.Artifacts }}
-        AdditionalModules: ${{ parameters.AdditionalModules }}
-        SDKType: ${{parameters.SDKType}}
-        TestMatrix:
-          Linux - Java 8:
-            OSVmImage: 'ubuntu-18.04'
-            JavaTestVersion: '1.8'
-            RunTitle: 'Linux on Java 1.8'
-            ProfileFlag: '-Punit'
-          macOS - Java 8:
-            OSVmImage: 'macOS-10.15'
-            JavaTestVersion: '1.8'
-            RunTitle: 'macOS on Java 1.8'
-            ProfileFlag: '-Punit'
-          Windows - Java 8:
-            OSVmImage: 'windows-2019'
-            JavaTestVersion: '1.8'
-            RunTitle: 'Windows on Java 1.8'
-            ProfileFlag: '-Punit'
-          Linux - Java 11:
-            OSVmImage: 'ubuntu-18.04'
-            JavaTestVersion: '1.11'
-            RunTitle: 'Linux on Java 1.11'
-            ProfileFlag: '-Punit'
-          macOS - Java 11:
-            OSVmImage: 'macOS-10.15'
-            JavaTestVersion: '1.11'
-            RunTitle: 'macOS on Java 1.11'
-            ProfileFlag: '-Punit'
-          Windows - Java 11:
-            OSVmImage: 'windows-2019'
-            JavaTestVersion: '1.11'
-            RunTitle: 'Windows on Java 1.11'
-            ProfileFlag: '-Punit'
-          Windows From Source - Java 8:
-            OSVmImage: 'windows-2019'
-            JavaTestVersion: '1.8'
-            RunTitle: 'From Source: Windows on Java 1.8'
-            TestFromSource: true
-            ProfileFlag: '-Punit'
-        PreTestSteps:
-          - template: ../steps/install-reporting-tools.yml
+#    - template: ../jobs/archetype-sdk-client.yml
+#      parameters:
+#        ServiceDirectory: ${{parameters.ServiceDirectory}}
+#        Artifacts: ${{ parameters.Artifacts }}
+#        AdditionalModules: ${{ parameters.AdditionalModules }}
+#        SDKType: ${{parameters.SDKType}}
+#        TestMatrix:
+#          Linux - Java 8:
+#            OSVmImage: 'ubuntu-18.04'
+#            JavaTestVersion: '1.8'
+#            RunTitle: 'Linux on Java 1.8'
+#            ProfileFlag: '-Punit'
+#          macOS - Java 8:
+#            OSVmImage: 'macOS-10.15'
+#            JavaTestVersion: '1.8'
+#            RunTitle: 'macOS on Java 1.8'
+#            ProfileFlag: '-Punit'
+#          Windows - Java 8:
+#            OSVmImage: 'windows-2019'
+#            JavaTestVersion: '1.8'
+#            RunTitle: 'Windows on Java 1.8'
+#            ProfileFlag: '-Punit'
+#          Linux - Java 11:
+#            OSVmImage: 'ubuntu-18.04'
+#            JavaTestVersion: '1.11'
+#            RunTitle: 'Linux on Java 1.11'
+#            ProfileFlag: '-Punit'
+#          macOS - Java 11:
+#            OSVmImage: 'macOS-10.15'
+#            JavaTestVersion: '1.11'
+#            RunTitle: 'macOS on Java 1.11'
+#            ProfileFlag: '-Punit'
+#          Windows - Java 11:
+#            OSVmImage: 'windows-2019'
+#            JavaTestVersion: '1.11'
+#            RunTitle: 'Windows on Java 1.11'
+#            ProfileFlag: '-Punit'
+#          Windows From Source - Java 8:
+#            OSVmImage: 'windows-2019'
+#            JavaTestVersion: '1.8'
+#            RunTitle: 'From Source: Windows on Java 1.8'
+#            TestFromSource: true
+#            ProfileFlag: '-Punit'
+#        PreTestSteps:
+#          - template: ../steps/install-reporting-tools.yml
 
     - template: ../jobs/archetype-sdk-tests.yml
       parameters:
@@ -88,28 +88,28 @@ stages:
         # Issue filed to improve download speed: https://github.com/Azure/azure-sdk-for-java/issues/12970
         TimeoutInMinutes: 90
         Matrix:
-          Tcp_Integration_Tests_Java8:
-            OSVmImage: 'windows-2019'
-            JavaTestVersion: '1.8'
-            ProfileFlag: '-Pemulator'
-            DisplayName: 'Emulator only Integration Tests'
-            PROTOCOLS: '["Tcp"]'
-            DESIRED_CONSISTENCIES: '["Strong", "Session"]'
-            AdditionalArgs: '-DargLine="-DACCOUNT_HOST=https://localhost:8081/"'
-          Https_Integration_Tests_Java8:
-            OSVmImage: 'windows-2019'
-            JavaTestVersion: '1.8'
-            ProfileFlag: '-Pemulator'
-            DisplayName: 'Emulator only Integration Tests'
-            PROTOCOLS: '["Https"]'
-            DESIRED_CONSISTENCIES: '["Strong", "Session"]'
-            AdditionalArgs: '-DargLine="-DACCOUNT_HOST=https://localhost:8081/"'
+#          Tcp_Integration_Tests_Java8:
+#            OSVmImage: 'windows-2019'
+#            JavaTestVersion: '1.8'
+#            ProfileFlag: '-Pemulator'
+#            DisplayName: 'Emulator only Integration Tests'
+#            PROTOCOLS: '["Tcp"]'
+#            DESIRED_CONSISTENCIES: '["Strong", "Session"]'
+#            AdditionalArgs: '-DargLine="-DACCOUNT_HOST=https://localhost:8081/"'
+#          Https_Integration_Tests_Java8:
+#            OSVmImage: 'windows-2019'
+#            JavaTestVersion: '1.8'
+#            ProfileFlag: '-Pemulator'
+#            DisplayName: 'Emulator only Integration Tests'
+#            PROTOCOLS: '["Https"]'
+#            DESIRED_CONSISTENCIES: '["Strong", "Session"]'
+#            AdditionalArgs: '-DargLine="-DACCOUNT_HOST=https://localhost:8081/"'
           Spring_Integration_Tests_Java8:
             OSVmImage: 'windows-2019'
             JavaTestVersion: '1.8'
             ProfileFlag: '-P integration-test-emulator'
             DisplayName: 'Spring Emulator only Integration Tests'
-            AdditionalArgs: '-DargLine="-DACCOUNT_HOST=$(ACCOUNT_HOST) -DACCOUNT_KEY=$(ACCOUNT_KEY) -DSECONDARY_ACCOUNT_KEY=$(SECONDARY_ACCOUNT_KEY) -DNEW_ACCOUNT_HOST=$(ACCOUNT_HOST) -DNEW_ACCOUNT_KEY=$(ACCOUNT_KEY) -DNEW_SECONDARY_ACCOUNT_KEY=$(SECONDARY_ACCOUNT_KEY)"'
+            AdditionalArgs: '-DargLine="-DACCOUNT_HOST=' + $(ACCOUNT_HOST) + ' -DACCOUNT_KEY=' + $(ACCOUNT_KEY) + ' -DSECONDARY_ACCOUNT_KEY=' + $(SECONDARY_ACCOUNT_KEY) + ' -DNEW_ACCOUNT_HOST=' + $(ACCOUNT_HOST) + ' -DNEW_ACCOUNT_KEY=' + $(ACCOUNT_KEY) + ' -DNEW_SECONDARY_ACCOUNT_KEY=' + $(SECONDARY_ACCOUNT_KEY) + '"'
 
         TestStepMavenInputs:
           goals: 'verify'
@@ -170,13 +170,13 @@ stages:
         - template: ../steps/install-reporting-tools.yml
 
   # The Prerelease and Release stages are conditioned on whether we are building a pull request and the branch.
-  - ${{if and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['System.TeamProject'], 'internal'))}}:
-    - template: archetype-java-release.yml
-      parameters:
-        DependsOn: Build
-        ServiceDirectory: ${{parameters.ServiceDirectory}}
-        SDKType: ${{parameters.SDKType}}
-        Artifacts: ${{parameters.Artifacts}}
-        ArtifactName: packages
-        TargetDocRepoOwner: ${{parameters.TargetDocRepoOwner}}
-        TargetDocRepoName: ${{parameters.TargetDocRepoName}}
+#  - ${{if and(ne(variables['Build.Reason'], 'PullRequest'), eq(variables['System.TeamProject'], 'internal'))}}:
+#    - template: archetype-java-release.yml
+#      parameters:
+#        DependsOn: Build
+#        ServiceDirectory: ${{parameters.ServiceDirectory}}
+#        SDKType: ${{parameters.SDKType}}
+#        Artifacts: ${{parameters.Artifacts}}
+#        ArtifactName: packages
+#        TargetDocRepoOwner: ${{parameters.TargetDocRepoOwner}}
+#        TargetDocRepoName: ${{parameters.TargetDocRepoName}}
